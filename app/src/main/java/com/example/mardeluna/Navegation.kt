@@ -1,4 +1,4 @@
-package com.example.mardeluna.navigation
+package com.example.mardeluna
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
