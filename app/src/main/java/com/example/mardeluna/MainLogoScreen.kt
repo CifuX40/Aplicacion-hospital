@@ -19,19 +19,17 @@ fun MainLogoScreen(navController: NavHostController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Imagen para la primera planta como botón
         Image(
             painter = painterResource(id = R.drawable.piso_1_logo),
             contentDescription = "Logo de la Primera Planta",
             modifier = Modifier
                 .size(200.dp)
-                .clickable { navController.navigate("first_floor") }  // Navegar a la primera planta al hacer clic
+                .clickable { navController.navigate("first_floor") }
                 .padding(bottom = 16.dp)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Imagen para la segunda planta como botón
         Image(
             painter = painterResource(id = R.drawable.piso_2_logo),
             contentDescription = "Logo de la Segunda Planta",

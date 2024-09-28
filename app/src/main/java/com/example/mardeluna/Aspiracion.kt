@@ -1,18 +1,18 @@
-package com.example.mardeluna.screens
+package com.example.mardeluna
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.mardeluna.R
 
 @Composable
-fun ICUScreen(navController: NavHostController) {
+fun AspiracionScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -20,13 +20,13 @@ fun ICUScreen(navController: NavHostController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Imagen de aspiración del paciente
         Image(
-            painter = painterResource(id = R.drawable.sala_uci_uno),
-            contentDescription = "ICU",
-            modifier = Modifier.size(300.dp)
+            painter = painterResource(id = R.drawable.aspiracion_paciente),
+            contentDescription = "Aspiración del Paciente",
+            modifier = Modifier
+                .size(300.dp)
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { navController.navigate("second_floor") }) {
-        }
     }
 }

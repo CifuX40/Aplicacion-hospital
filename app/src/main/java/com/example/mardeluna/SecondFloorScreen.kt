@@ -3,11 +3,9 @@ package com.example.mardeluna
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -31,6 +29,7 @@ fun SecondFloorScreen(navController: NavHostController = rememberNavController()
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Imagen de la Segunda Planta con zoom y rotación habilitados
         Image(
             painter = painterResource(id = R.drawable.segunda_planta),
             contentDescription = "Second Floor",
@@ -52,6 +51,29 @@ fun SecondFloorScreen(navController: NavHostController = rememberNavController()
                     }
                 }
         )
+
         Spacer(modifier = Modifier.height(16.dp))
+
+        // Botón para Hospitalización
+        Button(
+            onClick = { navController.navigate("hospitalization_screen") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp)
+        ) {
+            Text(text = "Hospitalización")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Botón para UCI
+        Button(
+            onClick = { navController.navigate("icu_screen") }, // Asegúrate de que la ruta esté bien definida en tu NavHost
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp)
+        ) {
+            Text(text = "UCI")
+        }
     }
 }

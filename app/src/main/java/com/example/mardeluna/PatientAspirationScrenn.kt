@@ -22,7 +22,7 @@ fun PatientAspirationScreen(navController: NavHostController) {
     ) {
         Image(
             painter = painterResource(id = R.drawable.aspiracion_paciente),
-            contentDescription = "Patient Aspiration",
+            contentDescription = "Aspiración para paciente",
             modifier = Modifier.size(300.dp)
         )
         Spacer(modifier = Modifier.height(16.dp))
