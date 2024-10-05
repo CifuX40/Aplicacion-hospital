@@ -23,7 +23,6 @@ fun HospitalizationScreen(navController: NavHostController) {
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Texto "Habitaciones de hospitalización." en negrita
         Text(
             text = "Habitaciones de hospitalización.",
             fontSize = 20.sp,
@@ -33,7 +32,6 @@ fun HospitalizationScreen(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Imagen de habitación
         Image(
             painter = painterResource(id = R.drawable.habitacion),
             contentDescription = "Room",
@@ -44,7 +42,6 @@ fun HospitalizationScreen(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Texto de descripción
         Text(
             text = "Todas las habitaciones tienen una aspiración y una toma de oxígeno " +
                     "que se deberán comprobar su funcionamiento después de cada alta de paciente " +
@@ -55,7 +52,6 @@ fun HospitalizationScreen(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Texto "Aparataje" en negrita
         Text(
             text = "Aparataje",
             fontSize = 20.sp,

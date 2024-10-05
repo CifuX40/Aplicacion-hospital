@@ -43,10 +43,8 @@ fun RespiradorScreen(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Botón para ver el video
         Button(
             onClick = {
-                // Intent para abrir el video en YouTube
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://youtu.be/W51JlmJjPrc?si=hLXu81Fo2-6QVI43"))
                 context.startActivity(intent)
             }
