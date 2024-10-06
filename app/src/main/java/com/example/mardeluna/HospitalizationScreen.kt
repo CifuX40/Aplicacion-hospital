@@ -37,7 +37,6 @@ fun HospitalizationScreen(navController: NavHostController) {
             contentDescription = "Room",
             modifier = Modifier
                 .size(300.dp)
-                .clickable { navController.navigate("room_screen") }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
