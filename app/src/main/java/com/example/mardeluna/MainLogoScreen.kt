@@ -35,7 +35,7 @@ fun MainLogoScreen(navController: NavHostController) {
             contentDescription = "Logo de la Segunda Planta",
             modifier = Modifier
                 .size(200.dp)
-                .clickable { navController.navigate("second_floor") }  // Navegar a la segunda planta al hacer clic
+                .clickable { navController.navigate("second_floor") }
                 .padding(bottom = 16.dp)
         )
     }

@@ -1,4 +1,4 @@
-package com.example.mardeluna.screens
+package com.example.mardeluna
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState

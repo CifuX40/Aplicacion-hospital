@@ -1,4 +1,4 @@
-package com.example.mardeluna.screens
+package com.example.mardeluna
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -15,7 +15,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.mardeluna.R
 
 @Composable
 fun StartScreen(navController: NavHostController) {
