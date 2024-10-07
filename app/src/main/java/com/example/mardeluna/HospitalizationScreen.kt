@@ -1,7 +1,6 @@
 package com.example.mardeluna
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -10,12 +9,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.*
 import androidx.navigation.NavHostController
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 
 @Composable
 fun HospitalizationScreen(navController: NavHostController) {
+    // Variable para ajustar el tamaño del círculo amarillo
+    val circleSize = remember { mutableStateOf(100.dp) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -32,15 +35,31 @@ fun HospitalizationScreen(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Image(
-            painter = painterResource(id = R.drawable.habitacion),
-            contentDescription = "Room",
+        // Superposición de la imagen de la habitación y el círculo amarillo
+        Box(
             modifier = Modifier
-                .size(300.dp)
-        )
+                .size(300.dp), // Tamaño del contenedor para las imágenes
+            contentAlignment = Alignment.Center // Alinea el círculo en el centro
+        ) {
+            // Imagen de la habitación
+            Image(
+                painter = painterResource(id = R.drawable.habitacion),
+                contentDescription = "Room",
+                modifier = Modifier.fillMaxSize()
+            )
+
+            // Imagen del círculo amarillo
+            Image(
+                painter = painterResource(id = R.drawable.circulo_amarillo),
+                contentDescription = "Círculo Amarillo",
+                modifier = Modifier
+                    .size(circleSize.value) // Tamaño del círculo ajustable
+            )
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Texto descriptivo
         Text(
             text = "Todas las habitaciones tienen una aspiración y una toma de oxígeno " +
                     "que se deberán comprobar su funcionamiento después de cada alta de paciente " +
@@ -60,7 +79,7 @@ fun HospitalizationScreen(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Botones de Aspiración y Toma de oxígeno
+        // Botones para cambiar de pantalla y ajustar el tamaño del círculo amarillo
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
@@ -75,6 +94,15 @@ fun HospitalizationScreen(navController: NavHostController) {
                 onClick = { navController.navigate("toma_oxigeno_screen") }
             ) {
                 Text(text = "Toma de oxígeno")
+            }
+
+            Button(
+                onClick = {
+                    // Ajustar el tamaño del círculo amarillo
+                    circleSize.value = if (circleSize.value == 100.dp) 150.dp else 100.dp
+                }
+            ) {
+                Text(text = "Cambiar tamaño círculo")
             }
         }
     }

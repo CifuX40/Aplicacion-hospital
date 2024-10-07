@@ -65,7 +65,6 @@ fun SecondFloorScreen(navController: NavHostController = rememberNavController()
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Botón para UCI
         Button(
             onClick = { navController.navigate("icu_screen") },
             modifier = Modifier
@@ -73,6 +72,17 @@ fun SecondFloorScreen(navController: NavHostController = rememberNavController()
                 .padding(horizontal = 32.dp)
         ) {
             Text(text = "UCI")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = { navController.navigate("surgery_screen") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp)
+        ) {
+            Text(text = "Quirófano")
         }
     }
 }
