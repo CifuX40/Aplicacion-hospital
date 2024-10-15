@@ -21,4 +21,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "Mar de Luna"
 include(":app")
- 
