@@ -6,14 +6,14 @@ junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.6"
-activityCompose = "1.9.2"
-composeBom = "2024.09.03"
-navigationRuntimeKtx = "2.8.2"
-navigationCompose = "2.8.2"
+activityCompose = "1.9.3"
+composeBom = "2024.10.00"
+navigationRuntimeKtx = "2.8.3"
+navigationCompose = "2.8.3"
 engageCore = "1.5.5"
 storage = "1.5.0"
 firebaseInappmessaging = "21.0.0"
-foundationAndroid = "1.7.3"
+foundationAndroid = "1.7.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -40,4 +40,3 @@ androidx-foundation-android = { group = "androidx.compose.foundation", name = "f
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-
