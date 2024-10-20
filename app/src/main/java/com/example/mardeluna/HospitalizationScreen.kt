@@ -5,27 +5,27 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.*
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.*
 import androidx.navigation.NavHostController
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 
 @Composable
 fun HospitalizationScreen(navController: NavHostController) {
-    // Variable para ajustar el tamaño del círculo amarillo
-    val circleSize = remember { mutableStateOf(100.dp) }
+    // El tamaño del círculo amarillo es fijo y no se puede cambiar
+    val fixedCircleSize = 10.dp // Hacemos el círculo más pequeño y fijo
+
+    // Variables para definir la posición del círculo amarillo
+    val xOffset = (120).dp // Desplazamiento en el eje X
+    val yOffset = (100).dp // Desplazamiento en el eje Y
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally // Alinea todos los elementos al centro horizontalmente
     ) {
         Text(
             text = "Habitaciones de hospitalización.",
@@ -40,21 +40,22 @@ fun HospitalizationScreen(navController: NavHostController) {
         Box(
             modifier = Modifier
                 .size(300.dp), // Tamaño del contenedor para las imágenes
-            contentAlignment = Alignment.Center // Alinea el círculo en el centro
+            contentAlignment = Alignment.TopStart // Define el punto de origen para la posición manual
         ) {
             // Imagen de la habitación
             Image(
                 painter = painterResource(id = R.drawable.habitacion),
                 contentDescription = "Room",
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize() // La imagen ocupa todo el tamaño del contenedor
             )
 
-            // Imagen del círculo amarillo
+            // Imagen del círculo amarillo con tamaño fijo y posición manual
             Image(
                 painter = painterResource(id = R.drawable.circulo_amarillo),
                 contentDescription = "Círculo Amarillo",
                 modifier = Modifier
-                    .size(circleSize.value) // Tamaño del círculo ajustable
+                    .size(fixedCircleSize) // Tamaño fijo del círculo amarillo
+                    .offset(x = xOffset, y = yOffset) // Ajustamos la posición del círculo en los ejes X e Y
             )
         }
 
@@ -80,10 +81,10 @@ fun HospitalizationScreen(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Botones para cambiar de pantalla y ajustar el tamaño del círculo amarillo
+        // Botones para cambiar de pantalla
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
+            horizontalArrangement = Arrangement.SpaceEvenly // Alinea los botones uniformemente
         ) {
             Button(
                 onClick = { navController.navigate("aspiracion_screen") }
@@ -95,15 +96,6 @@ fun HospitalizationScreen(navController: NavHostController) {
                 onClick = { navController.navigate("toma_oxigeno_screen") }
             ) {
                 Text(text = "Toma de oxígeno")
-            }
-
-            Button(
-                onClick = {
-                    // Ajustar el tamaño del círculo amarillo
-                    circleSize.value = if (circleSize.value == 100.dp) 150.dp else 100.dp
-                }
-            ) {
-                Text(text = "Cambiar tamaño círculo")
             }
         }
     }
