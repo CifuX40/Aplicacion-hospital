@@ -14,7 +14,7 @@ import androidx.navigation.NavHostController
 @Composable
 fun HospitalizationScreen(navController: NavHostController) {
     // El tamaño del círculo amarillo es fijo y no se puede cambiar
-    val fixedCircleSize = 10.dp // Hacemos el círculo más pequeño y fijo
+    val fixedCircleSize = 10.dp // Hacemos el círculo más pequeño
 
     // Variables para definir la posición del círculo amarillo
     val xOffset = (120).dp // Desplazamiento en el eje X
