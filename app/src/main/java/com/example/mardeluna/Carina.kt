@@ -48,7 +48,10 @@ fun CarinaScreen(navController: NavHostController) {
         Button(
             onClick = {
                 // Intent para abrir el video en YouTube
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://youtu.be/d2mmwZR_sEg?si=HOwKVNg8fyN1pFhF"))
+                val intent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://youtu.be/d2mmwZR_sEg?si=HOwKVNg8fyN1pFhF")
+                )
                 context.startActivity(intent)
             }
         ) {

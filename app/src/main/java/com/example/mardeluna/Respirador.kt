@@ -17,8 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.*
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
 
@@ -72,7 +71,8 @@ fun RespiradorScreen(navController: NavHostController) {
         AndroidView(
             factory = { context ->
                 VideoView(context).apply {
-                    val videoPath = "android.resource://" + context.packageName + "/" + R.raw.prueba_respirador
+                    val videoPath =
+                        "android.resource://" + context.packageName + "/" + R.raw.prueba_respirador
                     setVideoURI(Uri.parse(videoPath))
 
                     // Agregar controles al VideoView
@@ -85,7 +85,8 @@ fun RespiradorScreen(navController: NavHostController) {
                         setOnInfoListener { _, what, _ ->
                             if (what == android.media.MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
                                 val activity = context as? Activity
-                                activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR // Permitir rotación automática
+                                activity?.requestedOrientation =
+                                    ActivityInfo.SCREEN_ORIENTATION_SENSOR // Permitir rotación automática
                             }
                             false
                         }

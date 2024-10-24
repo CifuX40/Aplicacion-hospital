@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.*
 import androidx.navigation.NavHostController
 
 @Composable
@@ -48,7 +48,8 @@ fun StartScreen(navController: NavHostController) {
 @Composable
 fun LoginSection(navController: NavHostController) {
     val context = LocalContext.current
-    val sharedPreferences: SharedPreferences = context.getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
+    val sharedPreferences: SharedPreferences =
+        context.getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
     var email by remember { mutableStateOf(sharedPreferences.getString("last_email", "") ?: "") }
     var password by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }

@@ -55,7 +55,10 @@ fun HospitalizationScreen(navController: NavHostController) {
                 contentDescription = "Círculo Amarillo",
                 modifier = Modifier
                     .size(fixedCircleSize) // Tamaño fijo del círculo amarillo
-                    .offset(x = xOffset, y = yOffset) // Ajustamos la posición del círculo en los ejes X e Y
+                    .offset(
+                        x = xOffset,
+                        y = yOffset
+                    ) // Ajustamos la posición del círculo en los ejes X e Y
             )
         }
 

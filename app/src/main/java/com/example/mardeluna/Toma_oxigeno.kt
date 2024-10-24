@@ -12,17 +12,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.*
 import androidx.navigation.NavHostController
 
 @Composable
-fun Toma_oxigeno (navController: NavHostController) {
+fun Toma_oxigeno(navController: NavHostController) {
     Column(
-    modifier = Modifier
-    .fillMaxSize()
-    .padding(16.dp),
-    verticalArrangement = Arrangement.Center,
-    horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
             painter = painterResource(id = R.drawable.toma_oxigeno),
@@ -31,5 +31,5 @@ fun Toma_oxigeno (navController: NavHostController) {
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        }
     }
+}
