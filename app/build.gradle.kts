@@ -32,10 +32,12 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     buildFeatures {
         compose = true
     }
@@ -47,9 +49,10 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+
     packaging {
         resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += setOf("/META-INF/{AL2.0,LGPL2.1}")
         }
     }
 }
@@ -59,6 +62,9 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom)) // BoM para Compose
+
+    // Base de datos Oracle JDBC
+    implementation("com.oracle.database.jdbc:ojdbc11:23.3.0.23.09")
 
     // Dependencias principales de Jetpack Compose
     implementation(libs.androidx.ui)
