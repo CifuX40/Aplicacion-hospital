@@ -2,7 +2,7 @@ package com.example.mardeluna
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log // Importar para utilizar logging
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -19,6 +19,7 @@ import androidx.navigation.NavHostController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import modelo.ClaseConexion
 
 @Composable
@@ -58,7 +59,7 @@ fun LoginSection(navController: NavHostController) {
 
     // Estado para los campos de entrada
     var email by remember { mutableStateOf(sharedPreferences.getString("last_email", "") ?: "") }
-    var password by remember { mutableStateOf("") }
+    var contrasena by remember { mutableStateOf("") } // Asegúrate de que esta variable está declarada
     var errorMessage by remember { mutableStateOf("") }
 
     val emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$".toRegex()
@@ -71,15 +72,15 @@ fun LoginSection(navController: NavHostController) {
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Usuario") },
+            label = { Text("Usuario (Email)") },
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
 
         // Campo de entrada para la contraseña
         OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
+            value = contrasena,
+            onValueChange = { contrasena = it },
             label = { Text("Contraseña") },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
@@ -100,25 +101,26 @@ fun LoginSection(navController: NavHostController) {
         Button(
             onClick = {
                 errorMessage = ""
-                if (email.matches(emailRegex) && password.length > 11) {
+                if (email.matches(emailRegex) && contrasena.isNotEmpty()) {
                     // Guardar el último correo en SharedPreferences
                     with(sharedPreferences.edit()) {
                         putString("last_email", email)
                         apply()
                     }
 
-                    // Lógica para conectarse a la base de datos
+                    // Lógica para conectarse a la base de datos y verificar credenciales
                     CoroutineScope(Dispatchers.IO).launch {
-                        val objConexion = ClaseConexion().cadenaConexion()
-                        // Verifica la conexión
-                        if (objConexion != null) {
-                            // Imprimir estado de conexión en consola
-                            Log.d("DB Connection", "Conectado")
-                            // Navegar a la pantalla principal (o donde sea necesario)
-                            navController.navigate("main_logo")
-                        } else {
-                            // Imprimir estado de conexión en consola
-                            Log.d("DB Connection", "Error en la conexión")
+                        val objConexion = ClaseConexion()
+                        // Asegúrate de pasar el contexto al verificar credenciales
+                        val isValidUser = objConexion.verificarCredenciales(email, contrasena, context)
+                        withContext(Dispatchers.Main) {
+                            if (isValidUser) {
+                                Log.d("Login", "Inicio de sesión exitoso")
+                                navController.navigate("main_logo") // Cambia a la pantalla principal
+                            } else {
+                                errorMessage = "Usuario o contraseña incorrectos"
+                                Log.d("Login", "Error en credenciales")
+                            }
                         }
                     }
                 } else {
