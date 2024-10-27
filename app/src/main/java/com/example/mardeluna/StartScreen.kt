@@ -16,11 +16,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import modelo.ClaseConexion
 
 @Composable
 fun StartScreen(navController: NavHostController) {
@@ -59,10 +54,11 @@ fun LoginSection(navController: NavHostController) {
 
     // Estado para los campos de entrada
     var email by remember { mutableStateOf(sharedPreferences.getString("last_email", "") ?: "") }
-    var contrasena by remember { mutableStateOf("") } // Asegúrate de que esta variable está declarada
+    var contrasena by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
 
-    val emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$".toRegex()
+    // Expresión regular para validar correos que terminan en @gmail.com
+    val gmailRegex = "^[A-Za-z0-9+_.-]+@gmail\\.com$".toRegex()
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -101,30 +97,20 @@ fun LoginSection(navController: NavHostController) {
         Button(
             onClick = {
                 errorMessage = ""
-                if (email.matches(emailRegex) && contrasena.isNotEmpty()) {
+                // Validar que el correo termine en @gmail.com y que la contraseña tenga al menos 12 caracteres
+                if (email.matches(gmailRegex) && contrasena.length >= 12) {
                     // Guardar el último correo en SharedPreferences
                     with(sharedPreferences.edit()) {
                         putString("last_email", email)
                         apply()
                     }
 
-                    // Lógica para conectarse a la base de datos y verificar credenciales
-                    CoroutineScope(Dispatchers.IO).launch {
-                        val objConexion = ClaseConexion()
-                        // Asegúrate de pasar el contexto al verificar credenciales
-                        val isValidUser = objConexion.verificarCredenciales(email, contrasena, context)
-                        withContext(Dispatchers.Main) {
-                            if (isValidUser) {
-                                Log.d("Login", "Inicio de sesión exitoso")
-                                navController.navigate("main_logo") // Cambia a la pantalla principal
-                            } else {
-                                errorMessage = "Usuario o contraseña incorrectos"
-                                Log.d("Login", "Error en credenciales")
-                            }
-                        }
-                    }
+                    // Simulación de inicio de sesión exitoso
+                    Log.d("Login", "Inicio de sesión simulado exitoso")
+                    navController.navigate("main_logo") // Cambia a la pantalla principal simulada
                 } else {
-                    errorMessage = "Error de inicio de sesión"
+                    // Si no se cumplen las condiciones, mostrar mensaje de error
+                    errorMessage = "Error con el correo o contraseña"
                 }
             },
             modifier = Modifier.align(Alignment.CenterHorizontally)
