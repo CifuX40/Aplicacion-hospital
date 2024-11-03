@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "672825982730",
-    "project_id": "mar-de-luna",
-    "storage_bucket": "mar-de-luna.appspot.com"
+    "project_number": "714512277966",
+    "project_id": "mar-de-luna-ada79",
+    "storage_bucket": "mar-de-luna-ada79.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:672825982730:android:80ca572fca2ea3664e04f3",
+        "mobilesdk_app_id": "1:714512277966:android:3934a6598dd23b467c4b9f",
         "android_client_info": {
           "package_name": "com.example.mardeluna"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyA39xnrI4VBhJa5kaGli6Wy4291nkz3iuw"
+          "current_key": "AIzaSyAz2czLkwi651-oUaJy5OmlNouIgnvkMjw"
         }
       ],
       "services": {

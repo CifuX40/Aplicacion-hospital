@@ -3,7 +3,8 @@ import org.gradle.kotlin.dsl.android
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    id("org.jetbrains.kotlin.plugin.compose") version "2.0.20"
+    id("com.google.gms.google-services")
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.21"
 }
 
 android {
@@ -58,35 +59,38 @@ android {
 }
 
 dependencies {
+    // Core dependencies
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom)) // BoM para Compose
+    implementation(platform(libs.androidx.compose.bom))
 
-    // Dependencias principales de Jetpack Compose
+    // Jetpack Compose dependencies
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3) // Material 3 para Compose
+    implementation(libs.androidx.material3)
 
-    // Navegación con Jetpack Compose
+    // Navigation with Jetpack Compose
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
 
-    // Otras dependencias
+    // Other dependencies
     implementation(libs.engage.core)
     implementation(libs.androidx.storage)
     implementation(libs.firebase.inappmessaging)
     implementation(libs.androidx.foundation.android)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
 
-    // Dependencias para testing
+    // Testing dependencies
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
 
-    // Debugging y herramientas de Compose
+    // Debugging and Compose tooling
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
