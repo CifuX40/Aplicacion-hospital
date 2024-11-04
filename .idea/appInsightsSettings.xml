@@ -9,9 +9,9 @@
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="com.example.mardeluna" />
-                  <option name="mobileSdkAppId" value="1:672825982730:android:80ca572fca2ea3664e04f3" />
-                  <option name="projectId" value="mar-de-luna" />
-                  <option name="projectNumber" value="672825982730" />
+                  <option name="mobileSdkAppId" value="1:714512277966:android:3934a6598dd23b467c4b9f" />
+                  <option name="projectId" value="mar-de-luna-ada79" />
+                  <option name="projectNumber" value="714512277966" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
