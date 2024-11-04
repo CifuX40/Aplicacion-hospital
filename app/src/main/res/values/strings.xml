@@ -1,3 +1,18 @@
 <resources>
+    <!-- Nombre de la aplicación -->
     <string name="app_name">Mar de Luna</string>
+
+    <!-- Textos para la pantalla de inicio de sesión -->
+    <string name="login_title">Iniciar sesión</string>
+    <string name="email_hint">Correo electrónico</string>
+    <string name="password_hint">Contraseña</string>
+    <string name="login_button">Iniciar sesión</string>
+    <string name="signup_prompt">¿No tienes cuenta? Regístrate aquí</string>
+
+    <!-- Mensajes de error y validación -->
+    <string name="error_empty_email">Por favor, ingresa tu correo electrónico</string>
+    <string name="error_empty_password">Por favor, ingresa tu contraseña</string>
+    <string name="error_invalid_email">El correo electrónico no es válido</string>
+    <string name="error_login_failed">Error al iniciar sesión. Verifica tus credenciales</string>
+    <string name="error_network">Error de red. Intenta de nuevo más tarde</string>
 </resources>

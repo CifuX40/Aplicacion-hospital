@@ -3,8 +3,8 @@ import org.gradle.kotlin.dsl.android
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    id("com.google.gms.google-services")
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.21"
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -41,6 +41,7 @@ android {
 
     buildFeatures {
         compose = true
+        viewBinding = true
     }
 
     composeOptions {
@@ -78,10 +79,9 @@ dependencies {
     // Other dependencies
     implementation(libs.engage.core)
     implementation(libs.androidx.storage)
-    implementation(libs.firebase.inappmessaging)
     implementation(libs.androidx.foundation.android)
+    implementation(libs.firebase.auth)
     implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics)
 
     // Testing dependencies
     testImplementation(libs.junit)
