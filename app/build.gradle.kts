@@ -9,12 +9,12 @@ plugins {
 
 android {
     namespace = "com.example.mardeluna"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.mardeluna"
         minSdk = 30
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 

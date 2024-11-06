@@ -1,7 +1,5 @@
 package com.example.mardeluna
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.*
@@ -13,6 +11,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.*
 import androidx.navigation.NavHostController
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun StartScreen(navController: NavHostController) {
@@ -46,16 +45,11 @@ fun StartScreen(navController: NavHostController) {
 @Composable
 fun LoginSection(navController: NavHostController) {
     val context = LocalContext.current
-    val sharedPreferences: SharedPreferences =
-        context.getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
+    val auth = FirebaseAuth.getInstance()
 
-    // Estado para los campos de entrada
-    var email by remember { mutableStateOf(sharedPreferences.getString("last_email", "") ?: "") }
+    var email by remember { mutableStateOf("") }
     var contrasena by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
-
-    // Expresión regular para validar correos que terminan en @gmail.com
-    val gmailRegex = "^[A-Za-z0-9+_.-]+@gmail\\.com$".toRegex()
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -94,20 +88,21 @@ fun LoginSection(navController: NavHostController) {
         Button(
             onClick = {
                 errorMessage = ""
-                // Validar que el correo termine en @gmail.com y que la contraseña tenga al menos 12 caracteres
-                if (email.matches(gmailRegex) && contrasena.length >= 12) {
-                    // Guardar el último correo en SharedPreferences
-                    with(sharedPreferences.edit()) {
-                        putString("last_email", email)
-                        apply()
-                    }
-
-                    // Simulación de inicio de sesión exitoso
-                    Log.d("Login", "Inicio de sesión simulado exitoso")
-                    navController.navigate("main_logo") // Cambia a la pantalla principal simulada
+                if (email.isNotEmpty() && contrasena.isNotEmpty()) {
+                    // Llama al método de Firebase para autenticar al usuario
+                    auth.signInWithEmailAndPassword(email, contrasena)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                // Inicio de sesión exitoso
+                                Log.d("Login", "Inicio de sesión exitoso con Firebase")
+                                navController.navigate("main_logo") // Cambia a la pantalla principal
+                            } else {
+                                // Error en el inicio de sesión
+                                errorMessage = "Error: ${task.exception?.message ?: "Error desconocido"}"
+                            }
+                        }
                 } else {
-                    // Si no se cumplen las condiciones, mostrar mensaje de error
-                    errorMessage = "Error con el correo o contraseña"
+                    errorMessage = "Por favor, completa todos los campos"
                 }
             },
             modifier = Modifier.align(Alignment.CenterHorizontally)
