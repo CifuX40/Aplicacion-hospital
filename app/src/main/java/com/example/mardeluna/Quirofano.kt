@@ -1,17 +1,21 @@
 package com.example.mardeluna
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.*
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 
 @Composable
 fun SurgeryScreen(navController: NavHostController) {
@@ -28,31 +32,54 @@ fun SurgeryScreen(navController: NavHostController) {
             fontSize = 18.sp
         )
 
-        Image(
-            painter = painterResource(id = R.drawable.rea),
-            contentDescription = "Rea",
-            modifier = Modifier
-                .size(200.dp)
-                .padding(8.dp)
-        )
-        Text(text = "Área de recuperación", modifier = Modifier.padding(8.dp))
+        // Cargar imágenes desde Firebase Storage
+        FirebaseImage("gs://mar-de-luna-ada79.firebasestorage.app/rea.jpg", "Área de recuperación")
+        FirebaseImage("gs://mar-de-luna-ada79.firebasestorage.app/sala_quirofano.jpg", "Sala de quirófano")
+        FirebaseImage("gs://mar-de-luna-ada79.firebasestorage.app/esterilizacion.jpg", "Área de esterilización")
+    }
+}
 
-        Image(
-            painter = painterResource(id = R.drawable.sala_quirofano),
-            contentDescription = "Sala de quirófano",
-            modifier = Modifier
-                .size(200.dp)
-                .padding(8.dp)
-        )
-        Text(text = "Sala de quirófano", modifier = Modifier.padding(8.dp))
+@Composable
+fun FirebaseImage(storageUrl: String, description: String) {
+    var imageUrl by remember { mutableStateOf<String?>(null) }
+    var loadError by remember { mutableStateOf(false) }
 
-        Image(
-            painter = painterResource(id = R.drawable.esterilizacion),
-            contentDescription = "Esterilización",
-            modifier = Modifier
-                .size(200.dp)
-                .padding(8.dp)
-        )
-        Text(text = "Área de esterilización", modifier = Modifier.padding(8.dp))
+    // Cargar la URL de Firebase Storage
+    LaunchedEffect(storageUrl) {
+        val storage = Firebase.storage
+        val storageRef = storage.getReferenceFromUrl(storageUrl)
+        storageRef.downloadUrl
+            .addOnSuccessListener { uri ->
+                imageUrl = uri.toString()
+                Log.d("Firebase", "Imagen cargada exitosamente: $imageUrl")
+            }
+            .addOnFailureListener { exception ->
+                loadError = true
+                Log.e("Firebase", "Error al cargar la imagen: ${exception.message}")
+            }
+    }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(8.dp)
+    ) {
+        when {
+            imageUrl != null -> {
+                // Mostrar la imagen si se obtuvo la URL correctamente
+                Image(
+                    painter = rememberAsyncImagePainter(model = imageUrl),
+                    contentDescription = description,
+                    modifier = Modifier.size(200.dp)
+                )
+            }
+            loadError -> {
+                Text("Error al cargar la imagen: $description")
+            }
+            else -> {
+                Text("Cargando imagen...")
+            }
+        }
+
+        Text(text = description, modifier = Modifier.padding(8.dp))
     }
 }
