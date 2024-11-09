@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 
 @Composable
@@ -20,7 +21,7 @@ fun AspiracionScreen(navController: NavHostController) {
         // Imagen de aspiración del paciente desde Firebase Storage
         val imageUrl = "gs://mar-de-luna-ada79.firebasestorage.app/aspiracion_paciente.jpg"
         Image(
-            painter = rememberImagePainter(imageUrl),
+            painter = rememberAsyncImagePainter(imageUrl),
             contentDescription = "Aspiración del paciente",
             modifier = Modifier
                 .size(300.dp)

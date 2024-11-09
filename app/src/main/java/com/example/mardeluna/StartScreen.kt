@@ -1,22 +1,18 @@
 package com.example.mardeluna
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.*
 import androidx.navigation.NavHostController
 import com.google.firebase.auth.FirebaseAuth
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.platform.LocalContext
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 
 @Composable
 fun StartScreen(navController: NavHostController) {
@@ -33,7 +29,7 @@ fun StartScreen(navController: NavHostController) {
         // Usar Coil para cargar la imagen desde la URL de Firebase Storage
         val imageUrl = "gs://mar-de-luna-ada79.firebasestorage.app/logo.png"
         Image(
-            painter = rememberImagePainter(imageUrl),
+            painter = rememberAsyncImagePainter(imageUrl),
             contentDescription = "Logo",
             modifier = Modifier.size(200.dp)
         )

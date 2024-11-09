@@ -9,6 +9,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.*
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 
 @Composable
@@ -34,7 +35,7 @@ fun CarinaScreen(navController: NavHostController) {
         // Cargar la imagen de Firebase Storage usando Coil
         val imageUrl = "gs://mar-de-luna-ada79.firebasestorage.app/carina.jpg"
         Image(
-            painter = rememberImagePainter(imageUrl),
+            painter = rememberAsyncImagePainter(imageUrl),
             contentDescription = "Imagen de Carina",
             modifier = Modifier.size(300.dp)
         )
