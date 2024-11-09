@@ -52,7 +52,8 @@ android {
         jvmTarget = "11"
     }
 
-    packaging {1
+    packaging {
+        1
         resources {
             excludes += setOf("/META-INF/{AL2.0,LGPL2.1}")
         }
@@ -60,7 +61,7 @@ android {
 }
 
 dependencies {
-    implementation (libs.ui)
+    implementation(libs.ui)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

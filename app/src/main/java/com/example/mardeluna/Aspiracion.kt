@@ -3,11 +3,10 @@ package com.example.mardeluna
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.*
+import androidx.compose.ui.unit.*
 import androidx.navigation.NavHostController
+import coil.compose.rememberImagePainter
 
 @Composable
 fun AspiracionScreen(navController: NavHostController) {
@@ -18,10 +17,11 @@ fun AspiracionScreen(navController: NavHostController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Imagen de aspiración del paciente
+        // Imagen de aspiración del paciente desde Firebase Storage
+        val imageUrl = "gs://mar-de-luna-ada79.firebasestorage.app/aspiracion_paciente.jpg"
         Image(
-            painter = painterResource(id = R.drawable.aspiracion_paciente),
-            contentDescription = "Aspiración del Paciente",
+            painter = rememberImagePainter(imageUrl),
+            contentDescription = "Aspiración del paciente",
             modifier = Modifier
                 .size(300.dp)
         )

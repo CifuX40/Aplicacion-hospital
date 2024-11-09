@@ -4,14 +4,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.*
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.*
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.rememberImagePainter
 
 @Composable
 fun FirstFloorScreen(navController: NavHostController = rememberNavController()) {
@@ -20,6 +19,8 @@ fun FirstFloorScreen(navController: NavHostController = rememberNavController())
     var offsetY by remember { mutableStateOf(0f) }
     var rotationState by remember { mutableStateOf(1f) }
 
+    val imageUrl = "gs://mar-de-luna-ada79.firebasestorage.app/primera_planta.png" // URL de Firebase Storage
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -27,9 +28,10 @@ fun FirstFloorScreen(navController: NavHostController = rememberNavController())
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Cargar la imagen desde Firebase Storage usando Coil
         Image(
-            painter = painterResource(id = R.drawable.primera_planta),
-            contentDescription = "Imagen de la Primera Planta",
+            painter = rememberImagePainter(imageUrl),
+            contentDescription = "Imagen de la primera planta",
             modifier = Modifier
                 .fillMaxWidth()
                 .height(400.dp)
