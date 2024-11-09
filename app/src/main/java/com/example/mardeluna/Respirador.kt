@@ -1,31 +1,26 @@
 package com.example.mardeluna
 
-import android.app.Activity
-import android.content.pm.ActivityInfo
-import android.net.Uri
-import android.widget.MediaController
-import android.widget.VideoView
-import androidx.compose.foundation.Image
+import android.app.*
+import android.content.pm.*
+import android.net.*
+import android.widget.*
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.*
+import androidx.compose.ui.platform.*
+import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.navigation.NavHostController
+import androidx.navigation.*
+import coil.compose.rememberAsyncImagePainter
 
 @Composable
 fun RespiradorScreen(navController: NavHostController) {
     val context = LocalContext.current
 
-    // Scroll state para habilitar desplazamiento vertical
+    // Estado de scroll para habilitar desplazamiento vertical
     val scrollState = rememberScrollState()
 
     Column(
@@ -44,8 +39,9 @@ fun RespiradorScreen(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Imagen del Respirador desde Firebase Storage
         Image(
-            painter = painterResource(id = R.drawable.respirador),
+            painter = rememberAsyncImagePainter("https://firebasestorage.googleapis.com/v0/b/mar-de-luna-ada79.appspot.com/o/respirador.jpg?alt=media"),
             contentDescription = "Imagen del Respirador Savina 300",
             modifier = Modifier.size(300.dp)
         )
@@ -67,13 +63,14 @@ fun RespiradorScreen(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Reproducir el video local utilizando VideoView
+        // Reproducir el video desde Firebase Storage
         AndroidView(
             factory = { context ->
                 VideoView(context).apply {
-                    val videoPath =
-                        "android.resource://" + context.packageName + "/" + R.raw.prueba_respirador
-                    setVideoURI(Uri.parse(videoPath))
+                    // URL pública del video desde Firebase Storage
+                    val videoUrl =
+                        "https://firebasestorage.googleapis.com/v0/b/mar-de-luna-ada79.appspot.com/o/prueba_respirador.mp4?alt=media"
+                    setVideoURI(Uri.parse(videoUrl))
 
                     // Agregar controles al VideoView
                     val mediaController = MediaController(context)
@@ -95,7 +92,7 @@ fun RespiradorScreen(navController: NavHostController) {
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(300.dp) // Altura del VideoView
+                .height(300.dp)
         )
     }
 }

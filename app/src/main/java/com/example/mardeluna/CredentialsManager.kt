@@ -1,7 +1,6 @@
 package com.example.mardeluna
 
-import android.content.Context
-import android.content.SharedPreferences
+import android.content.*
 
 class CredentialsManager(context: Context) {
     private val sharedPreferences: SharedPreferences =

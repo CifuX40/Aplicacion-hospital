@@ -1,27 +1,27 @@
 package com.example.mardeluna
 
-import android.util.Log
-import androidx.compose.foundation.Image
+import android.util.*
+import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import androidx.compose.ui.input.pointer.*
+import androidx.compose.ui.unit.*
+import androidx.navigation.*
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
+import com.google.firebase.ktx.*
+import com.google.firebase.storage.ktx.*
 
 @Composable
 fun SecondFloorScreen(navController: NavHostController = rememberNavController()) {
-    var scale by remember { mutableStateOf(1f) }
-    var offsetX by remember { mutableStateOf(0f) }
-    var offsetY by remember { mutableStateOf(0f) }
-    var rotationState by remember { mutableStateOf(1f) }
+    var scale by remember { mutableFloatStateOf(1f) }
+    var offsetX by remember { mutableFloatStateOf(0f) }
+    var offsetY by remember { mutableFloatStateOf(0f) }
+    var rotationState by remember { mutableFloatStateOf(1f) }
     var imageUrl by remember { mutableStateOf<String?>(null) }
     var loadError by remember { mutableStateOf(false) }
 
@@ -73,10 +73,12 @@ fun SecondFloorScreen(navController: NavHostController = rememberNavController()
                         }
                 )
             }
+
             loadError -> {
                 // Mensaje de error si hubo un problema al cargar la imagen
                 Text("Error al cargar la imagen. Verifica tu conexión o permisos.")
             }
+
             else -> {
                 // Mensaje de carga mientras se obtiene la URL
                 Text("Cargando imagen...")

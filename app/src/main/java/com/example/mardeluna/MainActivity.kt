@@ -1,9 +1,9 @@
 package com.example.mardeluna
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.navigation.compose.rememberNavController
+import android.os.*
+import androidx.activity.*
+import androidx.activity.compose.*
+import androidx.navigation.compose.*
 import com.example.mardeluna.ui.theme.MarDeLunaTheme
 
 class MainActivity : ComponentActivity() {

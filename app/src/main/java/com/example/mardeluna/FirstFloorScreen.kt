@@ -8,16 +8,16 @@ import androidx.compose.ui.*
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.*
-import androidx.navigation.NavHostController
+import androidx.navigation.*
 import androidx.navigation.compose.rememberNavController
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 
 @Composable
 fun FirstFloorScreen(navController: NavHostController = rememberNavController()) {
-    var scale by remember { mutableStateOf(1f) }
-    var offsetX by remember { mutableStateOf(0f) }
-    var offsetY by remember { mutableStateOf(0f) }
-    var rotationState by remember { mutableStateOf(1f) }
+    var scale by remember { mutableFloatStateOf(1f) }
+    var offsetX by remember { mutableFloatStateOf(0f) }
+    var offsetY by remember { mutableFloatStateOf(0f) }
+    var rotationState by remember { mutableFloatStateOf(1f) }
 
     val imageUrl = "gs://mar-de-luna-ada79.firebasestorage.app/primera_planta.png" // URL de Firebase Storage
 
@@ -30,7 +30,7 @@ fun FirstFloorScreen(navController: NavHostController = rememberNavController())
     ) {
         // Cargar la imagen desde Firebase Storage usando Coil
         Image(
-            painter = rememberImagePainter(imageUrl),
+            painter = rememberAsyncImagePainter(imageUrl),
             contentDescription = "Imagen de la primera planta",
             modifier = Modifier
                 .fillMaxWidth()

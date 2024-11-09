@@ -1,21 +1,42 @@
 package com.example.mardeluna
 
-import androidx.compose.foundation.layout.*
+import android.util.*
 import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.*
-import androidx.navigation.NavHostController
-import com.google.firebase.auth.FirebaseAuth
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.*
 import coil.compose.rememberAsyncImagePainter
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.storage.FirebaseStorage
 
 @Composable
 fun StartScreen(navController: NavHostController) {
+    var imageUrl by remember { mutableStateOf("") }
+    var loadError by remember { mutableStateOf(false) }
+
+    // Cargar la imagen desde Firebase Storage
+    LaunchedEffect(Unit) {
+        val storage = FirebaseStorage.getInstance()
+        val storageRef = storage.reference.child("logo.png")  // Cambia a la ruta de la imagen
+
+        storageRef.downloadUrl
+            .addOnSuccessListener { uri ->
+                imageUrl = uri.toString()
+                Log.d("Firebase", "Imagen cargada exitosamente: $imageUrl")
+            }
+            .addOnFailureListener { exception ->
+                loadError = true
+                Log.e("Firebase", "Error al cargar la imagen: ${exception.message}")
+            }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -26,13 +47,17 @@ fun StartScreen(navController: NavHostController) {
     ) {
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Usar Coil para cargar la imagen desde la URL de Firebase Storage
-        val imageUrl = "gs://mar-de-luna-ada79.firebasestorage.app/logo.png"
-        Image(
-            painter = rememberAsyncImagePainter(imageUrl),
-            contentDescription = "Logo",
-            modifier = Modifier.size(200.dp)
-        )
+        // Usar Coil para cargar la imagen desde la URL obtenida de Firebase Storage
+        if (imageUrl.isNotEmpty() && !loadError) {
+            Image(
+                painter = rememberAsyncImagePainter(imageUrl),
+                contentDescription = "Logo",
+                modifier = Modifier.size(200.dp)
+            )
+        } else {
+            // En caso de error, muestra un mensaje
+            Text(text = "Error al cargar el logo", color = MaterialTheme.colorScheme.error)
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 

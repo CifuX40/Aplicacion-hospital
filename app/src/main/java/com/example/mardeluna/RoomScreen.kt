@@ -1,17 +1,37 @@
 package com.example.mardeluna
 
-import androidx.compose.foundation.Image
+import android.util.*
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.*
-import androidx.navigation.NavHostController
+import androidx.navigation.*
+import coil.compose.rememberAsyncImagePainter
+import com.google.firebase.storage.FirebaseStorage
 
 @Composable
 fun RoomScreen(navController: NavHostController) {
+    var imageUrl by remember { mutableStateOf("") }
+    var loadError by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        val storage = FirebaseStorage.getInstance()
+        val storageRef = storage.reference.child("aspiracion_paciente.jpg")
+
+        storageRef.downloadUrl
+            .addOnSuccessListener { uri ->
+                imageUrl = uri.toString()
+                Log.d("Firebase", "Imagen cargada exitosamente: $imageUrl")
+            }
+            .addOnFailureListener { exception ->
+                loadError = true
+                Log.e("Firebase", "Error al cargar la imagen: ${exception.message}")
+            }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -19,13 +39,20 @@ fun RoomScreen(navController: NavHostController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.aspiracion_paciente),
-            contentDescription = "aspiracion paciente",
-            modifier = Modifier.size(300.dp)
-        )
+        if (!loadError && imageUrl.isNotEmpty()) {
+            Image(
+                painter = rememberAsyncImagePainter(imageUrl),
+                contentDescription = "Aspiración paciente",
+                modifier = Modifier.size(300.dp)
+            )
+        } else {
+            Text(text = "Error al cargar la imagen", color = Color.Red)
+        }
+
         Spacer(modifier = Modifier.height(16.dp))
+
         Button(onClick = { navController.navigate("Hospitalizacion") }) {
+            Text(text = "Ir a Hospitalización")
         }
     }
 }

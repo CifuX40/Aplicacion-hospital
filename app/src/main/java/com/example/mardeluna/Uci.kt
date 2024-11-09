@@ -1,19 +1,38 @@
 package com.example.mardeluna
 
-import androidx.compose.foundation.Image
+import android.util.*
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.*
-import androidx.navigation.NavHostController
+import androidx.navigation.*
+import coil.compose.rememberAsyncImagePainter
+import com.google.firebase.storage.FirebaseStorage
 
 @Composable
 fun ICUScreen(navController: NavHostController) {
+    var imageUrl by remember { mutableStateOf("") }
+    var loadError by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        val storage = FirebaseStorage.getInstance()
+        val storageRef = storage.reference.child("sala_uci_uno.jpg")
+
+        storageRef.downloadUrl
+            .addOnSuccessListener { uri ->
+                imageUrl = uri.toString()
+                Log.d("Firebase", "Imagen cargada exitosamente: $imageUrl")
+            }
+            .addOnFailureListener { exception ->
+                loadError = true
+                Log.e("Firebase", "Error al cargar la imagen: ${exception.message}")
+            }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -29,11 +48,15 @@ fun ICUScreen(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Image(
-            painter = painterResource(id = R.drawable.sala_uci_uno),
-            contentDescription = "ICU",
-            modifier = Modifier.size(300.dp)
-        )
+        if (!loadError && imageUrl.isNotEmpty()) {
+            Image(
+                painter = rememberAsyncImagePainter(imageUrl),
+                contentDescription = "Sala UCI",
+                modifier = Modifier.size(300.dp)
+            )
+        } else {
+            Text(text = "Error al cargar la imagen", color = Color.Red)
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -46,26 +69,8 @@ fun ICUScreen(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text(
-            text = "Aparataje",
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(
-            onClick = { navController.navigate("carina_screen") }
-        ) {
-            Text(text = "Carina")
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Button(
-            onClick = { navController.navigate("respirador_screen") }
-        ) {
-            Text(text = "Respirador")
+        Button(onClick = { navController.navigate("Sala_UCI_Tres") }) {
+            Text(text = "Siguiente sala")
         }
     }
 }

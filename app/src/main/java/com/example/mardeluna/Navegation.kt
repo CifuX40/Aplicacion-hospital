@@ -1,9 +1,8 @@
 package com.example.mardeluna
 
-import androidx.compose.runtime.Composable
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
+import androidx.compose.runtime.*
+import androidx.navigation.*
+import androidx.navigation.compose.*
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
