@@ -79,3 +79,6 @@ fun FirebaseImage(storageUrl: String, description: String) {
         Text(text = description, modifier = Modifier.padding(8.dp))
     }
 }
+
+
+//hacer que los textos sean botones funcionales

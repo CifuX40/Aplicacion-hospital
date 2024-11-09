@@ -1,17 +1,41 @@
 package com.example.mardeluna
 
-import androidx.compose.foundation.*
+import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.*
-import androidx.compose.ui.text.font.*
-import androidx.compose.ui.unit.*
-import androidx.navigation.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
+import com.google.firebase.storage.FirebaseStorage
 
 @Composable
 fun HospitalizationScreen(navController: NavHostController) {
+    // Estado para la URL de la imagen
+    var imageUrl by remember { mutableStateOf("") }
+    var loadError by remember { mutableStateOf(false) }
+
+    // Cargar la URL de la imagen desde Firebase Storage
+    LaunchedEffect(Unit) {
+        val storage = FirebaseStorage.getInstance()
+        val storageRef = storage.reference.child("habitacion.jpg")
+
+        storageRef.downloadUrl
+            .addOnSuccessListener { uri ->
+                imageUrl = uri.toString()
+                Log.d("Firebase", "Imagen cargada exitosamente: $imageUrl")
+            }
+            .addOnFailureListener { exception ->
+                loadError = true
+                Log.e("Firebase", "Error al cargar la imagen: ${exception.message}")
+            }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -29,16 +53,29 @@ fun HospitalizationScreen(navController: NavHostController) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Box(
-            modifier = Modifier
-                .size(300.dp),
+            modifier = Modifier.size(300.dp),
             contentAlignment = Alignment.TopStart
         ) {
-            // Imagen de la habitación desde Firebase Storage
-            Image(
-                painter = rememberAsyncImagePainter("gs://mar-de-luna-ada79.firebasestorage.app/habitacion.jpg"),
-                contentDescription = "Room",
-                modifier = Modifier.fillMaxSize()
-            )
+            // Mostrar la imagen si la URL está cargada y no hay error
+            if (imageUrl.isNotEmpty() && !loadError) {
+                Image(
+                    painter = rememberAsyncImagePainter(imageUrl),
+                    contentDescription = "Room",
+                    modifier = Modifier.fillMaxSize()
+                )
+            } else if (loadError) {
+                Text(
+                    text = "Error al cargar la imagen",
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            } else {
+                // Mostrar un texto de carga o placeholder
+                Text(
+                    text = "Cargando imagen...",
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -66,15 +103,11 @@ fun HospitalizationScreen(navController: NavHostController) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            Button(
-                onClick = { navController.navigate("aspiracion_screen") }
-            ) {
+            Button(onClick = { navController.navigate("aspiracion_screen") }) {
                 Text(text = "Aspiración")
             }
 
-            Button(
-                onClick = { navController.navigate("toma_oxigeno_screen") }
-            ) {
+            Button(onClick = { navController.navigate("toma_oxigeno_screen") }) {
                 Text(text = "Toma de oxígeno")
             }
         }

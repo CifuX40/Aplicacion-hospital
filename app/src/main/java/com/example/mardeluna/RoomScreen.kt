@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import coil.compose.rememberAsyncImagePainter
-import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.*
 
 @Composable
 fun RoomScreen(navController: NavHostController) {

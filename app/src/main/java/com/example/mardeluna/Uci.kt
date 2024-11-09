@@ -6,12 +6,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import coil.compose.rememberAsyncImagePainter
-import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.*
 
 @Composable
 fun ICUScreen(navController: NavHostController) {
@@ -41,9 +41,10 @@ fun ICUScreen(navController: NavHostController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Sala de cuidados intensivos postquirúrgicos",
+            text = "Unidad de cuidados intensivos",
             fontWeight = FontWeight.Bold,
             fontSize = 25.sp
+            //azul oscuro y centrado
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -68,9 +69,7 @@ fun ICUScreen(navController: NavHostController) {
         )
 
         Spacer(modifier = Modifier.height(16.dp))
-
-        Button(onClick = { navController.navigate("Sala_UCI_Tres") }) {
-            Text(text = "Siguiente sala")
-        }
     }
 }
+
+//agregar botones funcionales: Uci Postquirurgica y Uci Médica

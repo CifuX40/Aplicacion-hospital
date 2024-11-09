@@ -24,7 +24,7 @@ fun StartScreen(navController: NavHostController) {
     // Cargar la imagen desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-        val storageRef = storage.reference.child("logo.png")  // Cambia a la ruta de la imagen
+        val storageRef = storage.reference.child("logo.png")
 
         storageRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -78,7 +78,8 @@ fun StartScreen(navController: NavHostController) {
 fun LoginSection(navController: NavHostController) {
     val context = LocalContext.current
     val auth = FirebaseAuth.getInstance()
-    val credentialsManager = CredentialsManager(context)  // Crear instancia del gestor de credenciales
+    val credentialsManager =
+        CredentialsManager(context)  // Crear instancia del gestor de credenciales
 
     var email by remember { mutableStateOf("") }
     var contrasena by remember { mutableStateOf("") }
@@ -110,7 +111,10 @@ fun LoginSection(navController: NavHostController) {
                     Text(text = savedEmail)
                 }
                 IconButton(onClick = { credentialsManager.clearUser(savedEmail) }) {
-                    Icon(imageVector = Icons.Default.Delete, contentDescription = "Eliminar usuario")
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Eliminar usuario"
+                    )
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -158,10 +162,11 @@ fun LoginSection(navController: NavHostController) {
                             if (task.isSuccessful) {
                                 // Guardar el usuario y contraseña en SharedPreferences
                                 credentialsManager.saveUser(email, contrasena)
-                                navController.navigate("main_logo") // Cambia a la pantalla principal
+                                navController.navigate("main_logo")
                             } else {
                                 // Error en el inicio de sesión
-                                errorMessage = "Error: ${task.exception?.message ?: "Error desconocido"}"
+                                errorMessage =
+                                    "Error: ${task.exception?.message ?: "Error desconocido"}"
                             }
                         }
                 } else {
