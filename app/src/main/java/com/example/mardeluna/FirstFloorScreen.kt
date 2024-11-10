@@ -89,7 +89,36 @@ fun FirstFloorScreen(navController: NavHostController = rememberNavController())
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
         }
+
         Spacer(modifier = Modifier.height(16.dp))
+
+        // Botones debajo de la imagen
+        Button(
+            onClick = { navController.navigate("endoscopias_screen") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
+        ) {
+            Text("Endoscopias")
+        }
+
+        Button(
+            onClick = { navController.navigate("hospital_dia_screen") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
+        ) {
+            Text("Hospital de Día")
+        }
+
+        Button(
+            onClick = { navController.navigate("hospitalization_screen") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
+        ) {
+            Text("Hospitalización")
+        }
     }
 }
 
