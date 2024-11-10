@@ -21,5 +21,7 @@ fun AppNavigation(navController: NavHostController) {
         composable("toma_oxigeno_screen") { Toma_oxigeno(navController) }
         composable("carina_screen") { CarinaScreen(navController) }
         composable("respirador_screen") { RespiradorScreen(navController) }
+        composable("uci_postquirurgica") { UciPostquirurgicaScreen(navController) }
+        composable("uci_medica") { UciMedicaScreen(navController) }
     }
 }
