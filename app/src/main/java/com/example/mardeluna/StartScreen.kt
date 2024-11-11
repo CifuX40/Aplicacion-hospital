@@ -3,18 +3,18 @@ package com.example.mardeluna
 import android.util.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.platform.*
+import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
-import coil.compose.rememberAsyncImagePainter
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.storage.FirebaseStorage
+import coil.compose.*
+import com.google.firebase.auth.*
+import com.google.firebase.storage.*
 
 @Composable
 fun StartScreen(navController: NavHostController) {

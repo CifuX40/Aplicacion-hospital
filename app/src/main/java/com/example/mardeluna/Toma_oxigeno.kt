@@ -6,11 +6,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
-import coil.compose.rememberAsyncImagePainter
-import com.google.firebase.storage.FirebaseStorage
+import coil.compose.*
+import com.google.firebase.storage.*
 
 @Composable
 fun Toma_oxigeno(navController: NavHostController) {

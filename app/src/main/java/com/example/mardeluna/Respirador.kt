@@ -12,9 +12,9 @@ import androidx.compose.ui.*
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
-import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.viewinterop.*
 import androidx.navigation.*
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.*
 
 @Composable
 fun RespiradorScreen(navController: NavHostController) {

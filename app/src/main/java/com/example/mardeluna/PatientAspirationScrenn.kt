@@ -1,13 +1,13 @@
 package com.example.mardeluna
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.*
 import androidx.navigation.*
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.*
 
 @Composable
 fun PatientAspirationScreen(navController: NavHostController) {

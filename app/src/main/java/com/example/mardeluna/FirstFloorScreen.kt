@@ -2,7 +2,7 @@ package com.example.mardeluna
 
 import android.util.*
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -11,8 +11,8 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.input.pointer.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
-import androidx.navigation.compose.rememberNavController
-import coil.compose.rememberAsyncImagePainter
+import androidx.navigation.compose.*
+import coil.compose.*
 import com.google.firebase.storage.*
 
 @Composable
@@ -121,6 +121,3 @@ fun FirstFloorScreen(navController: NavHostController = rememberNavController())
         }
     }
 }
-
-
-//agregar los botones funcionales: Endoscopias, Hospital de Dia, Hospitalizacion

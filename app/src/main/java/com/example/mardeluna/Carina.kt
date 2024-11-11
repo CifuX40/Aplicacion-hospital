@@ -9,7 +9,7 @@ import androidx.compose.ui.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.*
 import com.google.firebase.storage.*
 
 @Composable

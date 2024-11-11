@@ -53,7 +53,6 @@ android {
     }
 
     packaging {
-        1
         resources {
             excludes += setOf("/META-INF/{AL2.0,LGPL2.1}")
         }
