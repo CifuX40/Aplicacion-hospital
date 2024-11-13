@@ -1,8 +1,9 @@
 package com.example.mardeluna
 
-import androidx.compose.runtime.*
-import androidx.navigation.*
-import androidx.navigation.compose.*
+import androidx.compose.runtime.Composable
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
@@ -23,7 +24,9 @@ fun AppNavigation(navController: NavHostController) {
         composable("respirador_screen") { RespiradorScreen(navController) }
         composable("uci_postquirurgica") { UciPostquirurgicaScreen(navController) }
         composable("uci_medica") { UciMedicaScreen(navController) }
-        composable("endoscopias_screen") { EndoscopiasScreen(navController) }
+        composable("endoscopias_screen") { Endoscopias(navController) }
         composable("hospital_dia_screen") { HospitalDeDiaScreen(navController) }
+        composable("endoscopios") { Endoscopios(navController) }
+        composable("lavado") { Lavado(navController) }
     }
 }
