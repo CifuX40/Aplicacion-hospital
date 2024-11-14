@@ -26,7 +26,7 @@ fun AppNavigation(navController: NavHostController) {
         composable("uci_medica") { UciMedicaScreen(navController) }
         composable("endoscopias_screen") { Endoscopias(navController) }
         composable("hospital_dia_screen") { HospitalDeDiaScreen(navController) }
-        composable("endoscopios") { Endoscopios(navController) }
-        composable("lavado") { Lavado(navController) }
+        composable("endoscopios_screen") { Endoscopios(navController) }
+        composable("lavadora_screen") { Lavado(navController) }
     }
 }
