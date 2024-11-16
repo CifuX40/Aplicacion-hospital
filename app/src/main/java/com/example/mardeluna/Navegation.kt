@@ -28,6 +28,8 @@ fun AppNavigation(navController: NavHostController) {
         composable("endoscopios_screen") { Endoscopios(navController) }
         composable("lavadora_screen") { Lavado(navController) }
         composable("carro_paradas") { carro_paradas(navController) }
-        composable("control_enfermeria") { control_enfermeria(navController) }
+        composable("control_enfermeria") { ControlEnfermeriaScreen(navController) }
+        composable("paginas_web_screen") { PaginasWebScreen(navController) }
+        composable("rcp_screen") { RCPScreen(navController) }
     }
 }
