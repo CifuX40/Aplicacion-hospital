@@ -13,7 +13,7 @@ import coil.compose.*
 import com.google.firebase.storage.*
 
 @Composable
-fun Toma_oxigeno(navController: NavHostController) {
+fun toma_oxigeno_screen(navController: NavHostController) {
     var imageUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
 

@@ -1,23 +1,19 @@
 package com.example.mardeluna
 
-import android.util.Log
-import androidx.compose.foundation.Image
+import android.util.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import coil.compose.rememberAsyncImagePainter
-import com.google.firebase.storage.FirebaseStorage
+import androidx.compose.ui.*
+import androidx.compose.ui.text.font.*
+import androidx.compose.ui.unit.*
+import androidx.navigation.*
+import coil.compose.*
+import com.google.firebase.storage.*
 
 @Composable
-fun HospitalizationScreen(navController: NavHostController) {
+fun Habitacion(navController: NavHostController) {
     // Estado para la URL de la imagen
     var imageUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
@@ -25,7 +21,7 @@ fun HospitalizationScreen(navController: NavHostController) {
     // Cargar la URL de la imagen desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-        val storageRef = storage.reference.child("hospitalizacion.jpg")
+        val storageRef = storage.reference.child("habitacion.jpg")
 
         storageRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -38,12 +34,12 @@ fun HospitalizationScreen(navController: NavHostController) {
             }
     }
 
-    // Contenido principal
+    // Envuelve todo el contenido en una columna que permite el desplazamiento vertical
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState()), // Habilita el desplazamiento vertical
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -58,8 +54,9 @@ fun HospitalizationScreen(navController: NavHostController) {
 
         Box(
             modifier = Modifier.size(300.dp),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.TopStart
         ) {
+            // Mostrar la imagen si la URL está cargada y no hay error
             if (imageUrl.isNotEmpty() && !loadError) {
                 Image(
                     painter = rememberAsyncImagePainter(imageUrl),
@@ -69,10 +66,14 @@ fun HospitalizationScreen(navController: NavHostController) {
             } else if (loadError) {
                 Text(
                     text = "Error al cargar la imagen",
-                    color = MaterialTheme.colorScheme.error
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.align(Alignment.Center)
                 )
             } else {
-                Text(text = "Cargando imagen...")
+                Text(
+                    text = "Cargando imagen...",
+                    modifier = Modifier.align(Alignment.Center)
+                )
             }
         }
 
@@ -97,31 +98,16 @@ fun HospitalizationScreen(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Botones dispuestos uno debajo del otro
-        Column(
+        Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            Button(
-                onClick = { navController.navigate("carro_paradas") },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = "Carro de paradas")
+            Button(onClick = { navController.navigate("aspiracion_screen") }) {
+                Text(text = "Aspiración")
             }
 
-            Button(
-                onClick = { navController.navigate("control_enfermeria") },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = "Control de enfermería")
-            }
-
-            Button(
-                onClick = { navController.navigate("room_screen") },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = "Habitación")
+            Button(onClick = { navController.navigate("toma_oxigeno_screen") }) {
+                Text(text = "Toma de oxígeno")
             }
         }
     }

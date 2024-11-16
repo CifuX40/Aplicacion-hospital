@@ -19,7 +19,7 @@ fun RoomScreen(navController: NavHostController) {
 
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-        val storageRef = storage.reference.child("aspiracion_paciente.jpg")
+        val storageRef = storage.reference.child("habitacion.jpg")
 
         storageRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -51,8 +51,18 @@ fun RoomScreen(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(onClick = { navController.navigate("Hospitalizacion") }) {
-            Text(text = "Ir a Hospitalización")
+        Button(
+            onClick = { navController.navigate("toma_oxigeno_screen") },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = "Toma de oxígeno")
+        }
+
+        Button(
+            onClick = { navController.navigate("aspiracion_screen") },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = "Aspiración")
         }
     }
 }
