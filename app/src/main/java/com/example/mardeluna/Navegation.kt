@@ -18,7 +18,7 @@ fun AppNavigation(navController: NavHostController) {
         composable("room_screen") { RoomScreen(navController) }
         composable("first_floor") { FirstFloorScreen(navController) }
         composable("aspiracion_screen") { AspiracionScreen(navController) }
-        composable("toma_oxigeno_screen") { toma_oxigeno_screen(navController) }
+        composable("toma_oxigeno_screen") { TomaOxigenoScreen(navController) }
         composable("carina_screen") { CarinaScreen(navController) }
         composable("respirador_screen") { RespiradorScreen(navController) }
         composable("uci_postquirurgica") { UciPostquirurgicaScreen(navController) }
@@ -27,7 +27,7 @@ fun AppNavigation(navController: NavHostController) {
         composable("hospital_dia_screen") { HospitalDeDiaScreen(navController) }
         composable("endoscopios_screen") { Endoscopios(navController) }
         composable("lavadora_screen") { Lavado(navController) }
-        composable("carro_paradas") { carro_paradas(navController) }
+        composable("carro_paradas") { CarroParadasScreen(navController) }
         composable("control_enfermeria") { ControlEnfermeriaScreen(navController) }
         composable("paginas_web_screen") { PaginasWebScreen(navController) }
         composable("rcp_screen") { RCPScreen(navController) }

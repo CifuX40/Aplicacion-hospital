@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import coil.compose.*
@@ -13,11 +14,10 @@ import com.google.firebase.storage.*
 
 @Composable
 fun AspiracionScreen(navController: NavHostController) {
-    // Variables de estado para almacenar la URL de la imagen y el estado de carga
     var imageUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
 
-    // Cargar la URL de la imagen desde Firebase Storage
+    // Cargar imagen desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
         val storageRef = storage.reference.child("aspiracion_paciente.jpg")
@@ -33,33 +33,79 @@ fun AspiracionScreen(navController: NavHostController) {
             }
     }
 
+    // Contenido de la pantalla
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Mostrar la imagen si la URL está cargada y no hay error
-        if (imageUrl.isNotEmpty() && !loadError) {
-            Image(
-                painter = rememberAsyncImagePainter(imageUrl),
-                contentDescription = "Aspiración del paciente",
-                modifier = Modifier.size(300.dp)
-            )
-        } else if (loadError) {
-            Text(
-                text = "Error al cargar la imagen",
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
-        } else {
-            Text(
-                text = "Cargando imagen...",
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
+        // Título
+        Text(
+            text = "Aspiración",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+
+        // Imagen
+        when {
+            imageUrl.isNotEmpty() && !loadError -> {
+                Image(
+                    painter = rememberAsyncImagePainter(imageUrl),
+                    contentDescription = "Imagen de aspiración",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp)
+                        .padding(bottom = 16.dp)
+                )
+            }
+
+            loadError -> {
+                Text(
+                    text = "Error al cargar la imagen.",
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+            }
+
+            else -> {
+                Text(
+                    text = "Cargando imagen...",
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+            }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        // Procedimiento
+        Text(
+            text = "PROCEDIMIENTO:",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        Text(
+            text = """
+1. Verificar el funcionamiento del aspirador conectándolo a la toma de vacío, asegurando una presión negativa adecuada (80 a 120 mmHg).
+2. Limpiar externamente las fosas nasales del paciente si es necesario.
+3. Abrir la sonda de aspiración y conectar el tubo a la pieza en "Y".
+4. Introducir suavemente la sonda en una fosa nasal, evitando la succión durante la introducción para proteger la mucosa nasal. 
+   - Una vez en la posición adecuada, iniciar la aspiración con movimientos rotatorios mientras se retira la sonda.
+   - Tapar intermitentemente el orificio de la conexión en "Y" para controlar la succión.
+5. Repetir el procedimiento en la otra fosa nasal utilizando una sonda nueva.
+6. Para aspirar la cavidad orofaríngea, repetir el proceso descrito anteriormente.
+7. Si se requiere acceder a los bronquios:
+   - Colocar la cabeza del paciente en hiperextensión.
+   - Girar la cabeza hacia el lado opuesto al bronquio que se desea aspirar.
+8. Si el objetivo es recolectar una muestra, utilizar una sonda con reservorio.
+9. Al finalizar:
+   - Lavar la sonda y el tubo aspirador con agua destilada o suero fisiológico.
+   - Desechar el material en los contenedores indicados.
+   - Retirar los guantes y realizar higiene de manos.
+            """.trimIndent(),
+            fontSize = 16.sp,
+            lineHeight = 24.sp
+        )
     }
 }
