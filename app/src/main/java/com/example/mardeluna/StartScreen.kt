@@ -1,13 +1,15 @@
 package com.example.mardeluna
 
 import android.util.*
-import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.*
 import androidx.compose.material.icons.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.layout.*
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.*
@@ -18,59 +20,111 @@ import com.google.firebase.storage.*
 
 @Composable
 fun StartScreen(navController: NavHostController) {
-    var imageUrl by remember { mutableStateOf("") }
+    var backgroundUrl by remember { mutableStateOf("") }
+    var logoUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
+    var logoLoadError by remember { mutableStateOf(false) }
 
-    // Cargar la imagen desde Firebase Storage
+    // Cargar la imagen de fondo desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-        val storageRef = storage.reference.child("logo.png")
 
+        // Fondo
+        val storageRef = storage.reference.child("fondo_de_pantalla.jpg")
         storageRef.downloadUrl
             .addOnSuccessListener { uri ->
-                imageUrl = uri.toString()
-                Log.d("Firebase", "Imagen cargada exitosamente: $imageUrl")
+                backgroundUrl = uri.toString()
+                Log.d("Firebase", "Fondo cargado exitosamente: $backgroundUrl")
             }
             .addOnFailureListener { exception ->
                 loadError = true
-                Log.e("Firebase", "Error al cargar la imagen: ${exception.message}")
+                Log.e("Firebase", "Error al cargar el fondo: ${exception.message}")
+            }
+
+        // Logo
+        val logoRef = storage.reference.child("logo.png")
+        logoRef.downloadUrl
+            .addOnSuccessListener { uri ->
+                logoUrl = uri.toString()
+                Log.d("Firebase", "Logo cargado exitosamente: $logoUrl")
+            }
+            .addOnFailureListener { exception ->
+                logoLoadError = true
+                Log.e("Firebase", "Error al cargar el logo: ${exception.message}")
             }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally
+    // Diseño principal de la pantalla
+    Box(
+        modifier = Modifier.fillMaxSize()
     ) {
-        Spacer(modifier = Modifier.height(20.dp))
-
-        // Usar Coil para cargar la imagen desde la URL obtenida de Firebase Storage
-        if (imageUrl.isNotEmpty() && !loadError) {
+        // Imagen de fondo
+        if (backgroundUrl.isNotEmpty() && !loadError) {
             Image(
-                painter = rememberAsyncImagePainter(imageUrl),
-                contentDescription = "Logo",
-                modifier = Modifier.size(200.dp)
+                painter = rememberAsyncImagePainter(backgroundUrl),
+                contentDescription = "Fondo de pantalla",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
             )
         } else {
-            // En caso de error, muestra un mensaje
-            Text(text = "Error al cargar el logo", color = MaterialTheme.colorScheme.error)
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Gray)
+            )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(
-            onClick = { navController.navigate("history") },
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+        // Contenido de la pantalla
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "¿Quiénes somos?")
-        }
+            Spacer(modifier = Modifier.height(20.dp))
 
-        Spacer(modifier = Modifier.height(32.dp))
-        LoginSection(navController)
-        Spacer(modifier = Modifier.height(16.dp))
+            // Encabezado y logo
+            Text(
+                text = "Bienvenido al Hospital Mar de Luna",
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Imagen del logo
+            if (logoUrl.isNotEmpty() && !logoLoadError) {
+                Image(
+                    painter = rememberAsyncImagePainter(logoUrl),
+                    contentDescription = "Logo de Mar de Luna",
+                    modifier = Modifier
+                        .height(200.dp)
+                        .width(200.dp),
+                    contentScale = ContentScale.Fit
+                )
+            } else if (logoLoadError) {
+                Text(
+                    text = "Error al cargar el logo",
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Botón de navegación
+            Button(
+                onClick = { navController.navigate("history") },
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                Text(text = "¿Quiénes somos?")
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+            LoginSection(navController)
+            Spacer(modifier = Modifier.height(16.dp))
+        }
     }
 }
 
@@ -78,14 +132,12 @@ fun StartScreen(navController: NavHostController) {
 fun LoginSection(navController: NavHostController) {
     val context = LocalContext.current
     val auth = FirebaseAuth.getInstance()
-    val credentialsManager =
-        CredentialsManager(context)  // Crear instancia del gestor de credenciales
+    val credentialsManager = CredentialsManager(context)
 
     var email by remember { mutableStateOf("") }
     var contrasena by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
 
-    // Obtener la lista de usuarios guardados
     val users = credentialsManager.getAllUsers()
 
     Column(
@@ -95,7 +147,6 @@ fun LoginSection(navController: NavHostController) {
         Text("Selecciona un usuario:", fontSize = 18.sp)
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Mostrar la lista de usuarios guardados
         users.forEach { (savedEmail, savedPassword) ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -122,7 +173,6 @@ fun LoginSection(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Campo de entrada para el email
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
@@ -131,7 +181,6 @@ fun LoginSection(navController: NavHostController) {
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Campo de entrada para la contraseña
         OutlinedTextField(
             value = contrasena,
             onValueChange = { contrasena = it },
@@ -141,7 +190,6 @@ fun LoginSection(navController: NavHostController) {
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Mensaje de error en caso de fallo
         if (errorMessage.isNotEmpty()) {
             Text(
                 text = errorMessage,
@@ -151,20 +199,16 @@ fun LoginSection(navController: NavHostController) {
             Spacer(modifier = Modifier.height(8.dp))
         }
 
-        // Botón para iniciar sesión
         Button(
             onClick = {
                 errorMessage = ""
                 if (email.isNotEmpty() && contrasena.isNotEmpty()) {
-                    // Llama al método de Firebase para autenticar al usuario
                     auth.signInWithEmailAndPassword(email, contrasena)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                // Guardar el usuario y contraseña en SharedPreferences
                                 credentialsManager.saveUser(email, contrasena)
                                 navController.navigate("main_logo")
                             } else {
-                                // Error en el inicio de sesión
                                 errorMessage =
                                     "Error: ${task.exception?.message ?: "Error desconocido"}"
                             }
