@@ -7,6 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.layout.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import coil.compose.*
@@ -16,10 +17,23 @@ import com.google.firebase.storage.*
 fun MainLogoScreen(navController: NavHostController) {
     var firstFloorLogoUrl by remember { mutableStateOf("") }
     var secondFloorLogoUrl by remember { mutableStateOf("") }
+    var backgroundUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
+
+        // Cargar imagen de fondo
+        val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
+        backgroundRef.downloadUrl
+            .addOnSuccessListener { uri ->
+                backgroundUrl = uri.toString()
+                Log.d("Firebase", "Fondo cargado exitosamente: $backgroundUrl")
+            }
+            .addOnFailureListener { exception ->
+                loadError = true
+                Log.e("Firebase", "Error al cargar el fondo: ${exception.message}")
+            }
 
         // Cargar imagen de la primera planta
         val firstFloorRef = storage.reference.child("piso_1_logo.png")
@@ -58,42 +72,71 @@ fun MainLogoScreen(navController: NavHostController) {
             }
     }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (!loadError) {
-            // Imagen de la primera planta desde Firebase Storage
-            if (firstFloorLogoUrl.isNotEmpty()) {
-                Image(
-                    painter = rememberAsyncImagePainter(firstFloorLogoUrl),
-                    contentDescription = "Logo de la Primera Planta",
-                    modifier = Modifier
-                        .size(200.dp)
-                        .clickable { navController.navigate("first_floor") }
-                        .padding(bottom = 16.dp)
-                )
-            }
+        // Fondo de pantalla
+        if (backgroundUrl.isNotEmpty() && !loadError) {
+            Image(
+                painter = rememberAsyncImagePainter(backgroundUrl),
+                contentDescription = "Fondo de pantalla",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+        } else if (loadError) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Gray)
+            )
+        }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Imagen de la segunda planta desde Firebase Storage
-            if (secondFloorLogoUrl.isNotEmpty()) {
-                Image(
-                    painter = rememberAsyncImagePainter(secondFloorLogoUrl),
-                    contentDescription = "Logo de la Segunda Planta",
-                    modifier = Modifier
-                        .size(200.dp)
-                        .clickable { navController.navigate("second_floor") }
-                        .padding(bottom = 16.dp)
+        // Contenido de la pantalla
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            if (!loadError) {
+                // Título para los botones "Pisos"
+                Text(
+                    text = "Seleccione un Piso",
+                    style = MaterialTheme.typography.headlineMedium,
+                    modifier = Modifier.padding(bottom = 24.dp)
                 )
+
+                // Imagen de la primera planta desde Firebase Storage
+                if (firstFloorLogoUrl.isNotEmpty()) {
+                    Image(
+                        painter = rememberAsyncImagePainter(firstFloorLogoUrl),
+                        contentDescription = "Logo de la Primera Planta",
+                        modifier = Modifier
+                            .size(200.dp)
+                            .clickable { navController.navigate("first_floor") }
+                            .padding(bottom = 16.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Imagen de la segunda planta desde Firebase Storage
+                if (secondFloorLogoUrl.isNotEmpty()) {
+                    Image(
+                        painter = rememberAsyncImagePainter(secondFloorLogoUrl),
+                        contentDescription = "Logo de la Segunda Planta",
+                        modifier = Modifier
+                            .size(200.dp)
+                            .clickable { navController.navigate("second_floor") }
+                            .padding(bottom = 16.dp)
+                    )
+                }
+            } else {
+                // Mostrar un mensaje de error si la carga falló
+                Text(text = "Error al cargar las imágenes", color = Color.Red)
             }
-        } else {
-            // Mostrar un mensaje de error si la carga falló
-            Text(text = "Error al cargar las imágenes", color = Color.Red)
         }
     }
 }
