@@ -1,6 +1,5 @@
 package com.example.mardeluna
 
-import android.util.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.layout.*
@@ -36,34 +35,17 @@ fun FirstFloorScreen(navController: NavHostController = rememberNavController())
         // Cargar la imagen de fondo
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
-            .addOnSuccessListener { uri ->
-                backgroundUrl = uri.toString()
-                Log.d("Firebase", "Fondo cargado exitosamente: $backgroundUrl")
-            }
-            .addOnFailureListener { exception ->
-                loadError = true
-                Log.e("Firebase", "Error al cargar el fondo: ${exception.message}")
-            }
+            .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
+            .addOnFailureListener { loadError = true }
 
         // Cargar la imagen de la primera planta
         val storageRef = storage.reference.child("primera_planta.png")
         storageRef.downloadUrl
-            .addOnSuccessListener { uri ->
-                imageUrl = uri.toString()
-                Log.d("Firebase", "Imagen de la primera planta cargada exitosamente: $imageUrl")
-            }
-            .addOnFailureListener { exception ->
-                loadError = true
-                Log.e(
-                    "Firebase",
-                    "Error al cargar la imagen de la primera planta: ${exception.message}"
-                )
-            }
+            .addOnSuccessListener { uri -> imageUrl = uri.toString() }
+            .addOnFailureListener { loadError = true }
     }
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
         // Fondo de pantalla
         if (backgroundUrl.isNotEmpty() && !loadError) {
             Image(
@@ -80,10 +62,12 @@ fun FirstFloorScreen(navController: NavHostController = rememberNavController())
             )
         }
 
+        // Contenedor con Scroll
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),  // Agregar desplazamiento vertical
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

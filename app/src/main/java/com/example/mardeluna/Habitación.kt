@@ -74,6 +74,16 @@ fun Habitacion(navController: NavHostController) {
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Título "Habitación" en negrita
+            Text(
+                text = "Habitación",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black,
+                modifier = Modifier.padding(8.dp)
+            )
+
+            // Subtítulo "Habitaciones de hospitalización"
             Text(
                 text = "Habitaciones de hospitalización.",
                 fontSize = 20.sp,

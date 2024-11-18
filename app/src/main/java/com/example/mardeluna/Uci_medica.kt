@@ -71,8 +71,7 @@ fun UciMedicaScreen(navController: NavHostController) {
             Text(
                 text = "UCI Médica",
                 fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground
+                fontWeight = FontWeight.Bold
             )
         }
     }

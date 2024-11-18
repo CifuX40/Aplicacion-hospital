@@ -103,7 +103,7 @@ fun ICUScreen(navController: NavHostController) {
                         "que necesitan monitorización y vigilancia, ya sea por control del dolor o " +
                         "por control de constantes vitales.",
                 fontSize = 16.sp,
-                color = Color.White
+                color = Color.Black
             )
 
             Spacer(modifier = Modifier.height(16.dp))

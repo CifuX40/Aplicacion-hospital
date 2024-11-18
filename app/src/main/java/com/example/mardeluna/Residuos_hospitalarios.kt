@@ -14,15 +14,25 @@ import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import com.google.firebase.storage.*
 import androidx.compose.ui.viewinterop.*
+import coil.compose.*
+import androidx.compose.ui.layout.*
 
 @Composable
 fun ResiduosHospitalariosScreen(navController: NavHostController) {
     var videoUrl by remember { mutableStateOf<String?>(null) }
+    var backgroundUrl by remember { mutableStateOf("") }
 
-    // Cargar video desde Firebase Storage
+    // Cargar fondo de pantalla desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
 
+        // Cargar fondo
+        val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
+        backgroundRef.downloadUrl
+            .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
+            .addOnFailureListener { Log.e("Firebase", "Error al cargar fondo: ${it.message}") }
+
+        // Cargar video desde Firebase Storage
         val videoRef = storage.reference.child("residuos.mp4")
         videoRef.downloadUrl
             .addOnSuccessListener { uri -> videoUrl = uri.toString() }
@@ -31,6 +41,16 @@ fun ResiduosHospitalariosScreen(navController: NavHostController) {
 
     // Contenedor con fondo
     Box(modifier = Modifier.fillMaxSize()) {
+        // Fondo de pantalla
+        if (backgroundUrl.isNotEmpty()) {
+            Image(
+                painter = rememberAsyncImagePainter(backgroundUrl),
+                contentDescription = "Fondo de pantalla",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+
         // Contenido principal
         Column(
             modifier = Modifier
@@ -51,13 +71,6 @@ fun ResiduosHospitalariosScreen(navController: NavHostController) {
             // Si hay una URL de video, mostrar el video
             videoUrl?.let {
                 Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = "Reproduciendo Video:",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
 
                 // Reproducir el video
                 AndroidView(
