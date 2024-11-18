@@ -133,6 +133,16 @@ fun ControlEnfermeriaScreen(navController: NavHostController) {
             ) {
                 Text(text = "RCP")
             }
+
+            // Botón "Residuos hospitalarios"
+            Button(
+                onClick = { navController.navigate("residuos_hospitalarios_screen") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp)
+            ) {
+                Text(text = "Residuos hospitalarios")
+            }
         }
     }
 }

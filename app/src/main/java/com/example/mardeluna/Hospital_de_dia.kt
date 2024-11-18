@@ -1,26 +1,31 @@
 package com.example.mardeluna
 
+import android.net.*
 import android.util.*
+import android.widget.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.layout.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import coil.compose.*
 import com.google.firebase.storage.*
+import androidx.compose.ui.viewinterop.*
+import androidx.compose.ui.layout.*
+
 
 @Composable
 fun HospitalDeDiaScreen(navController: NavHostController) {
     var imageUrl by remember { mutableStateOf("") }
     var backgroundUrl by remember { mutableStateOf("") }
+    var videoUrl by remember { mutableStateOf<String?>(null) }
     var loadError by remember { mutableStateOf(false) }
 
-    // Cargar la URL de la imagen del fondo desde Firebase Storage
+    // Cargar la URL de la imagen de fondo desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
 
@@ -28,6 +33,12 @@ fun HospitalDeDiaScreen(navController: NavHostController) {
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
             .addOnFailureListener { Log.e("Firebase", "Error al cargar fondo: ${it.message}") }
+
+        // Cargar video desde Firebase Storage
+        val videoRef = storage.reference.child("toma_constantes.mp4")
+        videoRef.downloadUrl
+            .addOnSuccessListener { uri -> videoUrl = uri.toString() }
+            .addOnFailureListener { Log.e("Firebase", "Error al cargar video: ${it.message}") }
 
         // Cargar imagen específica de la pantalla
         loadImageFromFirebase("hospital_dia.jpg") { url, error ->
@@ -90,6 +101,7 @@ fun HospitalDeDiaScreen(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Mostrar el texto con la descripción
             Text(
                 text = """
                     El Hospital de Día consta de 7 habitaciones donde ingresarán los pacientes de cirugía menor ambulatoria.
@@ -105,6 +117,35 @@ fun HospitalDeDiaScreen(navController: NavHostController) {
                 color = Color.Black,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
+
+            // Si hay una URL de video, mostrar el video en modo horizontal
+            videoUrl?.let {
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "Reproduciendo Video:",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
+
+                // Reproducir el video
+                AndroidView(
+                    factory = { context ->
+                        VideoView(context).apply {
+                            setVideoURI(Uri.parse(it)) // Enlace de Firebase Storage
+                            setOnPreparedListener { mediaPlayer ->
+                                mediaPlayer.isLooping = true
+                                start() // Iniciar automáticamente
+                            }
+                            requestFocus()
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(250.dp) // Ajusta el tamaño del video
+                )
+            }
         }
     }
 }
