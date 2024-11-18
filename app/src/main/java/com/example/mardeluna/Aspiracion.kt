@@ -11,17 +11,32 @@ import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import coil.compose.*
 import com.google.firebase.storage.*
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.layout.*
 
 @Composable
 fun AspiracionScreen(navController: NavHostController) {
+    var backgroundUrl by remember { mutableStateOf("") }
     var imageUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
 
-    // Cargar imagen desde Firebase Storage
+    // Cargar imagenes desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-        val storageRef = storage.reference.child("aspiracion_paciente.jpg")
 
+        // Cargar el fondo de pantalla
+        val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
+        backgroundRef.downloadUrl
+            .addOnSuccessListener { uri ->
+                backgroundUrl = uri.toString()
+                Log.d("Firebase", "Fondo cargado exitosamente: $backgroundUrl")
+            }
+            .addOnFailureListener { exception ->
+                Log.e("Firebase", "Error al cargar el fondo: ${exception.message}")
+            }
+
+        // Cargar la imagen de aspiración
+        val storageRef = storage.reference.child("aspiracion_paciente.jpg")
         storageRef.downloadUrl
             .addOnSuccessListener { uri ->
                 imageUrl = uri.toString()
@@ -33,60 +48,81 @@ fun AspiracionScreen(navController: NavHostController) {
             }
     }
 
-    // Contenido de la pantalla
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
+    // Contenido con fondo
+    Box(
+        modifier = Modifier.fillMaxSize()
     ) {
-        // Título
-        Text(
-            text = "Aspiración",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-        // Imagen
-        when {
-            imageUrl.isNotEmpty() && !loadError -> {
-                Image(
-                    painter = rememberAsyncImagePainter(imageUrl),
-                    contentDescription = "Imagen de aspiración",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(300.dp)
-                        .padding(bottom = 16.dp)
-                )
-            }
-
-            loadError -> {
-                Text(
-                    text = "Error al cargar la imagen.",
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-            }
-
-            else -> {
-                Text(
-                    text = "Cargando imagen...",
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-            }
+        // Fondo de pantalla
+        if (backgroundUrl.isNotEmpty()) {
+            Image(
+                painter = rememberAsyncImagePainter(backgroundUrl),
+                contentDescription = "Fondo de pantalla",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Gray)
+            )
         }
 
-        // Procedimiento
-        Text(
-            text = "PROCEDIMIENTO:",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        Text(
-            text = """
+        // Contenido principal
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Aspiración",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 16.dp),
+                color = Color.Black
+            )
+
+            // Imagen de aspiración
+            when {
+                imageUrl.isNotEmpty() && !loadError -> {
+                    Image(
+                        painter = rememberAsyncImagePainter(imageUrl),
+                        contentDescription = "Imagen de aspiración",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(300.dp)
+                            .padding(bottom = 16.dp)
+                    )
+                }
+
+                loadError -> {
+                    Text(
+                        text = "Error al cargar la imagen.",
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+                }
+
+                else -> {
+                    Text(
+                        text = "Cargando imagen...",
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+                }
+            }
+
+            // Procedimiento
+            Text(
+                text = "PROCEDIMIENTO:",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 8.dp),
+                color = Color.Black
+            )
+            Text(
+                text = """
 1. Verificar el funcionamiento del aspirador conectándolo a la toma de vacío, asegurando una presión negativa adecuada (80 a 120 mmHg).
 2. Limpiar externamente las fosas nasales del paciente si es necesario.
 3. Abrir la sonda de aspiración y conectar el tubo a la pieza en "Y".
@@ -104,8 +140,10 @@ fun AspiracionScreen(navController: NavHostController) {
    - Desechar el material en los contenedores indicados.
    - Retirar los guantes y realizar higiene de manos.
             """.trimIndent(),
-            fontSize = 16.sp,
-            lineHeight = 24.sp
-        )
+                fontSize = 16.sp,
+                lineHeight = 24.sp,
+                color = Color.Black
+            )
+        }
     }
 }

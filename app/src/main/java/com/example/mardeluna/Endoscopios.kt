@@ -1,27 +1,41 @@
 package com.example.mardeluna
 
-import android.util.Log
+import android.util.*
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
-import com.google.firebase.storage.FirebaseStorage
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.layout.*
+import androidx.compose.ui.text.font.*
+import androidx.compose.ui.unit.*
+import androidx.navigation.*
+import coil.compose.*
+import com.google.firebase.storage.*
 
 @Composable
 fun Endoscopios(navController: NavHostController) {
     var imageUrl by remember { mutableStateOf("") }
+    var backgroundUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
 
-    // Cargar la URL de la imagen desde Firebase Storage
+    // Cargar imágenes desde Firebase Storage
     LaunchedEffect(Unit) {
+        val storage = FirebaseStorage.getInstance()
+
+        // Cargar fondo de pantalla
+        val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
+        backgroundRef.downloadUrl
+            .addOnSuccessListener { uri ->
+                backgroundUrl = uri.toString()
+                Log.d("Firebase", "Fondo cargado exitosamente: $backgroundUrl")
+            }
+            .addOnFailureListener { exception ->
+                Log.e("Firebase", "Error al cargar el fondo: ${exception.message}")
+            }
+
+        // Cargar imagen principal
         loadUrlFromFirebase("endoscopios.jpg") { url, error ->
             imageUrl = url ?: ""
             loadError = error != null
@@ -29,14 +43,45 @@ fun Endoscopios(navController: NavHostController) {
         }
     }
 
-    // Habilitar desplazamiento vertical
+    // Contenedor principal con fondo
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        // Fondo de pantalla
+        if (backgroundUrl.isNotEmpty()) {
+            Image(
+                painter = rememberAsyncImagePainter(backgroundUrl),
+                contentDescription = "Fondo de pantalla",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.LightGray)
+            )
+        }
+
+        // Contenido principal
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Content(imageUrl, loadError)
+        }
+    }
+}
+
+@Composable
+private fun Content(imageUrl: String, loadError: Boolean) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState()), // Scroll vertical habilitado
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
     ) {
         Text(
             text = "Endoscopios",
@@ -44,9 +89,10 @@ fun Endoscopios(navController: NavHostController) {
             fontWeight = FontWeight.Bold,
             color = Color.Black
         )
+
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Mostrar la imagen cargada desde Firebase Storage
+        // Mostrar imagen si se carga correctamente
         if (!loadError && imageUrl.isNotEmpty()) {
             AsyncImage(
                 model = imageUrl,
@@ -67,11 +113,13 @@ fun Endoscopios(navController: NavHostController) {
 
         // Descripción del endoscopio
         Text(
-            text = "El endoscopio es un instrumento en forma de tubo semiflexible que contiene una luz " +
-                    "y una óptica que permiten la visualización del interior de una cavidad corporal.\n" +
-                    "La endoscopia en el aparato digestivo se divide en:\n" +
-                    "- Gastroscopia (endoscopio oral o gastroscopio)\n" +
-                    "- Colonoscopia (colonoscopio)",
+            text = """
+                El endoscopio es un instrumento en forma de tubo semiflexible que contiene una luz 
+                y una óptica que permiten la visualización del interior de una cavidad corporal.
+                La endoscopia en el aparato digestivo se divide en:
+                - Gastroscopia (endoscopio oral o gastroscopio)
+                - Colonoscopia (colonoscopio)
+            """.trimIndent(),
             fontSize = 16.sp,
             color = Color.Black
         )

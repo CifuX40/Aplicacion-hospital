@@ -1,26 +1,41 @@
 package com.example.mardeluna
 
-import android.util.Log
+import android.util.*
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.layout.*
+import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
-import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
-import com.google.firebase.storage.FirebaseStorage
+import androidx.navigation.*
+import coil.compose.*
+import com.google.firebase.storage.*
 
 @Composable
 fun Endoscopias(navController: NavHostController) {
     var imageUrl by remember { mutableStateOf("") }
+    var backgroundUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
 
-    // Cargar la URL de la imagen desde Firebase Storage
+    // Cargar imágenes desde Firebase Storage
     LaunchedEffect(Unit) {
+        val storage = FirebaseStorage.getInstance()
+
+        // Cargar fondo de pantalla
+        val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
+        backgroundRef.downloadUrl
+            .addOnSuccessListener { uri ->
+                backgroundUrl = uri.toString()
+                Log.d("Firebase", "Fondo cargado exitosamente: $backgroundUrl")
+            }
+            .addOnFailureListener { exception ->
+                Log.e("Firebase", "Error al cargar el fondo: ${exception.message}")
+            }
+
+        // Cargar imagen principal
         loadImageFromFirebase { url, error ->
             imageUrl = url ?: ""
             loadError = error != null
@@ -28,15 +43,36 @@ fun Endoscopias(navController: NavHostController) {
         }
     }
 
-    // Configuración de desplazamiento vertical y contenido
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+    // Contenedor principal con fondo
+    Box(
+        modifier = Modifier.fillMaxSize()
     ) {
-        Content(navController, loadError, imageUrl)
+        // Fondo de pantalla
+        if (backgroundUrl.isNotEmpty()) {
+            Image(
+                painter = rememberAsyncImagePainter(backgroundUrl),
+                contentDescription = "Fondo de pantalla",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.LightGray)
+            )
+        }
+
+        // Contenido principal
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Content(navController, loadError, imageUrl)
+        }
     }
 }
 

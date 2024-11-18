@@ -1,36 +1,47 @@
 package com.example.mardeluna
 
-import android.util.Log
-import androidx.compose.foundation.Image
+import android.util.*
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import coil.compose.rememberAsyncImagePainter
-import com.google.firebase.storage.FirebaseStorage
+import androidx.compose.ui.*
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.layout.*
+import androidx.compose.ui.text.font.*
+import androidx.compose.ui.unit.*
+import androidx.navigation.*
+import coil.compose.*
+import com.google.firebase.storage.*
 
 @Composable
 fun TomaOxigenoScreen(navController: NavHostController) {
-    var imageUrl by remember { mutableStateOf("") }
+    var backgroundImageUrl by remember { mutableStateOf("") }
+    var contentImageUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
 
-    // Cargar imagen desde Firebase Storage
+    // Cargar imágenes desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-        val storageRef = storage.reference.child("toma_oxigeno.jpg")
 
-        storageRef.downloadUrl
+        // Cargar fondo de pantalla
+        val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
+        backgroundRef.downloadUrl
             .addOnSuccessListener { uri ->
-                imageUrl = uri.toString()
-                Log.d("Firebase", "Imagen cargada exitosamente: $imageUrl")
+                backgroundImageUrl = uri.toString()
+                Log.d("Firebase", "Fondo cargado exitosamente: $backgroundImageUrl")
+            }
+            .addOnFailureListener { exception ->
+                loadError = true
+                Log.e("Firebase", "Error al cargar el fondo: ${exception.message}")
+            }
+
+        // Cargar imagen de contenido
+        val contentRef = storage.reference.child("toma_oxigeno.jpg")
+        contentRef.downloadUrl
+            .addOnSuccessListener { uri ->
+                contentImageUrl = uri.toString()
+                Log.d("Firebase", "Imagen cargada exitosamente: $contentImageUrl")
             }
             .addOnFailureListener { exception ->
                 loadError = true
@@ -38,60 +49,77 @@ fun TomaOxigenoScreen(navController: NavHostController) {
             }
     }
 
-    // Contenido de la pantalla
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
+    // Pantalla con fondo y contenido
+    Box(
+        modifier = Modifier.fillMaxSize()
     ) {
-        // Título
-        Text(
-            text = "Toma de oxígeno",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-        // Imagen
-        when {
-            imageUrl.isNotEmpty() && !loadError -> {
-                Image(
-                    painter = rememberAsyncImagePainter(imageUrl),
-                    contentDescription = "Imagen ilustrativa de toma de oxígeno",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(300.dp)
-                        .padding(bottom = 16.dp)
-                )
-            }
-
-            loadError -> {
-                Text(
-                    text = "Error al cargar la imagen.",
-                    color = Color.Red,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-            }
-
-            else -> {
-                Text(
-                    text = "Cargando imagen...",
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-            }
+        // Imagen de fondo
+        if (backgroundImageUrl.isNotEmpty() && !loadError) {
+            Image(
+                painter = rememberAsyncImagePainter(backgroundImageUrl),
+                contentDescription = "Fondo de pantalla",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
         }
 
-        // Procedimiento
-        Text(
-            text = "PROCEDIMIENTO:",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        Text(
-            text = """
+        // Contenido superpuesto
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Título
+            Text(
+                text = "Toma de oxígeno",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 16.dp),
+                color = Color.Black
+            )
+
+            // Imagen de contenido
+            when {
+                contentImageUrl.isNotEmpty() && !loadError -> {
+                    Image(
+                        painter = rememberAsyncImagePainter(contentImageUrl),
+                        contentDescription = "Imagen ilustrativa de toma de oxígeno",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(300.dp)
+                            .padding(bottom = 16.dp)
+                    )
+                }
+
+                loadError -> {
+                    Text(
+                        text = "Error al cargar la imagen.",
+                        color = Color.Red,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+                }
+
+                else -> {
+                    Text(
+                        text = "Cargando imagen...",
+                        modifier = Modifier.padding(bottom = 16.dp),
+                        color = Color.Gray
+                    )
+                }
+            }
+
+            // Procedimiento
+            Text(
+                text = "PROCEDIMIENTO:",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 8.dp),
+                color = Color.Black
+            )
+            Text(
+                text = """
 1. Colocar al paciente en una posición cómoda y estable.
 2. Conectar el caudalímetro a la toma de oxígeno de la pared.
 3. Conectar el humidificador al caudalímetro.
@@ -101,9 +129,11 @@ fun TomaOxigenoScreen(navController: NavHostController) {
    - Cánula nasal (gafas nasales)
    - Mascarilla
    - Sonda nasal (catéter nasal)
-            """.trimIndent(),
-            fontSize = 16.sp,
-            lineHeight = 24.sp
-        )
+                """.trimIndent(),
+                fontSize = 16.sp,
+                lineHeight = 24.sp,
+                color = Color.Black
+            )
+        }
     }
 }

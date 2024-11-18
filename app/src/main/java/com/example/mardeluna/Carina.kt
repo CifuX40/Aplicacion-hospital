@@ -11,19 +11,34 @@ import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import coil.compose.*
 import com.google.firebase.storage.*
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.layout.*
 
 @Composable
 fun CarinaScreen(navController: NavHostController) {
-    // Variables de estado para almacenar la URL de la imagen y el estado de carga
+    // Variables de estado para la URL de la imagen y el fondo
     var imageUrl by remember { mutableStateOf("") }
+    var backgroundUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
 
-    // Cargar la URL de la imagen desde Firebase Storage
+    // Cargar imágenes desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-        val storageRef = storage.reference.child("carina.jpg")
 
-        storageRef.downloadUrl
+        // Cargar fondo de pantalla
+        val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
+        backgroundRef.downloadUrl
+            .addOnSuccessListener { uri ->
+                backgroundUrl = uri.toString()
+                Log.d("Firebase", "Fondo cargado exitosamente: $backgroundUrl")
+            }
+            .addOnFailureListener { exception ->
+                Log.e("Firebase", "Error al cargar el fondo: ${exception.message}")
+            }
+
+        // Cargar imagen principal
+        val imageRef = storage.reference.child("carina.jpg")
+        imageRef.downloadUrl
             .addOnSuccessListener { uri ->
                 imageUrl = uri.toString()
                 Log.d("Firebase", "Imagen de Carina cargada exitosamente: $imageUrl")
@@ -34,42 +49,71 @@ fun CarinaScreen(navController: NavHostController) {
             }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
+    // Contenedor con fondo
+    Box(
+        modifier = Modifier.fillMaxSize()
     ) {
-        // Título "Carina"
-        Text(
-            text = "Carina",
-            fontWeight = FontWeight.Bold,
-            fontSize = 30.sp
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Mostrar la imagen si la URL está cargada y no hay error
-        if (imageUrl.isNotEmpty() && !loadError) {
+        // Fondo de pantalla
+        if (backgroundUrl.isNotEmpty()) {
             Image(
-                painter = rememberAsyncImagePainter(imageUrl),
-                contentDescription = "Imagen de Carina",
-                modifier = Modifier.size(300.dp)
-            )
-        } else if (loadError) {
-            Text(
-                text = "Error al cargar la imagen",
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                painter = rememberAsyncImagePainter(backgroundUrl),
+                contentDescription = "Fondo de pantalla",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
             )
         } else {
-            Text(
-                text = "Cargando imagen...",
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Gray)
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        // Contenido principal
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Título "Carina"
+            Text(
+                text = "Carina",
+                fontWeight = FontWeight.Bold,
+                fontSize = 30.sp,
+                color = Color.Black
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Imagen principal
+            when {
+                imageUrl.isNotEmpty() && !loadError -> {
+                    Image(
+                        painter = rememberAsyncImagePainter(imageUrl),
+                        contentDescription = "Imagen de Carina",
+                        modifier = Modifier.size(300.dp)
+                    )
+                }
+
+                loadError -> {
+                    Text(
+                        text = "Error al cargar la imagen",
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                }
+
+                else -> {
+                    Text(
+                        text = "Cargando imagen...",
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
     }
 }
