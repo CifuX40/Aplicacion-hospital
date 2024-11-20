@@ -1,23 +1,18 @@
 package com.example.mardeluna
 
-import android.util.Log
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import android.util.*
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import coil.compose.rememberAsyncImagePainter
-import com.google.firebase.storage.FirebaseStorage
+import androidx.compose.ui.*
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.layout.*
+import androidx.compose.ui.text.font.*
+import androidx.compose.ui.unit.*
+import androidx.navigation.*
+import coil.compose.*
+import com.google.firebase.storage.*
 
 @Composable
 fun PaginasWebScreen(navController: NavHostController) {
@@ -66,7 +61,7 @@ fun PaginasWebScreen(navController: NavHostController) {
             Image(
                 painter = rememberAsyncImagePainter(backgroundImageUrl),
                 contentDescription = "Fondo de pantalla",
-                contentScale = ContentScale.Crop, // Asegura que la imagen cubra toda la pantalla
+                contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
         } else if (loadError) {
@@ -103,8 +98,8 @@ fun PaginasWebScreen(navController: NavHostController) {
                         contentDescription = "Imagen de páginas web",
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(300.dp) // Tamaño ajustado para mayor visibilidad
-                            .padding(bottom = 24.dp) // Más espacio debajo de la primera imagen
+                            .height(300.dp)
+                            .padding(bottom = 24.dp)
                     )
                 }
 

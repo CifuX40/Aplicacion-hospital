@@ -122,13 +122,6 @@ fun HospitalDeDiaScreen(navController: NavHostController) {
             videoUrl?.let {
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Text(
-                    text = "Reproduciendo Video:",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
-
                 // Reproducir el video
                 AndroidView(
                     factory = { context ->
@@ -136,14 +129,14 @@ fun HospitalDeDiaScreen(navController: NavHostController) {
                             setVideoURI(Uri.parse(it)) // Enlace de Firebase Storage
                             setOnPreparedListener { mediaPlayer ->
                                 mediaPlayer.isLooping = true
-                                start() // Iniciar automáticamente
+                                start()
                             }
                             requestFocus()
                         }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(250.dp) // Ajusta el tamaño del video
+                        .height(250.dp)
                 )
             }
         }
