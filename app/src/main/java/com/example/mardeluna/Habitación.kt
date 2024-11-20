@@ -94,6 +94,7 @@ fun Habitacion(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Imagen principal
             Box(
                 modifier = Modifier.size(300.dp),
                 contentAlignment = Alignment.TopStart
@@ -101,7 +102,7 @@ fun Habitacion(navController: NavHostController) {
                 if (imageUrl.isNotEmpty() && !loadError) {
                     Image(
                         painter = rememberAsyncImagePainter(imageUrl),
-                        contentDescription = "Room",
+                        contentDescription = "Imagen de la habitación",
                         modifier = Modifier.fillMaxSize()
                     )
                 } else if (loadError) {
@@ -120,6 +121,7 @@ fun Habitacion(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Descripción de las habitaciones
             Text(
                 text = "Todas las habitaciones tienen una aspiración y una toma de oxígeno " +
                         "que se deberán comprobar su funcionamiento después de cada alta de paciente " +
@@ -131,6 +133,7 @@ fun Habitacion(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
+            // Título "Aparataje" en negrita
             Text(
                 text = "Aparataje",
                 fontSize = 20.sp,
@@ -141,6 +144,7 @@ fun Habitacion(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Botones para navegar
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
