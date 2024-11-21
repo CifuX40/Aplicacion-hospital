@@ -67,12 +67,12 @@ fun FirstFloorScreen(navController: NavHostController = rememberNavController())
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
-                .verticalScroll(rememberScrollState()),  // Agregar desplazamiento vertical
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Primer piso",
+                text = "Primera planta",
                 style = MaterialTheme.typography.headlineMedium,
                 color = Color.Black,
                 modifier = Modifier.padding(bottom = 16.dp)

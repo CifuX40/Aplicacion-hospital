@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.*
+import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import coil.compose.*
@@ -103,8 +104,8 @@ fun MainLogoScreen(navController: NavHostController) {
             if (!loadError) {
                 // Título para los botones "Pisos"
                 Text(
-                    text = "Seleccione un Piso",
-                    style = MaterialTheme.typography.headlineMedium,
+                    text = "Plantas",
+                    style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
                     modifier = Modifier.padding(bottom = 24.dp)
                 )
 

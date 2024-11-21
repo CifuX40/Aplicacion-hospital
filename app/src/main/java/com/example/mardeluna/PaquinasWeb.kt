@@ -91,6 +91,7 @@ fun PaginasWebScreen(navController: NavHostController) {
             )
 
             // Imagen de "Páginas web" desde Firebase Storage
+            // Imagen de "Páginas web" desde Firebase Storage
             when {
                 webPageImageUrl != null && !secondLoadError -> {
                     Image(
@@ -99,7 +100,22 @@ fun PaginasWebScreen(navController: NavHostController) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(300.dp)
-                            .padding(bottom = 24.dp)
+                            .padding(bottom = 16.dp) // Ajusta el espacio inferior
+                    )
+
+                    // Texto informativo debajo de la imagen
+                    Text(
+                        text = """
+                Las páginas web que debes conocer son las siguientes:
+                aTurnos: Encontrarás tus planillas. Desde aquí solicitarás tus cambios, vacaciones, días libres, etc.
+                Correo Web: Tu correo corporativo donde recibirás toda tu información de diferentes departamentos, cursos y comunicaciones internas.
+                GersDie: Es la plataforma donde meterás tus doblajes que serán aprobados por el supervisor.
+                Portal del Empleado/PeoPlenet: Desde aquí puedes consultar todas tus nóminas, modificar tus datos personales y bancarios, también encontrarás información sobre los beneficios sociales que te ofrece el hospital.
+            """.trimIndent(),
+                        fontSize = 14.sp,
+                        color = Color.Black,
+                        lineHeight = 20.sp,
+                        modifier = Modifier.padding(top = 8.dp, bottom = 24.dp)
                     )
                 }
 
@@ -119,14 +135,6 @@ fun PaginasWebScreen(navController: NavHostController) {
                     )
                 }
             }
-
-            // Descripción o contenido adicional
-            Text(
-                text = "Aquí puedes agregar contenido adicional relacionado con las páginas web de tu aplicación o información relevante para el usuario.",
-                fontSize = 16.sp,
-                color = Color.Black,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
         }
     }
 }
