@@ -118,19 +118,19 @@ fun HospitalDeDiaScreen(navController: NavHostController) {
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            // Si hay una URL de video, mostrar el video en modo horizontal
+            // Si hay una URL de video, mostrar el video con controles
             videoUrl?.let {
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Reproducir el video
+                // Mostrar el video con controles manuales
                 AndroidView(
                     factory = { context ->
                         VideoView(context).apply {
                             setVideoURI(Uri.parse(it)) // Enlace de Firebase Storage
-                            setOnPreparedListener { mediaPlayer ->
-                                mediaPlayer.isLooping = true
-                                start()
+                            val mediaController = MediaController(context).apply {
+                                setAnchorView(this@apply)
                             }
+                            setMediaController(mediaController)
                             requestFocus()
                         }
                     },
