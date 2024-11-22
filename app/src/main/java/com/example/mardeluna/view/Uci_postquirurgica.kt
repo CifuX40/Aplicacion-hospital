@@ -83,7 +83,6 @@ fun UciPostquirurgicaScreen(navController: NavHostController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Título en negrita
             Text(
                 text = "UCI Postquirúrgica",
                 fontSize = 24.sp,
@@ -92,7 +91,19 @@ fun UciPostquirurgicaScreen(navController: NavHostController) {
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            // Texto descriptivo (sin negrita)
+            if (roomImageUrl != null) {
+                Image(
+                    painter = rememberAsyncImagePainter(model = roomImageUrl),
+                    contentDescription = "Sala UCI",
+                    modifier = Modifier
+                        .height(300.dp)
+                        .fillMaxWidth(),
+                    contentScale = ContentScale.Fit
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             Text(
                 text = "CRITERIO DE INGRESO EN REA-UCI DE PACIENTES EN POSTUIRÚRGICO INMEDIATO\n" +
                         "\n" +
@@ -176,28 +187,13 @@ fun UciPostquirurgicaScreen(navController: NavHostController) {
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            // Imagen de la sala UCI
-            if (roomImageUrl != null) {
-                Image(
-                    painter = rememberAsyncImagePainter(model = roomImageUrl),
-                    contentDescription = "Sala UCI",
-                    modifier = Modifier
-                        .height(300.dp)
-                        .fillMaxWidth(),
-                    contentScale = ContentScale.Fit
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Botones uno debajo del otro
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Button(
                     onClick = {
-                        // Acción para "Respirador Savina 300"
+                        navController.navigate("respirador_screen")
                     },
                     modifier = Modifier.padding(bottom = 8.dp)
                 ) {
@@ -206,7 +202,7 @@ fun UciPostquirurgicaScreen(navController: NavHostController) {
 
                 Button(
                     onClick = {
-                        // Acción para "Carro de ingresos"
+                        navController.navigate("carro_ingresos_screen")
                     }
                 ) {
                     Text("Carro de ingresos")
