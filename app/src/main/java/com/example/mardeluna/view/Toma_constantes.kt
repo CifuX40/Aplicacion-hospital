@@ -1,89 +1,78 @@
 package com.example.mardeluna.view
 
-import android.util.*
-import androidx.compose.foundation.layout.*
+import android.net.*
+import android.widget.*
 import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.layout.*
-import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
+import androidx.compose.ui.viewinterop.*
+import androidx.navigation.*
 import coil.compose.*
 import com.google.firebase.storage.*
 
 @Composable
-fun TomaConstantesScreen() {
+fun TomaConstantesScreen(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
-    var imageUrl by remember { mutableStateOf("") }
-    var loadError by remember { mutableStateOf(false) }
+    var videoUrl by remember { mutableStateOf<String?>(null) }
 
-    // Cargar recursos desde Firebase Storage
+    // Cargar la URL de la imagen de fondo y el video desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
 
-        // Cargar fondo
-        storage.reference.child("fondo_de_pantalla.jpg").downloadUrl
+        val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
+        backgroundRef.downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
-            .addOnFailureListener { Log.e("Firebase", "Error al cargar fondo: ${it.message}") }
+            .addOnFailureListener { /* Manejar error */ }
 
-        // Cargar imagen
-        loadImageFromFirebase("hospital_dia.jpg") { url, error ->
-            imageUrl = url ?: ""
-            loadError = error != null
-            error?.let { Log.e("Firebase", "Error al cargar la imagen: ${it.message}") }
-        }
+        val videoRef = storage.reference.child("toma_constantes.mp4")
+        videoRef.downloadUrl
+            .addOnSuccessListener { uri -> videoUrl = uri.toString() }
+            .addOnFailureListener { /* Manejar error */ }
     }
 
-    // Contenedor principal
+    // Fondo y contenido principal
     Box(modifier = Modifier.fillMaxSize()) {
-        // Fondo de pantalla
         if (backgroundUrl.isNotEmpty()) {
             Image(
                 painter = rememberAsyncImagePainter(backgroundUrl),
                 contentDescription = "Fondo de pantalla",
-                contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
-            )
-        } else {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.LightGray)
             )
         }
 
-        // Contenido principal
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Toma de constantes",
+                text = "Toma de Constantes",
                 fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                modifier = Modifier.padding(bottom = 16.dp)
+                color = Color.Black
             )
 
-            if (!loadError && imageUrl.isNotEmpty()) {
-                Image(
-                    painter = rememberAsyncImagePainter(imageUrl),
-                    contentDescription = "Toma de constantes",
+            Spacer(modifier = Modifier.height(16.dp))
+
+            videoUrl?.let {
+                AndroidView(
+                    factory = { context ->
+                        VideoView(context).apply {
+                            setVideoURI(Uri.parse(it))
+                            val mediaController = MediaController(context).apply {
+                                setAnchorView(this@apply)
+                            }
+                            setMediaController(mediaController)
+                            requestFocus()
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(200.dp)
-                        .padding(8.dp)
-                )
-            } else if (loadError) {
-                Text(
-                    text = "Error al cargar la imagen",
-                    color = Color.Red,
-                    modifier = Modifier.padding(vertical = 8.dp)
+                        .height(250.dp)
                 )
             }
         }
