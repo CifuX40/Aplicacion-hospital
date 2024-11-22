@@ -37,7 +37,7 @@ fun ICUScreen(navController: NavHostController) {
             }
 
         // Cargar la imagen principal
-        val storageRef = storage.reference.child("sala_uci_uno.jpg")
+        val storageRef = storage.reference.child("uci.jpg")
         storageRef.downloadUrl
             .addOnSuccessListener { uri ->
                 imageUrl = uri.toString()
@@ -98,16 +98,6 @@ fun ICUScreen(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(
-                text = "Sala para cuidados de pacientes después de intervenciones quirúrgicas " +
-                        "que necesitan monitorización y vigilancia, ya sea por control del dolor o " +
-                        "por control de constantes vitales.",
-                fontSize = 16.sp,
-                color = Color.Black
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
             Button(
                 onClick = {
                     Log.d("Navigation", "Navegando a UCI Postquirúrgica")
@@ -117,7 +107,7 @@ fun ICUScreen(navController: NavHostController) {
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp)
             ) {
-                Text(text = "UCI Postquirúrgica")
+                Text(text = "UCI postquirúrgica")
             }
 
             Button(
@@ -129,7 +119,7 @@ fun ICUScreen(navController: NavHostController) {
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp)
             ) {
-                Text(text = "UCI Médica")
+                Text(text = "UCI médica")
             }
         }
     }
