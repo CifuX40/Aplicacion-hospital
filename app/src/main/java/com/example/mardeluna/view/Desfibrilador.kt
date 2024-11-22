@@ -1,6 +1,9 @@
 package com.example.mardeluna.view
 
-import android.util.Log
+import android.util.*
+import android.widget.VideoView
+import android.net.*
+import android.widget.MediaController
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -9,6 +12,7 @@ import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.google.firebase.storage.FirebaseStorage
@@ -16,11 +20,15 @@ import com.google.firebase.storage.FirebaseStorage
 @Composable
 fun DesfibriladorScreen(navController: NavHostController) {
     var backgroundImageUrl by remember { mutableStateOf<String?>(null) }
+    var videoUrl by remember { mutableStateOf<String?>(null) }
+    var listadoCarroParadasUrl by remember { mutableStateOf<String?>(null) }
     var loadError by remember { mutableStateOf(false) }
 
-    // Descargar la URL de la imagen de fondo
+    // Descargar la URL de la imagen de fondo, video y listado_carro_paradas.jpg
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
+
+        // Cargar fondo
         val fondoRef = storage.reference.child("fondo_de_pantalla.jpg")
         fondoRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -30,6 +38,30 @@ fun DesfibriladorScreen(navController: NavHostController) {
             .addOnFailureListener { exception ->
                 loadError = true
                 Log.e("Firebase", "Error al obtener URL del fondo: ${exception.message}")
+            }
+
+        // Cargar video
+        val videoRef = storage.reference.child("desfibrilador_UCI.mp4")
+        videoRef.downloadUrl
+            .addOnSuccessListener { uri ->
+                videoUrl = uri.toString()
+                Log.d("Firebase", "URL del video obtenida: $videoUrl")
+            }
+            .addOnFailureListener { exception ->
+                loadError = true
+                Log.e("Firebase", "Error al obtener URL del video: ${exception.message}")
+            }
+
+        // Cargar imagen listado_carro_paradas.jpg
+        val listadoRef = storage.reference.child("listado_carro_paradas.jpg")
+        listadoRef.downloadUrl
+            .addOnSuccessListener { uri ->
+                listadoCarroParadasUrl = uri.toString()
+                Log.d("Firebase", "URL de listado_carro_paradas obtenida: $listadoCarroParadasUrl")
+            }
+            .addOnFailureListener { exception ->
+                loadError = true
+                Log.e("Firebase", "Error al obtener URL de listado_carro_paradas: ${exception.message}")
             }
     }
 
@@ -63,14 +95,49 @@ fun DesfibriladorScreen(navController: NavHostController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Título
             Text(
                 text = "Desfibrilador",
                 style = MaterialTheme.typography.headlineMedium,
-                color = Color.Black
+                color = Color.Black,
+                modifier = Modifier.padding(bottom = 16.dp)
             )
+
+            // Video de Firebase (solo si la URL está disponible)
+            videoUrl?.let {
+                AndroidView(
+                    factory = { context ->
+                        VideoView(context).apply {
+                            setVideoURI(Uri.parse(it))
+                            val mediaController = MediaController(context).apply {
+                                setAnchorView(this@apply)
+                            }
+                            setMediaController(mediaController)
+                            requestFocus()
+                            start()
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(400.dp)
+                )
+            }
+
+            // Imagen listado_carro_paradas debajo del video
+            listadoCarroParadasUrl?.let {
+                Image(
+                    painter = rememberAsyncImagePainter(model = it),
+                    contentDescription = "Listado de carro de paradas",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
+                        .height(300.dp),
+                    contentScale = ContentScale.Crop
+                )
+            }
         }
     }
 }

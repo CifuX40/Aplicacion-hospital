@@ -73,6 +73,7 @@ fun TomaConstantesScreen(navController: NavHostController) {
                             }
                             setMediaController(mediaController)
                             requestFocus()
+                            start()
                         }
                     },
                     modifier = Modifier

@@ -38,6 +38,6 @@ fun AppNavigation(navController: NavHostController) {
         composable("respirador_screen") { SavinaScreen(navController) }
         composable("carro_ingresos_screen") { CarroIngresosScreen(navController) }
         composable("desfibrilador_screen") { DesfibriladorScreen(navController) }
-        composable("evita_300_screen") { Evita300Screen(navController) }
+        composable("evita_300_screen") { Evita600Screen(navController) }
     }
 }
