@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import coil.compose.*
@@ -42,6 +43,7 @@ fun TomaConstantesScreen(navController: NavHostController) {
             Image(
                 painter = rememberAsyncImagePainter(backgroundUrl),
                 contentDescription = "Fondo de pantalla",
+                contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
         }
@@ -54,7 +56,7 @@ fun TomaConstantesScreen(navController: NavHostController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Toma de Constantes",
+                text = "Toma de constantes",
                 fontSize = 24.sp,
                 color = Color.Black
             )

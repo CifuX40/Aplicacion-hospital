@@ -7,6 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
@@ -44,6 +45,7 @@ fun HospitalDeDiaScreen(navController: NavHostController) {
             Image(
                 painter = rememberAsyncImagePainter(backgroundUrl),
                 contentDescription = "Fondo de pantalla",
+                contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
         } else {
