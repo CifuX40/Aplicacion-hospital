@@ -28,40 +28,28 @@ fun RCPScreen(navController: NavHostController) {
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
 
-        // Cargar fondo de pantalla
         storage.reference.child("fondo_de_pantalla.jpg").downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
             .addOnFailureListener { Log.e("Firebase", "Error al cargar fondo: ${it.message}") }
 
-        // Cargar video básico
         storage.reference.child("rcp_basica.mp4").downloadUrl
             .addOnSuccessListener { uri -> videoBasicUrl = uri.toString() }
             .addOnFailureListener {
-                Log.e(
-                    "Firebase",
-                    "Error al cargar video básico: ${it.message}"
-                )
+                Log.e("Firebase", "Error al cargar video básico: ${it.message}")
             }
 
-        // Cargar esquema
         storage.reference.child("esquema_rcp.jpg").downloadUrl
             .addOnSuccessListener { uri -> imageUrl = uri.toString() }
             .addOnFailureListener { Log.e("Firebase", "Error al cargar esquema: ${it.message}") }
 
-        // Cargar video avanzado
         storage.reference.child("rcp_avanzada.mp4").downloadUrl
             .addOnSuccessListener { uri -> videoAdvancedUrl = uri.toString() }
             .addOnFailureListener {
-                Log.e(
-                    "Firebase",
-                    "Error al cargar video avanzado: ${it.message}"
-                )
+                Log.e("Firebase", "Error al cargar video avanzado: ${it.message}")
             }
     }
 
-    // Contenedor principal con fondo
     Box(modifier = Modifier.fillMaxSize()) {
-        // Fondo de pantalla
         if (backgroundUrl.isNotEmpty()) {
             Image(
                 painter = rememberAsyncImagePainter(backgroundUrl),
@@ -77,14 +65,13 @@ fun RCPScreen(navController: NavHostController) {
             )
         }
 
-        // Contenido principal
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Título
             Text(
                 text = "RCP",
                 fontSize = 24.sp,
@@ -93,7 +80,6 @@ fun RCPScreen(navController: NavHostController) {
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            // Video básico
             videoBasicUrl?.let {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
@@ -106,10 +92,10 @@ fun RCPScreen(navController: NavHostController) {
                     factory = { context ->
                         VideoView(context).apply {
                             setVideoURI(Uri.parse(it))
-                            setOnPreparedListener { mediaPlayer ->
-                                mediaPlayer.isLooping = true
-                            }
-                            start()
+                            val mediaController = MediaController(context)
+                            mediaController.setAnchorView(this)
+                            setMediaController(mediaController)
+                            requestFocus()
                         }
                     },
                     modifier = Modifier
@@ -118,7 +104,6 @@ fun RCPScreen(navController: NavHostController) {
                 )
             }
 
-            // Esquema
             if (imageUrl.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
@@ -137,7 +122,6 @@ fun RCPScreen(navController: NavHostController) {
                 )
             }
 
-            // Video avanzado
             videoAdvancedUrl?.let {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
@@ -150,9 +134,10 @@ fun RCPScreen(navController: NavHostController) {
                     factory = { context ->
                         VideoView(context).apply {
                             setVideoURI(Uri.parse(it))
-                            setOnPreparedListener { mediaPlayer ->
-                                mediaPlayer.isLooping = true
-                            }
+                            val mediaController = MediaController(context)
+                            mediaController.setAnchorView(this)
+                            setMediaController(mediaController)
+                            requestFocus()
                         }
                     },
                     modifier = Modifier
