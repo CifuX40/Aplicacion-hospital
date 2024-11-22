@@ -79,7 +79,6 @@ fun ResiduosHospitalariosScreen(navController: NavHostController) {
                             setVideoURI(Uri.parse(it))
                             setOnPreparedListener { mediaPlayer ->
                                 mediaPlayer.isLooping = true
-                                start()
                             }
                             requestFocus()
                         }
