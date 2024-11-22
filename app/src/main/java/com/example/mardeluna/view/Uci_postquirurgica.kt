@@ -3,7 +3,6 @@ package com.example.mardeluna.view
 import android.util.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -84,6 +83,16 @@ fun UciPostquirurgicaScreen(navController: NavHostController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Título en negrita
+            Text(
+                text = "UCI Postquirúrgica",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            // Texto descriptivo (sin negrita)
             Text(
                 text = "CRITERIO DE INGRESO EN REA-UCI DE PACIENTES EN POSTUIRÚRGICO INMEDIATO\n" +
                         "\n" +
@@ -162,8 +171,7 @@ fun UciPostquirurgicaScreen(navController: NavHostController) {
                         "La actividad obstétrica, por la necesidad no esperable de intervenciones complejas para la recuperación de problemas médico-quirúrgicos, debería hacerse siempre en centros que al  menos contasen con la posibilidad de una REA nivel C.\n" +
                         "Todos estos casos, tras la cirugía, en caso de no existir UCI, deberán pasar al despertar/REA con vigilancia anestésica, y en el menor tiempo posible, trasladarse a un centro con UCI para su mayor seguridad.\n" +
                         "En aquellos centros sin UCI, y por tanto, sin presencia de especialistas en Medicina Intensiva,  sería recomendable a pesar del mayor coste probable, contratar especialistas en la citada rama para el trabajo en el Servicio de Urgencias.",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
                 color = Color.Black,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
@@ -182,16 +190,16 @@ fun UciPostquirurgicaScreen(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botones
-            Row(
-                horizontalArrangement = Arrangement.Center,
+            // Botones uno debajo del otro
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Button(
                     onClick = {
                         // Acción para "Respirador Savina 300"
                     },
-                    modifier = Modifier.padding(end = 16.dp)
+                    modifier = Modifier.padding(bottom = 8.dp)
                 ) {
                     Text("Respirador Savina 300")
                 }
