@@ -1,18 +1,22 @@
 package com.example.mardeluna.view
 
-import android.util.*
-import androidx.compose.foundation.*
+import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.*
-import androidx.compose.ui.graphics.*
-import androidx.compose.ui.layout.*
-import androidx.compose.ui.text.font.*
-import androidx.compose.ui.unit.*
-import androidx.navigation.*
-import coil.compose.*
-import com.google.firebase.storage.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
+import com.google.firebase.storage.FirebaseStorage
+import androidx.navigation.NavHostController
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.ui.layout.ContentScale
 
 @Composable
 fun CarroIngresosScreen(navController: NavHostController) {
@@ -45,7 +49,10 @@ fun CarroIngresosScreen(navController: NavHostController) {
             }
             .addOnFailureListener { exception ->
                 loadError = true
-                Log.e("Firebase", "Error al obtener URL de la imagen del carro: ${exception.message}")
+                Log.e(
+                    "Firebase",
+                    "Error al obtener URL de la imagen del carro: ${exception.message}"
+                )
             }
     }
 
@@ -92,14 +99,6 @@ fun CarroIngresosScreen(navController: NavHostController) {
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            // Texto explicativo
-            Text(
-                text = "CARRO INGRESO EN UCI",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
             // Mostrar imagen del carro si está disponible
             carroImageUrl?.let {
                 Image(
@@ -108,7 +107,7 @@ fun CarroIngresosScreen(navController: NavHostController) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(500.dp)
-                        .padding(bottom = 10.dp)
+                        .padding(bottom = 16.dp)
                 )
             } ?: run {
                 Text(
@@ -117,6 +116,25 @@ fun CarroIngresosScreen(navController: NavHostController) {
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
             }
+
+            // Texto explicativo
+            Text(
+                text = "CARRO INGRESO EN UCI",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+
+            // Descripción adicional
+            Text(
+                text = "El carro e ingreso de UCI contiene todo el material necesario para el ingreso de cualquier paciente, evitando pérdidas de tiempo y faltas de material en un momento tan crítico.\n" +
+                        "Cada cajón lleva un cartel con el contenido que deberá haber dentro del mismo. \n" +
+                        "Antes de recibir cualquier ingreso y siempre después de haber hecho uso de él deberá revisarse y reponerse todo el material utilizado.",
+                fontSize = 16.sp,
+                color = Color.Black,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
         }
     }
 }
