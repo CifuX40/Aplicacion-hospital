@@ -10,14 +10,14 @@ import androidx.compose.ui.layout.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
-import android.util.*  // Importación de Log
+import android.util.*
 import coil.compose.*
 import com.google.firebase.storage.*
 
 @Composable
 fun ProcedimientoIngresosScreen(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
-    var imageUrl by remember { mutableStateOf("") }  // Para almacenar la URL de la imagen del procedimiento
+    var imageUrl by remember { mutableStateOf("") }
 
     // Cargar la URL de la imagen de fondo y la imagen del procedimiento desde Firebase Storage
     LaunchedEffect(Unit) {
@@ -68,7 +68,7 @@ fun ProcedimientoIngresosScreen(navController: NavHostController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Procedimiento Ingresos",
+                text = "Procedimiento ingresos",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
