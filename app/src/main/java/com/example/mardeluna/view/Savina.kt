@@ -1,6 +1,6 @@
 package com.example.mardeluna.view
 
-import android.util.Log
+import android.util.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -98,8 +98,8 @@ fun SavinaScreen(navController: NavHostController) {
                     contentDescription = "Instrucciones Savina 300",
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 16.dp),
-                    contentScale = ContentScale.Fit
+                        .height(500.dp)
+                        .padding(bottom = 10.dp)
                 )
             } ?: run {
                 Text(
