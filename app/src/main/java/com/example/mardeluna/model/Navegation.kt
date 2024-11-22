@@ -33,5 +33,7 @@ fun AppNavigation(navController: NavHostController) {
         composable("rcp_screen") { RCPScreen(navController) }
         composable("residuos_hospitalarios_screen") { ResiduosHospitalariosScreen(navController) }
         composable("Toma_constantes") { TomaConstantesScreen(navController) }
+        composable("hoja_informativa_pacientes") { HojaInformativaPacientesScreen(navController) }
+        composable("procedimiento_ingresos") { ProcedimientoIngresosScreen(navController) }
     }
 }
