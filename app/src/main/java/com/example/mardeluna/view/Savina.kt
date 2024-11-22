@@ -1,6 +1,6 @@
 package com.example.mardeluna.view
 
-import android.util.*
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -16,10 +16,11 @@ import androidx.navigation.*
 
 @Composable
 fun SavinaScreen(navController: NavHostController) {
-    var imageUrl by remember { mutableStateOf<String?>(null) }
+    var backgroundImageUrl by remember { mutableStateOf<String?>(null) }
+    var instructionsImageUrl by remember { mutableStateOf<String?>(null) }
     var loadError by remember { mutableStateOf(false) }
 
-    // Descargar la URL de la imagen de fondo
+    // Descargar la URL de la imagen de fondo y de instrucciones
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
 
@@ -27,20 +28,20 @@ fun SavinaScreen(navController: NavHostController) {
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri ->
-                imageUrl = uri.toString()
-                Log.d("Firebase", "URL de fondo obtenida: $imageUrl")
+                backgroundImageUrl = uri.toString()
+                Log.d("Firebase", "URL de fondo obtenida: $backgroundImageUrl")
             }
             .addOnFailureListener { exception ->
                 loadError = true
                 Log.e("Firebase", "Error al obtener URL del fondo: ${exception.message}")
             }
 
-        // Descargar la URL de la imagen de instrucciones
-        val instructionsImageRef = storage.reference.child("instrucciones_savina_300.jpg")
-        instructionsImageRef.downloadUrl
+        // Cargar imagen de instrucciones
+        val instructionsRef = storage.reference.child("instrucciones_savina_300.jpg")
+        instructionsRef.downloadUrl
             .addOnSuccessListener { uri ->
-                imageUrl = uri.toString()
-                Log.d("Firebase", "URL de instrucciones obtenida: $imageUrl")
+                instructionsImageUrl = uri.toString()
+                Log.d("Firebase", "URL de instrucciones obtenida: $instructionsImageUrl")
             }
             .addOnFailureListener { exception ->
                 loadError = true
@@ -52,10 +53,10 @@ fun SavinaScreen(navController: NavHostController) {
         modifier = Modifier.fillMaxSize()
     ) {
         // Imagen de fondo
-        if (imageUrl != null) {
+        if (backgroundImageUrl != null) {
             Image(
-                painter = rememberAsyncImagePainter(model = imageUrl),
-                contentDescription = "Fondo de pantalla o instrucciones",
+                painter = rememberAsyncImagePainter(model = backgroundImageUrl),
+                contentDescription = "Fondo de pantalla",
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
             )
@@ -79,7 +80,7 @@ fun SavinaScreen(navController: NavHostController) {
                 .fillMaxSize()
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -91,11 +92,13 @@ fun SavinaScreen(navController: NavHostController) {
             )
 
             // Mostrar imagen de instrucciones si está disponible
-            imageUrl?.let {
+            instructionsImageUrl?.let {
                 Image(
                     painter = rememberAsyncImagePainter(model = it),
                     contentDescription = "Instrucciones Savina 300",
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
                     contentScale = ContentScale.Fit
                 )
             } ?: run {
