@@ -92,24 +92,6 @@ fun CarroIngresosScreen(navController: NavHostController) {
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            // Mostrar imagen del carro si está disponible
-            carroImageUrl?.let {
-                Image(
-                    painter = rememberAsyncImagePainter(model = it),
-                    contentDescription = "Carro de ingresos",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 16.dp),  // Espaciado debajo de la imagen
-                    contentScale = ContentScale.Fit
-                )
-            } ?: run {
-                Text(
-                    text = "Cargando imagen del carro...",
-                    color = Color.Gray,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-            }
-
             // Texto explicativo
             Text(
                 text = "CARRO INGRESO EN UCI",
@@ -118,6 +100,23 @@ fun CarroIngresosScreen(navController: NavHostController) {
                 color = Color.Black,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
+            // Mostrar imagen del carro si está disponible
+            carroImageUrl?.let {
+                Image(
+                    painter = rememberAsyncImagePainter(model = it),
+                    contentDescription = "Carro de ingresos",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(500.dp)
+                        .padding(bottom = 10.dp)
+                )
+            } ?: run {
+                Text(
+                    text = "Cargando imagen del carro...",
+                    color = Color.Gray,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+            }
         }
     }
 }
