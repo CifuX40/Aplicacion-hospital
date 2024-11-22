@@ -7,13 +7,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import coil.compose.*
 import com.google.firebase.storage.*
-
 
 @Composable
 fun HospitalDeDiaScreen(navController: NavHostController) {
@@ -114,6 +113,20 @@ fun HospitalDeDiaScreen(navController: NavHostController) {
             // Botón para navegación a la pantalla de Toma de Constantes
             Button(onClick = { navController.navigate("Toma_constantes") }) {
                 Text(text = "Toma de constantes")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Botón para navegación a la pantalla de Hoja Informativa Pacientes
+            Button(onClick = { navController.navigate("Hoja_informativa_pacientes") }) {
+                Text(text = "Hoja informativa pacientes")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Botón para navegación a la pantalla de Procedimiento Ingresos
+            Button(onClick = { navController.navigate("Procedimiento_ingresos") }) {
+                Text(text = "Procedimiento ingresos")
             }
         }
     }
