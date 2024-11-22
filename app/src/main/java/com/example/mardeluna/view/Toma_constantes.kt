@@ -1,21 +1,20 @@
 package com.example.mardeluna.view
 
 import android.util.*
-import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.layout.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
-import androidx.navigation.*
 import coil.compose.*
 import com.google.firebase.storage.*
-import androidx.compose.ui.layout.*
 
 @Composable
-fun HospitalDeDiaScreen(navController: NavHostController) {
+fun TomaConstantesScreen() {
     var backgroundUrl by remember { mutableStateOf("") }
     var imageUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
@@ -59,30 +58,22 @@ fun HospitalDeDiaScreen(navController: NavHostController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState()) // Habilitar desplazamiento vertical
+                .verticalScroll(rememberScrollState())
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Hospital de Día",
+                text = "Toma de constantes",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            // Botón "Toma de constantes"
-            Button(onClick = { navController.navigate("Toma_constantes") }) {
-                Text(text = "Toma de constantes")
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Imagen descriptiva
             if (!loadError && imageUrl.isNotEmpty()) {
                 Image(
                     painter = rememberAsyncImagePainter(imageUrl),
-                    contentDescription = "Hospital de Día",
+                    contentDescription = "Toma de constantes",
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(200.dp)
@@ -97,13 +88,4 @@ fun HospitalDeDiaScreen(navController: NavHostController) {
             }
         }
     }
-}
-
-// Función para cargar imágenes desde Firebase Storage
-fun loadImageFromFirebase(fileName: String, onResult: (String?, Exception?) -> Unit) {
-    val storage = FirebaseStorage.getInstance()
-    val storageRef = storage.reference.child(fileName)
-    storageRef.downloadUrl
-        .addOnSuccessListener { uri -> onResult(uri.toString(), null) }
-        .addOnFailureListener { exception -> onResult(null, exception) }
 }
