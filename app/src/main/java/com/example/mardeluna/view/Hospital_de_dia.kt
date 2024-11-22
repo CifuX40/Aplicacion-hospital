@@ -55,7 +55,6 @@ fun HospitalDeDiaScreen(navController: NavHostController) {
             )
         }
 
-        // Contenido principal
         Column(
             modifier = Modifier
                 .fillMaxSize()

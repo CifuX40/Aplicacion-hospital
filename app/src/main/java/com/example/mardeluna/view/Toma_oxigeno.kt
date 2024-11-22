@@ -71,7 +71,6 @@ fun TomaOxigenoScreen(navController: NavHostController) {
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Título
             Text(
                 text = "Toma de oxígeno",
                 fontSize = 24.sp,
@@ -110,7 +109,6 @@ fun TomaOxigenoScreen(navController: NavHostController) {
                 }
             }
 
-            // Procedimiento
             Text(
                 text = "PROCEDIMIENTO:",
                 fontSize = 18.sp,

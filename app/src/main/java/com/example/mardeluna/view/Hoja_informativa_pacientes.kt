@@ -17,16 +17,27 @@ import com.google.firebase.storage.*
 @Composable
 fun HojaInformativaPacientesScreen(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
+    var imageUrl by remember { mutableStateOf("") }
 
     // Cargar la URL de la imagen de fondo desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
 
         // Cargar fondo
-        val backgroundRef = storage.reference.child("hoja_informativa_pacientes.jpg")
+        val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
-            .addOnFailureListener { Log.e("Firebase", "Error al cargar fondo: ${it.message}") }
+            .addOnFailureListener { exception ->
+                Log.e("Firebase", "Error al cargar fondo: ${exception.message}")
+            }
+
+        // Cargar la imagen de la hoja informativa
+        val imageRef = storage.reference.child("hoja_informativa_pacientes.jpg")
+        imageRef.downloadUrl
+            .addOnSuccessListener { uri -> imageUrl = uri.toString() }
+            .addOnFailureListener { exception ->
+                Log.e("Firebase", "Error al cargar la imagen: ${exception.message}")
+            }
     }
 
     // Estructura principal con fondo
@@ -46,7 +57,6 @@ fun HojaInformativaPacientesScreen(navController: NavHostController) {
             )
         }
 
-        // Contenido principal
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -54,11 +64,28 @@ fun HojaInformativaPacientesScreen(navController: NavHostController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Hoja Informativa Pacientes",
+                text = "Hoja informativa pacientes",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
             )
+
+            // Mostrar la imagen de la hoja informativa, si está disponible
+            if (imageUrl.isNotEmpty()) {
+                Image(
+                    painter = rememberAsyncImagePainter(imageUrl),
+                    contentDescription = "Hoja informativa paciente",
+                    modifier = Modifier
+                        .height(500.dp)
+                        .width(500.dp),
+                    contentScale = ContentScale.Fit
+                )
+            } else {
+                Text(
+                    text = "Error al cargar la imagen de la hoja informativa.",
+                    color = Color.Red
+                )
+            }
         }
     }
 }

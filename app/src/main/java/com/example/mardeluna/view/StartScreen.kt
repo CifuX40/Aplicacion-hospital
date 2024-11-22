@@ -114,7 +114,6 @@ fun StartScreen(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botón de navegación
             Button(
                 onClick = { navController.navigate("history") },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
