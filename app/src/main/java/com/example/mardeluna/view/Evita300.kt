@@ -3,6 +3,8 @@ package com.example.mardeluna.view
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -74,11 +76,12 @@ fun Evita600Screen(navController: NavHostController) {
             )
         }
 
-        // Contenido principal
+        // Contenido principal desplazable
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()), // Habilitar el desplazamiento vertical
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -98,8 +101,52 @@ fun Evita600Screen(navController: NavHostController) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 16.dp)
-                        .height(200.dp), // Ajusta la altura según sea necesario
-                    contentScale = ContentScale.Crop
+                        .height(500.dp), // Aumentar la altura
+                    contentScale = ContentScale.FillHeight // Ajuste para que ocupe toda la altura
+                )
+            }
+
+            // Texto adicional
+            Column(
+                modifier = Modifier
+                    .padding(top = 32.dp)
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = "Ventilación pulmonar protectora para adultos, niños y neonatos, tanto de tipo invasivo, no invasivo como con terapia de O2",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Color.Black,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    text = "Funciones avanzadas de monitorización pulmonar y diagnóstico (p. ej. Smart Pulmonary View o maniobra de flujo lento)",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Color.Black,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    text = "Visualización de la distribución regional de la ventilación con PulmoVista® 500",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Color.Black,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    text = "Herramientas de reclutamiento (p. ej. QuickSet® y PressureLink) y apoyo para la toma de decisiones terapéuticas mediante las tendencias de la respiración en tiempo real (PEEP, EIP, Vt, Cdin)",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Color.Black,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    text = "Énfasis en el volumen pulmonar espiratorio final, mediante PC-APRV con la función AutoRelease®",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Color.Black,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    text = "Monitorización volumétrica de CO2 (VCO2, VTCO2, Pendiente de la Fase 3, Vds/VTe)",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Color.Black,
+                    modifier = Modifier.padding(bottom = 8.dp)
                 )
             }
         }
