@@ -10,23 +10,37 @@ import androidx.compose.ui.layout.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
-import android.util.*
+import android.util.*  // Importación de Log
 import coil.compose.*
 import com.google.firebase.storage.*
 
 @Composable
 fun ProcedimientoIngresosScreen(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
+    var imageUrl by remember { mutableStateOf("") }  // Para almacenar la URL de la imagen del procedimiento
 
-    // Cargar la URL de la imagen de fondo desde Firebase Storage
+    // Cargar la URL de la imagen de fondo y la imagen del procedimiento desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
 
         // Cargar fondo
-        val backgroundRef = storage.reference.child("procedimiento_ingresos.jpg")
+        val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
-            .addOnFailureListener { Log.e("Firebase", "Error al cargar fondo: ${it.message}") }
+            .addOnFailureListener { exception ->
+                Log.e("Firebase", "Error al cargar fondo: ${exception.message}")
+            }
+
+        // Cargar la imagen del procedimiento
+        val imageRef = storage.reference.child("procedimiento_ingresos.jpg")
+        imageRef.downloadUrl
+            .addOnSuccessListener { uri -> imageUrl = uri.toString() }
+            .addOnFailureListener { exception ->
+                Log.e(
+                    "Firebase",
+                    "Error al cargar la imagen del procedimiento: ${exception.message}"
+                )
+            }
     }
 
     // Estructura principal con fondo
@@ -59,6 +73,23 @@ fun ProcedimientoIngresosScreen(navController: NavHostController) {
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
             )
+
+            // Mostrar la imagen del procedimiento, si está disponible
+            if (imageUrl.isNotEmpty()) {
+                Image(
+                    painter = rememberAsyncImagePainter(imageUrl),
+                    contentDescription = "Procedimiento ingresos",
+                    modifier = Modifier
+                        .height(500.dp)
+                        .width(500.dp),
+                    contentScale = ContentScale.Fit
+                )
+            } else {
+                Text(
+                    text = "Error al cargar la imagen del procedimiento",
+                    color = Color.Red
+                )
+            }
         }
     }
 }
