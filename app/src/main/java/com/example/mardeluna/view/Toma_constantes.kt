@@ -9,10 +9,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
-import androidx.compose.ui.viewinterop.*
 import androidx.navigation.*
 import coil.compose.*
 import com.google.firebase.storage.*
+import androidx.compose.ui.viewinterop.*
 
 @Composable
 fun TomaConstantesScreen(navController: NavHostController) {
@@ -23,11 +23,13 @@ fun TomaConstantesScreen(navController: NavHostController) {
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
 
+        // Cargar el fondo
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
             .addOnFailureListener { /* Manejar error */ }
 
+        // Cargar video
         val videoRef = storage.reference.child("toma_constantes.mp4")
         videoRef.downloadUrl
             .addOnSuccessListener { uri -> videoUrl = uri.toString() }
@@ -44,6 +46,7 @@ fun TomaConstantesScreen(navController: NavHostController) {
             )
         }
 
+        // Contenido principal
         Column(
             modifier = Modifier
                 .fillMaxSize()

@@ -1,8 +1,8 @@
 package com.example.mardeluna.view
 
 import android.util.*
-import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import coil.compose.*
 import com.google.firebase.storage.*
+
 
 @Composable
 fun HospitalDeDiaScreen(navController: NavHostController) {
@@ -23,6 +24,7 @@ fun HospitalDeDiaScreen(navController: NavHostController) {
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
 
+        // Cargar el fondo
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
