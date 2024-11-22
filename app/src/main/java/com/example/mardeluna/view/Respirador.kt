@@ -1,4 +1,4 @@
-package com.example.mardeluna
+package com.example.mardeluna.view
 
 import android.app.*
 import android.content.pm.*

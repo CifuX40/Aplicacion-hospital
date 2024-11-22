@@ -1,4 +1,4 @@
-package com.example.mardeluna
+package com.example.mardeluna.view
 
 import android.util.*
 import androidx.compose.foundation.*
@@ -90,7 +90,6 @@ fun PaginasWebScreen(navController: NavHostController) {
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            // Imagen de "Páginas web" desde Firebase Storage
             // Imagen de "Páginas web" desde Firebase Storage
             when {
                 webPageImageUrl != null && !secondLoadError -> {

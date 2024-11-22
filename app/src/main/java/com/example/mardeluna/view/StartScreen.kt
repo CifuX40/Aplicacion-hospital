@@ -1,4 +1,4 @@
-package com.example.mardeluna
+package com.example.mardeluna.view
 
 import android.util.*
 import androidx.compose.foundation.layout.*
@@ -15,6 +15,7 @@ import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import coil.compose.*
+import com.example.mardeluna.controller.CredentialsManager
 import com.google.firebase.auth.*
 import com.google.firebase.storage.*
 

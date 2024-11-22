@@ -1,4 +1,4 @@
-package com.example.mardeluna
+package com.example.mardeluna.view
 
 import android.util.*
 import androidx.compose.foundation.*

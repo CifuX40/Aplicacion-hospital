@@ -1,9 +1,33 @@
-package com.example.mardeluna
+package com.example.mardeluna.model
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.mardeluna.view.AspiracionScreen
+import com.example.mardeluna.view.CarinaScreen
+import com.example.mardeluna.view.CarroParadasScreen
+import com.example.mardeluna.view.ControlEnfermeriaScreen
+import com.example.mardeluna.view.Endoscopias
+import com.example.mardeluna.view.Endoscopios
+import com.example.mardeluna.view.FirstFloorScreen
+import com.example.mardeluna.view.HistoryScreen
+import com.example.mardeluna.view.HospitalDeDiaScreen
+import com.example.mardeluna.view.HospitalizationScreen
+import com.example.mardeluna.view.ICUScreen
+import com.example.mardeluna.view.Lavado
+import com.example.mardeluna.view.MainLogoScreen
+import com.example.mardeluna.view.PaginasWebScreen
+import com.example.mardeluna.view.RCPScreen
+import com.example.mardeluna.view.ResiduosHospitalariosScreen
+import com.example.mardeluna.view.RespiradorScreen
+import com.example.mardeluna.view.RoomScreen
+import com.example.mardeluna.view.SecondFloorScreen
+import com.example.mardeluna.view.StartScreen
+import com.example.mardeluna.view.SurgeryScreen
+import com.example.mardeluna.view.TomaOxigenoScreen
+import com.example.mardeluna.view.UciMedicaScreen
+import com.example.mardeluna.view.UciPostquirurgicaScreen
 
 @Composable
 fun AppNavigation(navController: NavHostController) {

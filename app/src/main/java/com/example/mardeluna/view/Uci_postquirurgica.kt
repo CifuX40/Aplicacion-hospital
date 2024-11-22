@@ -1,4 +1,4 @@
-package com.example.mardeluna
+package com.example.mardeluna.view
 
 import android.util.*
 import androidx.compose.foundation.*
@@ -15,7 +15,7 @@ import com.google.firebase.storage.*
 import androidx.compose.ui.layout.*
 
 @Composable
-fun UciMedicaScreen(navController: NavHostController) {
+fun UciPostquirurgicaScreen(navController: NavHostController) {
     var imageUrl by remember { mutableStateOf<String?>(null) }
     var loadError by remember { mutableStateOf(false) }
 
@@ -69,9 +69,10 @@ fun UciMedicaScreen(navController: NavHostController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "UCI Médica",
+                text = "UCI Postquirúrgica",
                 fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
             )
         }
     }
