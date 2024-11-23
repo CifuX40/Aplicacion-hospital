@@ -18,15 +18,23 @@ import com.google.firebase.storage.ktx.*
 @Composable
 fun SurgeryScreen(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
+    var surgeryImageUrl by remember { mutableStateOf("") }
 
     // Cargar fondo desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = Firebase.storage
 
+        // Fondo
         val backgroundRef = storage.getReferenceFromUrl("gs://mar-de-luna-ada79.firebasestorage.app/fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
             .addOnFailureListener { exception -> Log.e("Firebase", "Error al cargar fondo: ${exception.message}") }
+
+        // Imagen de quirófano
+        val surgeryImageRef = storage.getReferenceFromUrl("gs://mar-de-luna-ada79.firebasestorage.app/quirofano.jpg")
+        surgeryImageRef.downloadUrl
+            .addOnSuccessListener { uri -> surgeryImageUrl = uri.toString() }
+            .addOnFailureListener { exception -> Log.e("Firebase", "Error al cargar imagen quirófano: ${exception.message}") }
     }
 
     // Contenedor con fondo
@@ -49,64 +57,54 @@ fun SurgeryScreen(navController: NavHostController) {
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Título en color negro
+            // Título
             Text(
                 text = "Quirófano",
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
-                color = Color.Black,  // Letra en negro
+                color = Color.Black,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            // Cargar imágenes desde Firebase Storage
-            FirebaseImage("gs://mar-de-luna-ada79.firebasestorage.app/rea.jpg", "Área de recuperación")
-            FirebaseImage("gs://mar-de-luna-ada79.firebasestorage.app/sala_quirofano.jpg", "Sala de quirófano")
-            FirebaseImage("gs://mar-de-luna-ada79.firebasestorage.app/esterilizacion.jpg", "Área de esterilización")
-        }
-    }
-}
-
-@Composable
-fun FirebaseImage(storageUrl: String, description: String) {
-    var imageUrl by remember { mutableStateOf<String?>(null) }
-    var loadError by remember { mutableStateOf(false) }
-
-    // Cargar la URL de Firebase Storage
-    LaunchedEffect(storageUrl) {
-        val storage = Firebase.storage
-        val storageRef = storage.getReferenceFromUrl(storageUrl)
-        storageRef.downloadUrl
-            .addOnSuccessListener { uri ->
-                imageUrl = uri.toString()
-                Log.d("Firebase", "Imagen cargada exitosamente: $imageUrl")
-            }
-            .addOnFailureListener { exception ->
-                loadError = true
-                Log.e("Firebase", "Error al cargar la imagen: ${exception.message}")
-            }
-    }
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(8.dp)
-    ) {
-        when {
-            imageUrl != null -> {
-                // Mostrar la imagen si se obtuvo la URL correctamente
+            // Imagen de quirófano
+            if (surgeryImageUrl.isNotEmpty()) {
                 Image(
-                    painter = rememberAsyncImagePainter(model = imageUrl),
-                    contentDescription = description,
-                    modifier = Modifier.size(200.dp)
+                    painter = rememberAsyncImagePainter(surgeryImageUrl),
+                    contentDescription = "Imagen de quirófano",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(400.dp)
+                        .padding(bottom = 16.dp)
                 )
             }
-            loadError -> {
-                Text("Error al cargar la imagen: $description", color = Color.Black)
+
+            // Botones
+            Button(
+                onClick = { /* Navegar a Esterilización */ },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+            ) {
+                Text("Esterilización")
             }
-            else -> {
-                Text("Cargando imagen...", color = Color.Black)
+
+            Button(
+                onClick = { /* Navegar a REA */ },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+            ) {
+                Text("Rea")
+            }
+
+            Button(
+                onClick = { /* Navegar a Sala quirófano */ },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+            ) {
+                Text("Sala quirófano")
             }
         }
-
-        Text(text = description, modifier = Modifier.padding(8.dp), color = Color.Black)
     }
 }
