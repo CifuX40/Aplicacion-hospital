@@ -39,5 +39,8 @@ fun AppNavigation(navController: NavHostController) {
         composable("carro_ingresos_screen") { CarroIngresosScreen(navController) }
         composable("desfibrilador_screen") { DesfibriladorScreen(navController) }
         composable("evita_300_screen") { Evita600Screen(navController) }
+        composable("esterilizacion_screen") { EsterilizacionScreen(navController) }
+        composable("rea_screen") { ReaScreen(navController) }
+        composable("sala_quirofano_screen") { SalaQuirofanoScreen(navController) }
     }
 }

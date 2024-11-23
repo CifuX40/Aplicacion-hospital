@@ -78,9 +78,8 @@ fun SurgeryScreen(navController: NavHostController) {
                 )
             }
 
-            // Botones
             Button(
-                onClick = { /* Navegar a Esterilización */ },
+                onClick = { navController.navigate("esterilizacion_screen") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
@@ -89,7 +88,7 @@ fun SurgeryScreen(navController: NavHostController) {
             }
 
             Button(
-                onClick = { /* Navegar a REA */ },
+                onClick = { navController.navigate("rea_screen") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
@@ -98,7 +97,7 @@ fun SurgeryScreen(navController: NavHostController) {
             }
 
             Button(
-                onClick = { /* Navegar a Sala quirófano */ },
+                onClick = { navController.navigate("sala_quirofano_screen") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
