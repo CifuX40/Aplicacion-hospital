@@ -12,6 +12,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import coil.compose.rememberAsyncImagePainter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import java.util.*
 
 // Modelo de datos para una publicación
@@ -19,7 +20,8 @@ data class Publicacion(
     val id: String = "",
     val imagen: String = "",
     val texto: String = "",
-    val usuario: String = ""
+    val usuario: String = "",
+    val fecha: Long = System.currentTimeMillis() // Agregar campo de fecha
 )
 
 // Función para agregar una publicación a Firebase
@@ -31,12 +33,14 @@ suspend fun agregarPublicacion(imagen: String?, texto: String?) {
     if (usuarioActual != null) {
         val publicacionId = UUID.randomUUID().toString()
         val usuarioNombre = usuarioActual.displayName ?: usuarioActual.email ?: "Usuario desconocido"
+        val fecha = System.currentTimeMillis() // Fecha actual en milisegundos
 
         val publicacion = Publicacion(
             id = publicacionId,
             imagen = imagen ?: "",
             texto = texto ?: "",
-            usuario = usuarioNombre
+            usuario = usuarioNombre,
+            fecha = fecha
         )
 
         db.collection("Publicación").document(publicacionId).set(publicacion)
@@ -46,14 +50,80 @@ suspend fun agregarPublicacion(imagen: String?, texto: String?) {
     }
 }
 
+// Función para obtener las publicaciones desde Firestore
+@Composable
+fun ObtenerPublicaciones() {
+    val db = FirebaseFirestore.getInstance()
+    val publicaciones = remember { mutableStateListOf<Publicacion>() }
+    val isLoading = remember { mutableStateOf(true) }
+    val noPublicaciones = remember { mutableStateOf(false) }
+
+    LaunchedEffect(true) {
+        // Consultar publicaciones de Firestore ordenadas por fecha (descendente)
+        db.collection("Publicación")
+            .orderBy("fecha", Query.Direction.DESCENDING)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                publicaciones.clear()
+                if (querySnapshot.isEmpty) {
+                    noPublicaciones.value = true
+                } else {
+                    for (document in querySnapshot) {
+                        val publicacion = document.toObject(Publicacion::class.java)
+                        publicaciones.add(publicacion)
+                    }
+                    noPublicaciones.value = false
+                }
+                isLoading.value = false
+            }
+    }
+
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        if (isLoading.value) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+        } else {
+            if (noPublicaciones.value) {
+                Text("No hay publicaciones", modifier = Modifier.align(Alignment.CenterHorizontally))
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(
+                    onClick = { /* Acción para agregar publicación */ },
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ) {
+                    Text("Crear una publicación")
+                }
+            } else {
+                publicaciones.forEach { publicacion ->
+                    PublicacionView(publicacion)
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun PublicacionView(publicacion: Publicacion) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(text = publicacion.usuario, style = MaterialTheme.typography.bodyLarge)
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(text = publicacion.texto, style = MaterialTheme.typography.bodyMedium)
+        if (publicacion.imagen.isNotEmpty()) {
+            Image(
+                painter = rememberAsyncImagePainter(publicacion.imagen),
+                contentDescription = "Imagen de publicación",
+                modifier = Modifier.fillMaxWidth().height(200.dp).padding(8.dp)
+            )
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+    }
+}
+
 @Composable
 fun AgregarPublicacionUI(onAgregarClick: (String, String) -> Unit) {
     var texto by remember { mutableStateOf(TextFieldValue("")) }
     var imagenUrl by remember { mutableStateOf("") }
 
-    Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp)
-    ) {
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.primary).padding(16.dp),
             horizontalArrangement = Arrangement.Center

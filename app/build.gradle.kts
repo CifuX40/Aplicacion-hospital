@@ -77,6 +77,7 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
     implementation(libs.firebase.storage.ktx)
+    implementation (libs.firebase.firestore.ktx.v2443)
     implementation(libs.coil.compose)
     implementation(libs.androidx.media3.ui)
     implementation(libs.androidx.media3.exoplayer)

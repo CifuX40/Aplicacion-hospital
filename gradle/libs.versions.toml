@@ -4,6 +4,7 @@ androidPdfViewer = "3.2.0-beta.1"
 coilCompose = "2.7.0"
 firebaseBom = "33.6.0"
 coreKtx = "1.15.0"
+firebaseFirestoreKtxVersion = "24.4.3"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -29,6 +30,7 @@ android-pdf-viewer = { module = "com.github.barteksc:android-pdf-viewer", versio
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-firestore-ktx-v2443 = { module = "com.google.firebase:firebase-firestore-ktx", version.ref = "firebaseFirestoreKtxVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
