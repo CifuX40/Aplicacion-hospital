@@ -60,7 +60,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.ui)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -77,11 +76,11 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
     implementation(libs.firebase.storage.ktx)
-    implementation (libs.firebase.firestore.ktx.v2443)
+    implementation(libs.firebase.firestore.ktx)
     implementation(libs.coil.compose)
     implementation(libs.androidx.media3.ui)
     implementation(libs.androidx.media3.exoplayer)
-    implementation(libs.firebase.firestore.ktx)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -89,5 +88,4 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation (libs.material3)
 }

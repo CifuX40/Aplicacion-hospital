@@ -13,6 +13,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import kotlinx.coroutines.launch
 import java.util.*
 
 // Modelo de datos para una publicación
@@ -32,7 +33,8 @@ suspend fun agregarPublicacion(imagen: String?, texto: String?) {
 
     if (usuarioActual != null) {
         val publicacionId = UUID.randomUUID().toString()
-        val usuarioNombre = usuarioActual.displayName ?: usuarioActual.email ?: "Usuario desconocido"
+        val usuarioNombre =
+            usuarioActual.displayName ?: usuarioActual.email ?: "Usuario desconocido"
         val fecha = System.currentTimeMillis() // Fecha actual en milisegundos
 
         val publicacion = Publicacion(
@@ -76,14 +78,23 @@ fun ObtenerPublicaciones() {
                 }
                 isLoading.value = false
             }
+            .addOnFailureListener {
+                println("Error obteniendo publicaciones: ${it.message}")
+                isLoading.value = false
+            }
     }
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(16.dp)) {
         if (isLoading.value) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
         } else {
             if (noPublicaciones.value) {
-                Text("No hay publicaciones", modifier = Modifier.align(Alignment.CenterHorizontally))
+                Text(
+                    "No hay publicaciones",
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
                     onClick = { /* Acción para agregar publicación */ },
@@ -111,7 +122,10 @@ fun PublicacionView(publicacion: Publicacion) {
             Image(
                 painter = rememberAsyncImagePainter(publicacion.imagen),
                 contentDescription = "Imagen de publicación",
-                modifier = Modifier.fillMaxWidth().height(200.dp).padding(8.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .padding(8.dp)
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
@@ -123,9 +137,14 @@ fun AgregarPublicacionUI(onAgregarClick: (String, String) -> Unit) {
     var texto by remember { mutableStateOf(TextFieldValue("")) }
     var imagenUrl by remember { mutableStateOf("") }
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(16.dp)) {
         Row(
-            modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.primary).padding(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.primary)
+                .padding(16.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             Text(text = "Agregar Publicación", color = Color.White)
@@ -137,14 +156,20 @@ fun AgregarPublicacionUI(onAgregarClick: (String, String) -> Unit) {
             value = imagenUrl,
             onValueChange = { imagenUrl = it },
             label = { Text("URL de la imagen") },
-            modifier = Modifier.fillMaxWidth().padding(8.dp).height(50.dp).background(Color.LightGray)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+                .height(50.dp)
+                .background(Color.LightGray)
         )
 
         if (imagenUrl.isNotEmpty()) {
             Image(
                 painter = rememberAsyncImagePainter(imagenUrl),
                 contentDescription = "Vista previa de la imagen",
-                modifier = Modifier.fillMaxWidth().height(200.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
             )
         }
 
@@ -152,7 +177,9 @@ fun AgregarPublicacionUI(onAgregarClick: (String, String) -> Unit) {
             value = texto,
             onValueChange = { texto = it },
             label = { Text("Escribe tu publicación...") },
-            modifier = Modifier.fillMaxWidth().height(150.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(150.dp)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -163,6 +190,25 @@ fun AgregarPublicacionUI(onAgregarClick: (String, String) -> Unit) {
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
             Text("Agregar Publicación", color = Color.White)
+        }
+    }
+}
+
+@Composable
+fun AgregarPublicacionScreen() {
+    val texto = remember { mutableStateOf(TextFieldValue("")) }
+    val imagenUrl = remember { mutableStateOf("") }
+
+    // Llamar a la función de agregar publicación fuera del contexto composable
+    val scope = rememberCoroutineScope()
+
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(16.dp)) {
+        AgregarPublicacionUI { imagen, texto ->
+            scope.launch {
+                agregarPublicacion(imagen, texto)
+            }
         }
     }
 }
