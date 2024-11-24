@@ -26,9 +26,9 @@ fun StartScreen(navController: NavHostController) {
     var loginError by remember { mutableStateOf("") }
     val auth = FirebaseAuth.getInstance()
 
-    // Recordar la última cuenta utilizada
+    // Recordar las cuentas utilizadas
     val sharedPrefs: SharedPreferences = LocalContext.current.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-    val savedEmail = sharedPrefs.getString("email", null)
+    val savedEmails = sharedPrefs.getStringSet("emails", setOf())?.toMutableSet() ?: mutableSetOf()
     var backgroundUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
 
@@ -40,10 +40,6 @@ fun StartScreen(navController: NavHostController) {
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
             .addOnFailureListener { exception -> loadError = true }
-
-        if (savedEmail != null) {
-            email = savedEmail // Si hay un correo guardado, lo ponemos en el campo de texto.
-        }
     }
 
     fun loginUser() {
@@ -54,7 +50,10 @@ fun StartScreen(navController: NavHostController) {
                         val currentUser: FirebaseUser? = auth.currentUser
                         val userEmail = currentUser?.email
                         // Guardar el email en SharedPreferences para recordarlo la próxima vez
-                        sharedPrefs.edit().putString("email", email).apply()
+                        if (userEmail != null) {
+                            savedEmails.add(userEmail)
+                            sharedPrefs.edit().putStringSet("emails", savedEmails).apply()
+                        }
 
                         if (userEmail == "admin@mardeluna.com") {
                             navController.navigate("admin") {
@@ -72,6 +71,11 @@ fun StartScreen(navController: NavHostController) {
         } else {
             loginError = "Por favor ingresa correo y contraseña"
         }
+    }
+
+    fun autofillFields(selectedEmail: String) {
+        email = selectedEmail
+        password = "" // Aquí puedes dejar que el usuario ingrese la contraseña manualmente
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -138,6 +142,24 @@ fun StartScreen(navController: NavHostController) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = "Iniciar sesión")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Mostrar botones de cuentas guardadas
+            if (savedEmails.isNotEmpty()) {
+                Text(text = "Cuentas guardadas")
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Botones para cada cuenta guardada
+                savedEmails.forEach { storedEmail ->
+                    Button(
+                        onClick = { autofillFields(storedEmail) },
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
+                    ) {
+                        Text(text = storedEmail)
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
