@@ -1,65 +1,81 @@
 package com.example.mardeluna.view
 
-import android.util.*
-import androidx.compose.foundation.layout.*
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.compose.foundation.*
-import androidx.compose.material.icons.*
-import androidx.compose.material.icons.filled.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.*
-import androidx.compose.ui.platform.*
-import androidx.compose.ui.text.input.*
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import coil.compose.*
-import com.example.mardeluna.controller.CredentialsManager
+import com.example.mardeluna.R
 import com.google.firebase.auth.*
-import com.google.firebase.storage.*
+import com.google.firebase.storage.FirebaseStorage
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun StartScreen(navController: NavHostController) {
-    var backgroundUrl by remember { mutableStateOf("") }
-    var logoUrl by remember { mutableStateOf("") }
-    var loadError by remember { mutableStateOf(false) }
-    var logoLoadError by remember { mutableStateOf(false) }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var loginError by remember { mutableStateOf("") }
+    val auth = FirebaseAuth.getInstance()
 
-    // Cargar la imagen de fondo desde Firebase Storage
+    // Recordar la última cuenta utilizada
+    val sharedPrefs: SharedPreferences = LocalContext.current.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+    val savedEmail = sharedPrefs.getString("email", null)
+    var backgroundUrl by remember { mutableStateOf("") }
+    var loadError by remember { mutableStateOf(false) }
+
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
 
-        // Fondo
-        val storageRef = storage.reference.child("fondo_de_pantalla.jpg")
-        storageRef.downloadUrl
-            .addOnSuccessListener { uri ->
-                backgroundUrl = uri.toString()
-                Log.d("Firebase", "Fondo cargado exitosamente: $backgroundUrl")
-            }
-            .addOnFailureListener { exception ->
-                loadError = true
-                Log.e("Firebase", "Error al cargar el fondo: ${exception.message}")
-            }
+        // Cargar imagen de fondo
+        val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
+        backgroundRef.downloadUrl
+            .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
+            .addOnFailureListener { exception -> loadError = true }
 
-        // Logo
-        val logoRef = storage.reference.child("logo.png")
-        logoRef.downloadUrl
-            .addOnSuccessListener { uri ->
-                logoUrl = uri.toString()
-                Log.d("Firebase", "Logo cargado exitosamente: $logoUrl")
-            }
-            .addOnFailureListener { exception ->
-                logoLoadError = true
-                Log.e("Firebase", "Error al cargar el logo: ${exception.message}")
-            }
+        if (savedEmail != null) {
+            email = savedEmail // Si hay un correo guardado, lo ponemos en el campo de texto.
+        }
     }
 
-    // Diseño principal de la pantalla
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        // Imagen de fondo
+    fun loginUser() {
+        if (email.isNotEmpty() && password.isNotEmpty()) {
+            auth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val currentUser: FirebaseUser? = auth.currentUser
+                        val userEmail = currentUser?.email
+                        // Guardar el email en SharedPreferences para recordarlo la próxima vez
+                        sharedPrefs.edit().putString("email", email).apply()
+
+                        if (userEmail == "admin@mardeluna.com") {
+                            navController.navigate("admin") {
+                                popUpTo("start") { inclusive = true }
+                            }
+                        } else {
+                            navController.navigate("main_logo") {
+                                popUpTo("start") { inclusive = true }
+                            }
+                        }
+                    } else {
+                        loginError = "Error al iniciar sesión: ${task.exception?.message}"
+                    }
+                }
+        } else {
+            loginError = "Por favor ingresa correo y contraseña"
+        }
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        // Fondo de pantalla
         if (backgroundUrl.isNotEmpty() && !loadError) {
             Image(
                 painter = rememberAsyncImagePainter(backgroundUrl),
@@ -67,161 +83,72 @@ fun StartScreen(navController: NavHostController) {
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
-        } else {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Gray)
-            )
+        } else if (loadError) {
+            Box(modifier = Modifier.fillMaxSize().background(Color.Gray))
         }
 
-        // Contenido de la pantalla
+        // Contenido de la pantalla de inicio de sesión
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.SpaceBetween,
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
+            // Logo de la app
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "Logo",
+                modifier = Modifier.size(150.dp).padding(bottom = 16.dp)
+            )
 
-            // Encabezado y logo
-            Text(
-                text = "Bienvenido al Hospital Mar de Luna",
-                style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+            // Campos de correo y contraseña
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Correo electrónico") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Contraseña") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                visualTransformation = PasswordVisualTransformation()
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Imagen del logo
-            if (logoUrl.isNotEmpty() && !logoLoadError) {
-                Image(
-                    painter = rememberAsyncImagePainter(logoUrl),
-                    contentDescription = "Logo de Mar de Luna",
-                    modifier = Modifier
-                        .height(200.dp)
-                        .width(200.dp),
-                    contentScale = ContentScale.Fit
-                )
-            } else if (logoLoadError) {
+            // Mostrar error si existe
+            if (loginError.isNotEmpty()) {
                 Text(
-                    text = "Error al cargar el logo",
-                    color = MaterialTheme.colorScheme.error,
+                    text = loginError,
+                    color = Color.Red,
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Botón de inicio de sesión
+            Button(
+                onClick = { loginUser() },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "Iniciar sesión")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Botón de la historia del hospital
             Button(
                 onClick = { navController.navigate("history") },
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = "¿Quiénes somos?")
+                Text(text = "Historia del Hospital")
             }
-
-            Spacer(modifier = Modifier.height(32.dp))
-            LoginSection(navController)
-            Spacer(modifier = Modifier.height(16.dp))
         }
-    }
-}
-
-@Composable
-fun LoginSection(navController: NavHostController) {
-    val context = LocalContext.current
-    val auth = FirebaseAuth.getInstance()
-    val credentialsManager = CredentialsManager(context)
-
-    var email by remember { mutableStateOf("") }
-    var contrasena by remember { mutableStateOf("") }
-    var errorMessage by remember { mutableStateOf("") }
-
-    val users = credentialsManager.getAllUsers()
-
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text("Selecciona un usuario:", fontSize = 18.sp)
-        Spacer(modifier = Modifier.height(16.dp))
-
-        users.forEach { (savedEmail, savedPassword) ->
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Button(
-                    onClick = {
-                        email = savedEmail
-                        contrasena = savedPassword
-                    },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(text = savedEmail)
-                }
-                IconButton(onClick = { credentialsManager.clearUser(savedEmail) }) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "Eliminar usuario"
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Usuario (Email)") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = contrasena,
-            onValueChange = { contrasena = it },
-            label = { Text("Contraseña") },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-        if (errorMessage.isNotEmpty()) {
-            Text(
-                text = errorMessage,
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-
-        Button(
-            onClick = {
-                errorMessage = ""
-                if (email.isNotEmpty() && contrasena.isNotEmpty()) {
-                    auth.signInWithEmailAndPassword(email, contrasena)
-                        .addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                credentialsManager.saveUser(email, contrasena)
-                                navController.navigate("main_logo")
-                            } else {
-                                errorMessage =
-                                    "Error: ${task.exception?.message ?: "Error desconocido"}"
-                            }
-                        }
-                } else {
-                    errorMessage = "Por favor, completa todos los campos"
-                }
-            },
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        ) {
-            Text(text = "Iniciar sesión")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
     }
 }

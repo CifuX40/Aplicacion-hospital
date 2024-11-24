@@ -7,12 +7,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.*
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import coil.compose.*
-import com.example.mardeluna.R
 import com.google.firebase.storage.*
 
 @Composable
@@ -93,21 +91,6 @@ fun MainLogoScreen(navController: NavHostController) {
                             .size(200.dp)
                             .clickable { navController.navigate("second_floor") }
                             .padding(bottom = 16.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // Nuevo botón para la carta
-                Button(
-                    onClick = { navController.navigate("AgregarPublicacionUI") },
-                    modifier = Modifier.size(60.dp).padding(top = 16.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.logo),
-                        contentDescription = "Abrir carta",
-                        tint = Color.Unspecified,
-                        modifier = Modifier.fillMaxSize()
                     )
                 }
             } else {

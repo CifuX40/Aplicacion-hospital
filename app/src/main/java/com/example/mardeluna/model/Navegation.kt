@@ -12,6 +12,7 @@ fun AppNavigation(navController: NavHostController) {
         composable("start") { StartScreen(navController) }
         composable("history") { HistoryScreen(navController) }
         composable("main_logo") { MainLogoScreen(navController) }
+        composable("admin") { AdminScreen(navController) }
         composable("second_floor") { SecondFloorScreen(navController) }
         composable("icu_screen") { ICUScreen(navController) }
         composable("surgery_screen") { SurgeryScreen(navController) }
