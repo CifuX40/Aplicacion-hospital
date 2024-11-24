@@ -27,35 +27,47 @@ fun StartScreen(navController: NavHostController) {
     val auth = FirebaseAuth.getInstance()
 
     // Recordar las cuentas utilizadas
-    val sharedPrefs: SharedPreferences = LocalContext.current.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-    val savedEmails = sharedPrefs.getStringSet("emails", setOf())?.toMutableSet() ?: mutableSetOf()
+    val sharedPrefs: SharedPreferences =
+        LocalContext.current.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+
+    var savedEmails = remember {
+        mutableStateOf(
+            sharedPrefs.getStringSet("emails", setOf())?.toMutableSet() ?: mutableSetOf()
+        )
+    }
+
+    // Guardar las contraseñas en una lista asociada a los correos electrónicos
+    var savedPasswords = remember {
+        mutableStateOf(savedEmails.value.map { sharedPrefs.getString(it, "") ?: "" }
+            .toMutableList())
+    }
+
     var backgroundUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
 
+    // Cargar imagen de fondo
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-
-        // Cargar imagen de fondo
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
             .addOnFailureListener { exception -> loadError = true }
     }
 
+    // Función para iniciar sesión
     fun loginUser() {
         if (email.isNotEmpty() && password.isNotEmpty()) {
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        val currentUser: FirebaseUser? = auth.currentUser
-                        val userEmail = currentUser?.email
                         // Guardar el email en SharedPreferences para recordarlo la próxima vez
-                        if (userEmail != null) {
-                            savedEmails.add(userEmail)
-                            sharedPrefs.edit().putStringSet("emails", savedEmails).apply()
-                        }
+                        savedEmails.value.add(email)
+                        sharedPrefs.edit().putStringSet("emails", savedEmails.value).apply()
 
-                        if (userEmail == "admin@mardeluna.com") {
+                        // Guardar la contraseña asociada al email
+                        sharedPrefs.edit().putString(email, password).apply()
+
+                        if (email == "admin@mardeluna.com") {
                             navController.navigate("admin") {
                                 popUpTo("start") { inclusive = true }
                             }
@@ -73,9 +85,27 @@ fun StartScreen(navController: NavHostController) {
         }
     }
 
+    // Función para autocompletar campos
     fun autofillFields(selectedEmail: String) {
         email = selectedEmail
-        password = "" // Aquí puedes dejar que el usuario ingrese la contraseña manualmente
+        val selectedIndex = savedEmails.value.indexOf(selectedEmail)
+        if (selectedIndex >= 0) {
+            password = savedPasswords.value[selectedIndex] // Completa la contraseña correspondiente
+        }
+    }
+
+    // Función para eliminar una cuenta guardada
+    fun removeEmail(emailToRemove: String) {
+        savedEmails.value.remove(emailToRemove)
+        val indexToRemove = savedEmails.value.indexOf(emailToRemove)
+        if (indexToRemove >= 0) {
+            savedPasswords.value.removeAt(indexToRemove)
+        }
+        sharedPrefs.edit().putStringSet("emails", savedEmails.value).apply()
+        // Recalcular las contraseñas guardadas
+        savedEmails.value.forEachIndexed { index, email ->
+            savedPasswords.value[index] = sharedPrefs.getString(email, "") ?: ""
+        }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -88,7 +118,9 @@ fun StartScreen(navController: NavHostController) {
                 modifier = Modifier.fillMaxSize()
             )
         } else if (loadError) {
-            Box(modifier = Modifier.fillMaxSize().background(Color.Gray))
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Gray))
         }
 
         // Contenido de la pantalla de inicio de sesión
@@ -103,7 +135,9 @@ fun StartScreen(navController: NavHostController) {
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo",
-                modifier = Modifier.size(150.dp).padding(bottom = 16.dp)
+                modifier = Modifier
+                    .size(150.dp)
+                    .padding(bottom = 16.dp)
             )
 
             // Campos de correo y contraseña
@@ -138,8 +172,36 @@ fun StartScreen(navController: NavHostController) {
 
             // Botón de inicio de sesión
             Button(
-                onClick = { loginUser() },
-                modifier = Modifier.fillMaxWidth()
+                onClick = {
+                    if (email.isNotEmpty() && password.isNotEmpty()) {
+                        auth.signInWithEmailAndPassword(email, password)
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    // Guardar el email en SharedPreferences para recordarlo la próxima vez
+                                    savedEmails.value.add(email)
+                                    sharedPrefs.edit().putStringSet("emails", savedEmails.value).apply()
+
+                                    // Guardar la contraseña asociada al email
+                                    sharedPrefs.edit().putString(email, password).apply()
+
+                                    if (email == "admin@mardeluna.com") {
+                                        navController.navigate("admin") {
+                                            popUpTo("start") { inclusive = true }
+                                        }
+                                    } else {
+                                        navController.navigate("main_logo") {
+                                            popUpTo("start") { inclusive = true }
+                                        }
+                                    }
+                                } else {
+                                    loginError = "Error al iniciar sesión: ${task.exception?.message}"
+                                }
+                            }
+                    } else {
+                        loginError = "Por favor ingresa correo y contraseña"
+                    }
+                },
+                modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
                 Text(text = "Iniciar sesión")
             }
@@ -147,22 +209,27 @@ fun StartScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             // Mostrar botones de cuentas guardadas
-            if (savedEmails.isNotEmpty()) {
+            if (savedEmails.value.isNotEmpty()) {
                 Text(text = "Cuentas guardadas")
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Botones para cada cuenta guardada
-                savedEmails.forEach { storedEmail ->
-                    Button(
-                        onClick = { autofillFields(storedEmail) },
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
+                savedEmails.value.forEachIndexed { index, storedEmail ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(text = storedEmail)
+                        Button(
+                            onClick = { autofillFields(storedEmail) },
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(vertical = 4.dp)
+                        ) {
+                            Text(text = storedEmail)
+                        }
                     }
                 }
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
 
             // Botón de la historia del hospital
             Button(
