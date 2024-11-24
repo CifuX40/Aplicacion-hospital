@@ -1,6 +1,5 @@
 package com.example.mardeluna.view
 
-import android.util.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -8,10 +7,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.*
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import coil.compose.*
+import com.example.mardeluna.R
 import com.google.firebase.storage.*
 
 @Composable
@@ -27,56 +28,23 @@ fun MainLogoScreen(navController: NavHostController) {
         // Cargar imagen de fondo
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
-            .addOnSuccessListener { uri ->
-                backgroundUrl = uri.toString()
-                Log.d("Firebase", "Fondo cargado exitosamente: $backgroundUrl")
-            }
-            .addOnFailureListener { exception ->
-                loadError = true
-                Log.e("Firebase", "Error al cargar el fondo: ${exception.message}")
-            }
+            .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
+            .addOnFailureListener { exception -> loadError = true }
 
         // Cargar imagen de la primera planta
         val firstFloorRef = storage.reference.child("piso_1_logo.png")
         firstFloorRef.downloadUrl
-            .addOnSuccessListener { uri ->
-                firstFloorLogoUrl = uri.toString()
-                Log.d(
-                    "Firebase",
-                    "Imagen cargada exitosamente para la primera planta: $firstFloorLogoUrl"
-                )
-            }
-            .addOnFailureListener { exception ->
-                loadError = true
-                Log.e(
-                    "Firebase",
-                    "Error al cargar la imagen de la primera planta: ${exception.message}"
-                )
-            }
+            .addOnSuccessListener { uri -> firstFloorLogoUrl = uri.toString() }
+            .addOnFailureListener { exception -> loadError = true }
 
         // Cargar imagen de la segunda planta
         val secondFloorRef = storage.reference.child("piso_2_logo.png")
         secondFloorRef.downloadUrl
-            .addOnSuccessListener { uri ->
-                secondFloorLogoUrl = uri.toString()
-                Log.d(
-                    "Firebase",
-                    "Imagen cargada exitosamente para la segunda planta: $secondFloorLogoUrl"
-                )
-            }
-            .addOnFailureListener { exception ->
-                loadError = true
-                Log.e(
-                    "Firebase",
-                    "Error al cargar la imagen de la segunda planta: ${exception.message}"
-                )
-            }
+            .addOnSuccessListener { uri -> secondFloorLogoUrl = uri.toString() }
+            .addOnFailureListener { exception -> loadError = true }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
         // Fondo de pantalla
         if (backgroundUrl.isNotEmpty() && !loadError) {
             Image(
@@ -86,23 +54,16 @@ fun MainLogoScreen(navController: NavHostController) {
                 modifier = Modifier.fillMaxSize()
             )
         } else if (loadError) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Gray)
-            )
+            Box(modifier = Modifier.fillMaxSize().background(Color.Gray))
         }
 
         // Contenido de la pantalla
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+            modifier = Modifier.fillMaxSize().padding(16.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (!loadError) {
-                // Título para los botones "Pisos"
                 Text(
                     text = "Plantas",
                     style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
@@ -132,6 +93,21 @@ fun MainLogoScreen(navController: NavHostController) {
                             .size(200.dp)
                             .clickable { navController.navigate("second_floor") }
                             .padding(bottom = 16.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Nuevo botón para la carta
+                Button(
+                    onClick = { navController.navigate("AgregarPublicacionUI") },
+                    modifier = Modifier.size(60.dp).padding(top = 16.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.logo),
+                        contentDescription = "Abrir carta",
+                        tint = Color.Unspecified,
+                        modifier = Modifier.fillMaxSize()
                     )
                 }
             } else {

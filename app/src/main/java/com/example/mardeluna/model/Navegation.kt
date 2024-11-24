@@ -5,6 +5,7 @@ import androidx.navigation.*
 import androidx.navigation.compose.*
 import com.example.mardeluna.view.*
 
+// Función de navegación
 @Composable
 fun AppNavigation(navController: NavHostController) {
     NavHost(navController = navController, startDestination = "start") {
@@ -44,5 +45,12 @@ fun AppNavigation(navController: NavHostController) {
         composable("sala_quirofano_screen") { SalaQuirofanoScreen(navController) }
         composable("empaquetado_screen") { EmpaquetadoScreen(navController) }
         composable("controles_carga_autoclaves_screen") { ControlesCargaScreen(navController) }
+
+        // Aquí pasamos una función que maneja el clic en lugar de NavController
+        composable("AgregarPublicacionUI") {
+            AgregarPublicacionUI { imagen, texto ->
+                // Aquí puedes manejar la lógica de agregar la publicación.
+            }
+        }
     }
 }
