@@ -1,7 +1,6 @@
 package com.example.mardeluna.view
 
-import android.content.Context
-import android.content.SharedPreferences
+import android.content.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -9,15 +8,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.*
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.res.*
+import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import coil.compose.*
 import com.example.mardeluna.R
 import com.google.firebase.auth.*
-import com.google.firebase.storage.FirebaseStorage
-import androidx.compose.ui.platform.LocalContext
+import com.google.firebase.storage.*
+import androidx.compose.ui.platform.*
 
 @Composable
 fun StartScreen(navController: NavHostController) {
@@ -213,23 +212,39 @@ fun StartScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             // Mostrar botones de cuentas guardadas
+// Mostrar botones de cuentas guardadas
             if (savedEmails.value.isNotEmpty()) {
-                Text(text = "Cuentas guardadas")
+                Text(text = "Cuentas guardadas", style = MaterialTheme.typography.bodyLarge)
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Botones para cada cuenta guardada
+                // Botones para cada cuenta guardada con opción de eliminar
                 savedEmails.value.forEachIndexed { index, storedEmail ->
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
+                        // Botón para autocompletar campos
                         Button(
                             onClick = { autofillFields(storedEmail) },
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(vertical = 4.dp)
+                            modifier = Modifier.weight(1f)
                         ) {
-                            Text(text = storedEmail)
+                            Text(text = storedEmail, maxLines = 1)
+                        }
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        // Botón para eliminar cuenta
+                        IconButton(
+                            onClick = { removeEmail(storedEmail) }
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_delete),
+                                contentDescription = "Eliminar",
+                                tint = MaterialTheme.colorScheme.error
+                            )
                         }
                     }
                 }
