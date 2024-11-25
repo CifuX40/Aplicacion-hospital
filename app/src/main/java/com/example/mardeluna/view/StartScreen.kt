@@ -1,22 +1,27 @@
 package com.example.mardeluna.view
 
-import android.content.*
-import androidx.compose.foundation.*
+import android.content.Context
+import android.content.SharedPreferences
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.*
-import androidx.compose.ui.graphics.*
-import androidx.compose.ui.layout.*
-import androidx.compose.ui.res.*
-import androidx.compose.ui.text.input.*
-import androidx.compose.ui.unit.*
-import androidx.navigation.*
-import coil.compose.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import com.example.mardeluna.R
-import com.google.firebase.auth.*
-import com.google.firebase.storage.*
-import androidx.compose.ui.platform.*
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.storage.FirebaseStorage
 
 @Composable
 fun StartScreen(navController: NavHostController) {
@@ -37,8 +42,9 @@ fun StartScreen(navController: NavHostController) {
 
     // Guardar las contraseñas en una lista asociada a los correos electrónicos
     val savedPasswords = remember {
-        mutableStateOf(savedEmails.value.map { sharedPrefs.getString(it, "") ?: "" }
-            .toMutableList())
+        mutableStateOf(
+            savedEmails.value.map { sharedPrefs.getString(it, "") ?: "" }.toMutableList()
+        )
     }
 
     var backgroundUrl by remember { mutableStateOf("") }
@@ -50,7 +56,7 @@ fun StartScreen(navController: NavHostController) {
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
-            .addOnFailureListener { exception -> loadError = true }
+            .addOnFailureListener { loadError = true }
     }
 
     // Función para iniciar sesión
@@ -101,10 +107,6 @@ fun StartScreen(navController: NavHostController) {
             savedPasswords.value.removeAt(indexToRemove)
         }
         sharedPrefs.edit().putStringSet("emails", savedEmails.value).apply()
-        // Recalcular las contraseñas guardadas
-        savedEmails.value.forEachIndexed { index, email ->
-            savedPasswords.value[index] = sharedPrefs.getString(email, "") ?: ""
-        }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -132,6 +134,13 @@ fun StartScreen(navController: NavHostController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Text(
+                text = "Bienvenido al hospital Mar de Luna",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
+            )
+
             // Logo de la app
             Image(
                 painter = painterResource(id = R.drawable.logo),
@@ -140,6 +149,14 @@ fun StartScreen(navController: NavHostController) {
                     .size(150.dp)
                     .padding(bottom = 16.dp)
             )
+
+            // Botón de la historia del hospital
+            Button(
+                onClick = { navController.navigate("history") },
+                modifier = Modifier.wrapContentSize()
+            ) {
+                Text(text = "Historia del Hospital")
+            }
 
             // Campos de correo y contraseña
             OutlinedTextField(
@@ -173,38 +190,8 @@ fun StartScreen(navController: NavHostController) {
 
             // Botón de inicio de sesión
             Button(
-                onClick = {
-                    if (email.isNotEmpty() && password.isNotEmpty()) {
-                        auth.signInWithEmailAndPassword(email, password)
-                            .addOnCompleteListener { task ->
-                                if (task.isSuccessful) {
-                                    // Guardar el email en SharedPreferences para recordarlo la próxima vez
-                                    savedEmails.value.add(email)
-                                    sharedPrefs.edit().putStringSet("emails", savedEmails.value)
-                                        .apply()
-
-                                    // Guardar la contraseña asociada al email
-                                    sharedPrefs.edit().putString(email, password).apply()
-
-                                    if (email == "admin@mardeluna.com") {
-                                        navController.navigate("admin") {
-                                            popUpTo("start") { inclusive = true }
-                                        }
-                                    } else {
-                                        navController.navigate("main_logo") {
-                                            popUpTo("start") { inclusive = true }
-                                        }
-                                    }
-                                } else {
-                                    loginError =
-                                        "Error al iniciar sesión: ${task.exception?.message}"
-                                }
-                            }
-                    } else {
-                        loginError = "Por favor ingresa correo y contraseña"
-                    }
-                },
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                onClick = { loginUser() },
+                modifier = Modifier.wrapContentSize()
             ) {
                 Text(text = "Iniciar sesión")
             }
@@ -212,13 +199,11 @@ fun StartScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             // Mostrar botones de cuentas guardadas
-// Mostrar botones de cuentas guardadas
             if (savedEmails.value.isNotEmpty()) {
                 Text(text = "Cuentas guardadas", style = MaterialTheme.typography.bodyLarge)
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Botones para cada cuenta guardada con opción de eliminar
-                savedEmails.value.forEachIndexed { index, storedEmail ->
+                savedEmails.value.forEach { storedEmail ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -229,7 +214,7 @@ fun StartScreen(navController: NavHostController) {
                         // Botón para autocompletar campos
                         Button(
                             onClick = { autofillFields(storedEmail) },
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.wrapContentSize()
                         ) {
                             Text(text = storedEmail, maxLines = 1)
                         }
@@ -248,14 +233,6 @@ fun StartScreen(navController: NavHostController) {
                         }
                     }
                 }
-            }
-
-            // Botón de la historia del hospital
-            Button(
-                onClick = { navController.navigate("history") },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = "Historia del Hospital")
             }
         }
     }
