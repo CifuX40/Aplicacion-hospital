@@ -90,7 +90,7 @@ fun StartScreen(navController: NavHostController) {
         email = selectedEmail
         val selectedIndex = savedEmails.value.indexOf(selectedEmail)
         if (selectedIndex >= 0) {
-            password = savedPasswords.value[selectedIndex] // Completa la contraseña correspondiente
+            password = savedPasswords.value[selectedIndex]
         }
     }
 
@@ -118,9 +118,11 @@ fun StartScreen(navController: NavHostController) {
                 modifier = Modifier.fillMaxSize()
             )
         } else if (loadError) {
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Gray))
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Gray)
+            )
         }
 
         // Contenido de la pantalla de inicio de sesión
@@ -179,7 +181,8 @@ fun StartScreen(navController: NavHostController) {
                                 if (task.isSuccessful) {
                                     // Guardar el email en SharedPreferences para recordarlo la próxima vez
                                     savedEmails.value.add(email)
-                                    sharedPrefs.edit().putStringSet("emails", savedEmails.value).apply()
+                                    sharedPrefs.edit().putStringSet("emails", savedEmails.value)
+                                        .apply()
 
                                     // Guardar la contraseña asociada al email
                                     sharedPrefs.edit().putString(email, password).apply()
@@ -194,7 +197,8 @@ fun StartScreen(navController: NavHostController) {
                                         }
                                     }
                                 } else {
-                                    loginError = "Error al iniciar sesión: ${task.exception?.message}"
+                                    loginError =
+                                        "Error al iniciar sesión: ${task.exception?.message}"
                                 }
                             }
                     } else {

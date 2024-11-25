@@ -27,19 +27,19 @@ fun MainLogoScreen(navController: NavHostController) {
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
-            .addOnFailureListener { exception -> loadError = true }
+            .addOnFailureListener { loadError = true }
 
         // Cargar imagen de la primera planta
         val firstFloorRef = storage.reference.child("piso_1_logo.png")
         firstFloorRef.downloadUrl
             .addOnSuccessListener { uri -> firstFloorLogoUrl = uri.toString() }
-            .addOnFailureListener { exception -> loadError = true }
+            .addOnFailureListener { loadError = true }
 
         // Cargar imagen de la segunda planta
         val secondFloorRef = storage.reference.child("piso_2_logo.png")
         secondFloorRef.downloadUrl
             .addOnSuccessListener { uri -> secondFloorLogoUrl = uri.toString() }
-            .addOnFailureListener { exception -> loadError = true }
+            .addOnFailureListener { loadError = true }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -92,6 +92,16 @@ fun MainLogoScreen(navController: NavHostController) {
                             .clickable { navController.navigate("second_floor") }
                             .padding(bottom = 16.dp)
                     )
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Botón para ir a Publicaciones
+                Button(
+                    onClick = { navController.navigate("publicaciones") },
+                    modifier = Modifier.fillMaxWidth(0.6f)
+                ) {
+                    Text("Ir a Publicaciones")
                 }
             } else {
                 // Mostrar un mensaje de error si la carga falló

@@ -22,7 +22,7 @@ data class Publicacion(
     val imagen: String = "",
     val texto: String = "",
     val usuario: String = "",
-    val fecha: Long = System.currentTimeMillis() // Agregar campo de fecha
+    val fecha: Long = System.currentTimeMillis()
 )
 
 // Función para agregar una publicación a Firebase
@@ -35,7 +35,7 @@ suspend fun agregarPublicacion(imagen: String?, texto: String?) {
         val publicacionId = UUID.randomUUID().toString()
         val usuarioNombre =
             usuarioActual.displayName ?: usuarioActual.email ?: "Usuario desconocido"
-        val fecha = System.currentTimeMillis() // Fecha actual en milisegundos
+        val fecha = System.currentTimeMillis()
 
         val publicacion = Publicacion(
             id = publicacionId,
@@ -84,9 +84,11 @@ fun ObtenerPublicaciones() {
             }
     }
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
         if (isLoading.value) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
         } else {
@@ -137,9 +139,11 @@ fun AgregarPublicacionUI(onAgregarClick: (String, String) -> Unit) {
     var texto by remember { mutableStateOf(TextFieldValue("")) }
     var imagenUrl by remember { mutableStateOf("") }
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -202,9 +206,11 @@ fun AgregarPublicacionScreen() {
     // Llamar a la función de agregar publicación fuera del contexto composable
     val scope = rememberCoroutineScope()
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
         AgregarPublicacionUI { imagen, texto ->
             scope.launch {
                 agregarPublicacion(imagen, texto)
