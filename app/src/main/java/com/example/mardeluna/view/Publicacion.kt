@@ -27,7 +27,7 @@ data class Publicacion(
 )
 
 // Función para agregar una publicación a Firebase
-suspend fun agregarPublicacion(imagen: String?, texto: String?) {
+fun agregarPublicacion(imagen: String?, texto: String?) {
     val db = FirebaseFirestore.getInstance()
     val auth = FirebaseAuth.getInstance()
     val usuarioActual = auth.currentUser

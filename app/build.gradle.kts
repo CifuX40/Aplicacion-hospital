@@ -71,7 +71,7 @@ dependencies {
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
 
-    // Navigation
+    // Navegación
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
 
@@ -81,10 +81,10 @@ dependencies {
     implementation(libs.google.firebase.storage.ktx)
     implementation(libs.google.firebase.firestore.ktx)
 
-    // Image loading with Coil
+    // Imagen con Coil
     implementation(libs.coil.compose)
 
-    // Media3 (optional for videos or media playback)
+    // Media3
     implementation(libs.androidx.media3.ui.v150)
     implementation(libs.androidx.media3.exoplayer.v150)
 
