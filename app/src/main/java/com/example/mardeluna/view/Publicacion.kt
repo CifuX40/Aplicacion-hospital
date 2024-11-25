@@ -1,19 +1,20 @@
 package com.example.mardeluna.view
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import android.net.*
+import androidx.activity.compose.*
+import androidx.activity.result.contract.*
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.text.input.TextFieldValue
-import coil.compose.rememberAsyncImagePainter
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
-import kotlinx.coroutines.launch
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.unit.*
+import androidx.compose.ui.text.input.*
+import coil.compose.*
+import com.google.firebase.auth.*
+import com.google.firebase.firestore.*
+import kotlinx.coroutines.*
 import java.util.*
 
 // Modelo de datos para una publicación
@@ -137,7 +138,12 @@ fun PublicacionView(publicacion: Publicacion) {
 @Composable
 fun AgregarPublicacionUI(onAgregarClick: (String, String) -> Unit) {
     var texto by remember { mutableStateOf(TextFieldValue("")) }
-    var imagenUrl by remember { mutableStateOf("") }
+    var imagenUri by remember { mutableStateOf<Uri?>(null) }
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri ->
+        imagenUri = uri // Actualiza el estado con la URI seleccionada
+    }
 
     Column(
         modifier = Modifier
@@ -156,24 +162,26 @@ fun AgregarPublicacionUI(onAgregarClick: (String, String) -> Unit) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextField(
-            value = imagenUrl,
-            onValueChange = { imagenUrl = it },
-            label = { Text("URL de la imagen") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-                .height(50.dp)
-                .background(Color.LightGray)
-        )
+        Button(
+            onClick = { launcher.launch("image/*") }, // Solo permite imágenes
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+        ) {
+            Text("Seleccionar Imagen", color = Color.White)
+        }
 
-        if (imagenUrl.isNotEmpty()) {
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Mostrar miniatura si hay una URI
+        if (imagenUri != null) {
             Image(
-                painter = rememberAsyncImagePainter(imagenUrl),
+                painter = rememberAsyncImagePainter(imagenUri),
                 contentDescription = "Vista previa de la imagen",
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp)
+                    .background(Color.LightGray)
+                    .padding(8.dp)
             )
         }
 
@@ -189,7 +197,9 @@ fun AgregarPublicacionUI(onAgregarClick: (String, String) -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { onAgregarClick(imagenUrl, texto.text) },
+            onClick = {
+                onAgregarClick(imagenUri?.toString() ?: "", texto.text)
+            },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
