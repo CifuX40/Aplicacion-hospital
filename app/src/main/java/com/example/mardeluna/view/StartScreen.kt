@@ -29,14 +29,14 @@ fun StartScreen(navController: NavHostController) {
     val sharedPrefs: SharedPreferences =
         LocalContext.current.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
 
-    var savedEmails = remember {
+    val savedEmails = remember {
         mutableStateOf(
             sharedPrefs.getStringSet("emails", setOf())?.toMutableSet() ?: mutableSetOf()
         )
     }
 
     // Guardar las contraseñas en una lista asociada a los correos electrónicos
-    var savedPasswords = remember {
+    val savedPasswords = remember {
         mutableStateOf(savedEmails.value.map { sharedPrefs.getString(it, "") ?: "" }
             .toMutableList())
     }
