@@ -1,6 +1,8 @@
 package com.example.mardeluna.view
 
-import android.util.Log
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -11,77 +13,39 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 
-// Pantalla principal con fondo y publicaciones
 @Composable
-fun AgregarPublicacionUI(param: (Any, Any) -> Unit) {
-    var backgroundUrl by remember { mutableStateOf("") }
-    var loadError by remember { mutableStateOf(false) }
+fun PublicacionesScreen(navController: NavHostController) {
+    var publicaciones by remember { mutableStateOf<List<Map<String, Any>>?>(null) }
+    var loading by remember { mutableStateOf(true) }
 
-    // Descargar fondo desde Firebase
     LaunchedEffect(Unit) {
-        val storage = FirebaseStorage.getInstance()
-        val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
-        backgroundRef.downloadUrl
-            .addOnSuccessListener { uri ->
-                backgroundUrl = uri.toString()
-                Log.d("Firebase", "Fondo cargado exitosamente: $backgroundUrl")
+        val db = FirebaseFirestore.getInstance()
+        db.collection("publicaciones").get()
+            .addOnSuccessListener { snapshot ->
+                publicaciones = snapshot.documents.map { it.data ?: emptyMap() }
+                loading = false
             }
-            .addOnFailureListener { exception ->
-                loadError = true
-                Log.e("Firebase", "Error al cargar el fondo: ${exception.message}")
+            .addOnFailureListener {
+                publicaciones = emptyList()
+                loading = false
             }
     }
 
-    // Contenedor principal con fondo y contenido
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        // Mostrar fondo
-        if (backgroundUrl.isNotEmpty()) {
-            Image(
-                painter = rememberAsyncImagePainter(backgroundUrl),
-                contentDescription = "Fondo de pantalla",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
-        } else {
-            // Fondo alternativo en caso de error
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.LightGray)
-            )
-        }
-
-        // Contenido principal
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            PublicacionesContent()
-        }
-    }
-}
-
-// Contenido de la pantalla de publicaciones
-@Composable
-private fun PublicacionesContent() {
     Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Título
         Text(
             text = "Publicaciones",
             fontSize = 24.sp,
@@ -91,65 +55,154 @@ private fun PublicacionesContent() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Información de publicaciones
+        if (loading) {
+            CircularProgressIndicator()
+        } else if (publicaciones.isNullOrEmpty()) {
+            Text("No hay publicaciones disponibles.")
+        } else {
+            publicaciones?.forEach { publicacion ->
+                PublicacionItem(publicacion)
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(onClick = { navController.navigate("agregar_publicacion") }) {
+            Text("Añadir Publicación")
+        }
+    }
+}
+
+@Composable
+fun PublicacionItem(publicacion: Map<String, Any>) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .background(Color.White)
+    ) {
+        val mensaje = publicacion["mensaje"] as? String ?: "Sin mensaje"
+        val imagen = publicacion["imagen"] as? String
+
+        Text(text = mensaje, fontSize = 16.sp, color = Color.Black)
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        imagen?.let {
+            Image(
+                painter = rememberAsyncImagePainter(it),
+                contentDescription = "Imagen de la publicación",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun AgregarPublicacionUI(navController: NavHostController) {
+    var texto by remember { mutableStateOf("") }
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
+    var errorMessage by remember { mutableStateOf("") }
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
+        imageUri = it
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Text(
-            text = """
-                Bienvenido a la sección de publicaciones.
-                Aquí podrás ver las publicaciones compartidas por otros usuarios.
-                ¡Explora y comparte!
-            """.trimIndent(),
-            fontSize = 16.sp,
+            text = "Añadir Publicación",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
             color = Color.Black
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Ejemplo de publicación
-        PublicacionExample()
+        // Campo para el mensaje
+        OutlinedTextField(
+            value = texto,
+            onValueChange = { texto = it },
+            label = { Text("Escribe tu mensaje aquí") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Botón para seleccionar imagen
+        Button(onClick = { launcher.launch("image/*") }) {
+            Text("Seleccionar Imagen")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Mostrar imagen seleccionada
+        imageUri?.let {
+            Image(
+                painter = rememberAsyncImagePainter(it),
+                contentDescription = "Imagen seleccionada",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Botón para publicar
+        Button(onClick = {
+            if (texto.isNotBlank() || imageUri != null) {
+                publicarPublicacion(texto, imageUri) {
+                    navController.popBackStack() // Regresar a la pantalla anterior
+                }
+            } else {
+                errorMessage = "Debe ingresar un mensaje o seleccionar una imagen."
+            }
+        }) {
+            Text("Publicar")
+        }
+
+        // Mensaje de error
+        if (errorMessage.isNotBlank()) {
+            Text(
+                text = errorMessage,
+                color = Color.Red,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
     }
 }
 
-// Ejemplo de visualización de publicación
-@Composable
-fun PublicacionExample() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.White)
-            .padding(16.dp)
-    ) {
-        // Nombre del usuario
-        Text(
-            text = "Usuario Ejemplo",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Medium,
-            color = Color.Black
-        )
+private fun publicarPublicacion(
+    mensaje: String,
+    imageUri: Uri?,
+    onSuccess: () -> Unit
+) {
+    val db = FirebaseFirestore.getInstance()
+    val storage = FirebaseStorage.getInstance().reference
 
-        Spacer(modifier = Modifier.height(8.dp))
+    val publicacion = hashMapOf("mensaje" to mensaje)
 
-        // Contenido del texto
-        Text(
-            text = "Esta es una publicación de ejemplo para demostrar el diseño.",
-            fontSize = 16.sp,
-            color = Color.DarkGray
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Imagen de ejemplo
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-                .background(Color.LightGray),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "Imagen aquí",
-                color = Color.White,
-                fontWeight = FontWeight.Bold
-            )
+    // Subir imagen si existe
+    if (imageUri != null) {
+        val ref = storage.child("publicaciones/${System.currentTimeMillis()}.jpg")
+        ref.putFile(imageUri).addOnSuccessListener {
+            ref.downloadUrl.addOnSuccessListener { uri ->
+                publicacion["imagen"] = uri.toString()
+                db.collection("publicaciones").add(publicacion).addOnSuccessListener {
+                    onSuccess()
+                }
+            }
+        }
+    } else {
+        db.collection("publicaciones").add(publicacion).addOnSuccessListener {
+            onSuccess()
         }
     }
 }

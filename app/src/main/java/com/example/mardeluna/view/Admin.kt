@@ -14,10 +14,5 @@ fun AdminScreen(navController: NavHostController) {
     ) {
         Text("Bienvenido Administrador", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(16.dp))
-
-        // Aquí puedes agregar las opciones para administrar usuarios, contenido, etc.
-        Button(onClick = { /* Implementar acción de administración */ }) {
-            Text("Administrar Usuarios")
-        }
     }
 }
