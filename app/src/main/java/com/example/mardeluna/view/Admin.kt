@@ -1,13 +1,18 @@
 package com.example.mardeluna.view
 
 import android.util.*
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
+import androidx.compose.ui.layout.*
+import coil.compose.*
 import com.google.firebase.firestore.*
+import com.google.firebase.ktx.*
+import com.google.firebase.storage.ktx.*
 
 // Pantalla de administración de usuarios
 @Composable
@@ -18,110 +23,129 @@ fun AdminScreen(navController: NavHostController) {
     var lastName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var message by remember { mutableStateOf("") }
+    var backgroundUrl by remember { mutableStateOf("") }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Text("Administración de Usuarios", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.height(16.dp))
+    // Obtener referencia del fondo de pantalla desde Firebase Storage
+    val backgroundRef =
+        Firebase.storage.getReferenceFromUrl("gs://mar-de-luna-ada79.firebasestorage.app/fondo_de_pantalla.jpg")
+    backgroundRef.downloadUrl
+        .addOnSuccessListener { uri ->
+            backgroundUrl = uri.toString()
+        }
+        .addOnFailureListener { exception ->
+            Log.e("Firebase", "Error al cargar fondo: ${exception.message}")
+        }
 
-        OutlinedTextField(
-            value = dni,
-            onValueChange = { dni = it },
-            label = { Text("DNI") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
+    Box(modifier = Modifier.fillMaxSize()) {
+        if (backgroundUrl.isNotEmpty()) {
+            Image(
+                painter = rememberAsyncImagePainter(backgroundUrl),
+                contentDescription = "Fondo de pantalla",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
 
-        OutlinedTextField(
-            value = name,
-            onValueChange = { name = it },
-            label = { Text("Nombre") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedTextField(
-            value = lastName,
-            onValueChange = { lastName = it },
-            label = { Text("Apellidos") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Email") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
-            Button(onClick = {
-                if (dni.isBlank() || name.isBlank() || lastName.isBlank() || email.isBlank()) {
-                    message = "Todos los campos son obligatorios."
-                } else {
-                    val user = User(dni, name, lastName, email)
-                    firestore.addUser(user,
+            Text("Administración de usuarios", style = MaterialTheme.typography.headlineMedium)
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = dni,
+                onValueChange = { dni = it },
+                label = { Text("DNI") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(
+                value = name,
+                onValueChange = { name = it },
+                label = { Text("Nombre") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(
+                value = lastName,
+                onValueChange = { lastName = it },
+                label = { Text("Apellidos") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Email") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Button(onClick = {
+                    if (dni.isBlank() || name.isBlank() || lastName.isBlank() || email.isBlank()) {
+                        message = "Todos los campos son obligatorios."
+                    } else {
+                        val user = User(dni, name, lastName, email)
+                        firestore.addUser(user,
+                            onSuccess = { },
+                            onError = { exception ->
+                                Log.e("Firestore", "Error al crear usuario", exception)
+                            },
+                            updateMessage = { newMessage -> message = newMessage }
+                        )
+                    }
+                }) {
+                    Text("Crear")
+                }
+
+                Button(onClick = {
+                    firestore.updateUser(dni,
+                        updatedFields = mapOf(
+                            "name" to name,
+                            "lastName" to lastName,
+                            "email" to email
+                        ),
                         onSuccess = { },
                         onError = { exception ->
-                            Log.e(
-                                "Firestore",
-                                "Error al crear usuario",
-                                exception
-                            )
+                            message = "Error al actualizar usuario: ${exception.message}"
                         },
                         updateMessage = { newMessage -> message = newMessage }
                     )
+                }) {
+                    Text("Actualizar")
                 }
-            }) {
-                Text("Crear")
-            }
 
-            Button(onClick = {
-                firestore.updateUser(dni,
-                    updatedFields = mapOf(
-                        "name" to name,
-                        "lastName" to lastName,
-                        "email" to email
-                    ),
-                    onSuccess = { },
-                    onError = { exception ->
-                        message = "Error al actualizar usuario: ${exception.message}"
-                    },
-                    updateMessage = { newMessage -> message = newMessage }
+                Button(onClick = {
+                    firestore.deleteUser(dni,
+                        onSuccess = { },
+                        onError = { exception ->
+                            message = "Error al eliminar usuario: ${exception.message}"
+                        },
+                        updateMessage = { newMessage -> message = newMessage }
+                    )
+                }) {
+                    Text("Eliminar")
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Display Message
+            if (message.isNotEmpty()) {
+                Text(
+                    message,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.error
                 )
-            }) {
-                Text("Actualizar")
             }
-
-            Button(onClick = {
-                firestore.deleteUser(dni,
-                    onSuccess = { },
-                    onError = { exception ->
-                        message = "Error al eliminar usuario: ${exception.message}"
-                    },
-                    updateMessage = { newMessage -> message = newMessage }
-                )
-            }) {
-                Text("Eliminar")
-            }
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Display Message
-        if (message.isNotEmpty()) {
-            Text(
-                message,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.error
-            )
         }
     }
 }
