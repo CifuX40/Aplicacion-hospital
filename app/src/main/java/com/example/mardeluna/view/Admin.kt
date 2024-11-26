@@ -9,6 +9,7 @@ import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import com.google.firebase.firestore.*
 
+// Pantalla de administración de usuarios
 @Composable
 fun AdminScreen(navController: NavHostController) {
     val firestore = remember { Firestore() }
@@ -62,7 +63,7 @@ fun AdminScreen(navController: NavHostController) {
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Buttons
+        // Buttons for Create, Update, Delete
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
@@ -73,11 +74,15 @@ fun AdminScreen(navController: NavHostController) {
                 } else {
                     val user = User(dni, name, lastName, email)
                     firestore.addUser(user,
-                        onSuccess = { message = "Usuario creado con éxito." },
+                        onSuccess = { },
                         onError = { exception ->
-                            message = "Error al crear usuario: ${exception.message}"
-                            Log.e("Firestore", "Error al crear usuario", exception)
-                        }
+                            Log.e(
+                                "Firestore",
+                                "Error al crear usuario",
+                                exception
+                            )
+                        },
+                        updateMessage = { newMessage -> message = newMessage }
                     )
                 }
             }) {
@@ -91,16 +96,23 @@ fun AdminScreen(navController: NavHostController) {
                         "lastName" to lastName,
                         "email" to email
                     ),
-                    onSuccess = { message = "Usuario actualizado con éxito." },
-                    onError = { message = "Error al actualizar usuario: ${it.message}" }
+                    onSuccess = { },
+                    onError = { exception ->
+                        message = "Error al actualizar usuario: ${exception.message}"
+                    },
+                    updateMessage = { newMessage -> message = newMessage }
                 )
             }) {
                 Text("Actualizar")
             }
+
             Button(onClick = {
                 firestore.deleteUser(dni,
-                    onSuccess = { message = "Usuario eliminado con éxito." },
-                    onError = { message = "Error al eliminar usuario: ${it.message}" }
+                    onSuccess = { },
+                    onError = { exception ->
+                        message = "Error al eliminar usuario: ${exception.message}"
+                    },
+                    updateMessage = { newMessage -> message = newMessage }
                 )
             }) {
                 Text("Eliminar")
@@ -108,7 +120,7 @@ fun AdminScreen(navController: NavHostController) {
         }
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Message Display
+        // Display Message
         if (message.isNotEmpty()) {
             Text(
                 message,
@@ -119,6 +131,7 @@ fun AdminScreen(navController: NavHostController) {
     }
 }
 
+// Data class for User
 data class User(
     val dni: String = "",
     val name: String = "",
@@ -126,72 +139,89 @@ data class User(
     val email: String = ""
 )
 
+// Firestore operations for adding, updating, and deleting users
 class Firestore {
     private val db = FirebaseFirestore.getInstance()
 
-    // Agrega o sobreescribe un usuario en la colección "Usuarios"
-    fun addUser(user: User, onSuccess: () -> Unit, onError: (Exception) -> Unit) {
-        db.collection("Usuarios") // Si no existe, la colección "Usuarios" se crea automáticamente.
+    // Adds or overwrites a user in the "Usuarios" collection
+    fun addUser(
+        user: User,
+        onSuccess: () -> Unit,
+        onError: (Exception) -> Unit,
+        updateMessage: (String) -> Unit
+    ) {
+        db.collection("Usuarios")
             .document(user.dni)
-            .set(user)
-            .addOnSuccessListener {
-                Log.d("Firestore", "Usuario agregado correctamente: ${user.dni}")
-                onSuccess()
+            .get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (!documentSnapshot.exists()) {
+                    db.collection("Usuarios")
+                        .document(user.dni)
+                        .set(user)
+                        .addOnSuccessListener {
+                            Log.d("Firestore", "Usuario agregado correctamente: ${user.dni}")
+                            updateMessage("Usuario creado con éxito.")
+                            onSuccess()
+                        }
+                        .addOnFailureListener { exception ->
+                            Log.e("Firestore", "Error al agregar usuario", exception)
+                            updateMessage("Error al crear usuario: ${exception.message}")
+                            onError(exception)
+                        }
+                } else {
+                    Log.d("Firestore", "El usuario ya existe: ${user.dni}")
+                    updateMessage("El usuario ya existe.")
+                }
             }
             .addOnFailureListener { exception ->
-                Log.e("Firestore", "Error al agregar usuario", exception)
+                Log.e("Firestore", "Error al verificar si el usuario existe", exception)
+                updateMessage("Error al verificar si el usuario existe: ${exception.message}")
                 onError(exception)
             }
     }
 
-    // Actualiza los campos de un usuario existente
+    // Updates an existing user's fields
     fun updateUser(
         dni: String,
         updatedFields: Map<String, Any>,
         onSuccess: () -> Unit,
-        onError: (Exception) -> Unit
+        onError: (Exception) -> Unit,
+        updateMessage: (String) -> Unit
     ) {
         db.collection("Usuarios")
-            .document(dni) // Aquí se usa dni directamente
+            .document(dni)
             .update(updatedFields)
             .addOnSuccessListener {
-                Log.d("Firestore", "Usuario actualizado correctamente: $dni") // dni
+                Log.d("Firestore", "Usuario actualizado correctamente: $dni")
+                updateMessage("Usuario actualizado con éxito.")
                 onSuccess()
             }
             .addOnFailureListener { exception ->
                 Log.e("Firestore", "Error al actualizar usuario", exception)
+                updateMessage("Error al actualizar usuario: ${exception.message}")
                 onError(exception)
             }
     }
 
-    // Elimina un usuario por su DNI
-    fun deleteUser(dni: String, onSuccess: () -> Unit, onError: (Exception) -> Unit) {
+    // Deletes a user by their DNI
+    fun deleteUser(
+        dni: String,
+        onSuccess: () -> Unit,
+        onError: (Exception) -> Unit,
+        updateMessage: (String) -> Unit
+    ) {
         db.collection("Usuarios")
-            .document(dni) // Aquí se usa dni directamente
+            .document(dni)
             .delete()
             .addOnSuccessListener {
-                Log.d("Firestore", "Usuario eliminado correctamente: $dni") // dni
+                Log.d("Firestore", "Usuario eliminado correctamente: $dni")
+                updateMessage("Usuario eliminado con éxito.")
                 onSuccess()
             }
             .addOnFailureListener { exception ->
                 Log.e("Firestore", "Error al eliminar usuario", exception)
+                updateMessage("Error al eliminar usuario: ${exception.message}")
                 onError(exception)
             }
-    }
-
-    // Comprueba si la colección "Usuarios" tiene documentos y ejecuta una acción
-    fun ensureCollectionExists(onSuccess: () -> Unit, onError: (Exception) -> Unit) {
-        db.collection("Usuarios")
-            .get()
-            .addOnSuccessListener { querySnapshot ->
-                if (querySnapshot.isEmpty) {
-                    // La colección no tiene documentos, pero existe al agregar el primero
-                    onSuccess()
-                } else {
-                    // La colección ya contiene documentos
-                    onSuccess()
-                }
-            }
-            .addOnFailureListener { onError(it) }
     }
 }
