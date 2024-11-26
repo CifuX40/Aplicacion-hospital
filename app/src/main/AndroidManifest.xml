@@ -20,7 +20,7 @@
             android:resource="@drawable/logo" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/color_accent" />
+            android:resource="@color/colorAccent" />
 
         <activity
             android:name="com.example.mardeluna.view.MainActivity"
