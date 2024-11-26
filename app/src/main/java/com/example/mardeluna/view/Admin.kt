@@ -1,6 +1,6 @@
 package com.example.mardeluna.view
 
-import android.util.Log
+import android.util.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -27,7 +27,6 @@ fun AdminScreen(navController: NavHostController) {
         Text("Administración de Usuarios", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(16.dp))
 
-        // DNI Input
         OutlinedTextField(
             value = dni,
             onValueChange = { dni = it },
@@ -36,7 +35,6 @@ fun AdminScreen(navController: NavHostController) {
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Name Input
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
@@ -45,7 +43,6 @@ fun AdminScreen(navController: NavHostController) {
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Last Name Input
         OutlinedTextField(
             value = lastName,
             onValueChange = { lastName = it },
@@ -54,7 +51,6 @@ fun AdminScreen(navController: NavHostController) {
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Email Input
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
@@ -63,7 +59,6 @@ fun AdminScreen(navController: NavHostController) {
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Buttons for Create, Update, Delete
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
@@ -131,7 +126,6 @@ fun AdminScreen(navController: NavHostController) {
     }
 }
 
-// Data class for User
 data class User(
     val dni: String = "",
     val name: String = "",
@@ -139,11 +133,9 @@ data class User(
     val email: String = ""
 )
 
-// Firestore operations for adding, updating, and deleting users
 class Firestore {
     private val db = FirebaseFirestore.getInstance()
 
-    // Adds or overwrites a user in the "Usuarios" collection
     fun addUser(
         user: User,
         onSuccess: () -> Unit,
@@ -180,7 +172,6 @@ class Firestore {
             }
     }
 
-    // Updates an existing user's fields
     fun updateUser(
         dni: String,
         updatedFields: Map<String, Any>,
@@ -203,7 +194,6 @@ class Firestore {
             }
     }
 
-    // Deletes a user by their DNI
     fun deleteUser(
         dni: String,
         onSuccess: () -> Unit,
