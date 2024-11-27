@@ -33,9 +33,11 @@ fun PublicacionesScreen(navController: NavHostController) {
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
             .addOnFailureListener { Log.e("Firebase", "Error al cargar fondo: ${it.message}") }
 
-        // Publicaciones
+        // Cargar publicaciones
         val db = FirebaseFirestore.getInstance()
-        db.collection("publicaciones").get()
+        db.collection("publicaciones")
+            .orderBy("timestamp", Query.Direction.DESCENDING) // Ordenar por la marca de tiempo
+            .get()
             .addOnSuccessListener { snapshot ->
                 publicaciones = snapshot.documents.map { it.data ?: emptyMap() }
                 loading = false
@@ -212,7 +214,10 @@ fun publicarPublicacion(
     val db = FirebaseFirestore.getInstance()
     val storage = FirebaseStorage.getInstance().reference
 
-    val publicacion = hashMapOf("mensaje" to mensaje)
+    val publicacion = hashMapOf(
+        "mensaje" to mensaje,
+        "timestamp" to FieldValue.serverTimestamp() // Marcar con la hora exacta en que se publica
+    )
 
     if (imageUri != null) {
         val ref = storage.child("publicaciones/${System.currentTimeMillis()}.jpg")
