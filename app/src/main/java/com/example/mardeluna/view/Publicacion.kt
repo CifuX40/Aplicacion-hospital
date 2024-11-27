@@ -4,17 +4,17 @@ import android.net.*
 import android.util.*
 import androidx.activity.compose.*
 import androidx.activity.result.contract.*
-import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.layout.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
-import coil.compose.*
-import androidx.compose.ui.layout.*
+import coil.compose.rememberAsyncImagePainter
 import com.google.firebase.firestore.*
 import com.google.firebase.storage.*
 
@@ -24,22 +24,17 @@ fun PublicacionesScreen(navController: NavHostController) {
     var publicaciones by remember { mutableStateOf<List<Map<String, Any>>?>(null) }
     var loading by remember { mutableStateOf(true) }
 
+    // Cargar fondo y publicaciones desde Firebase
     LaunchedEffect(Unit) {
-        val db = FirebaseFirestore.getInstance()
-        val storage = FirebaseStorage.getInstance().reference
+        val storage = FirebaseStorage.getInstance()
 
-        // Fondo
-        val backgroundRef =
-            storage.child("fondo_de_pantalla.jpg")
-        backgroundRef.downloadUrl
+        // Fondo de pantalla
+        storage.reference.child("fondo_de_pantalla.jpg").downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
-            .addOnFailureListener { exception ->
-                Log.e(
-                    "Firebase",
-                    "Error al cargar fondo: ${exception.message}"
-                )
-            }
+            .addOnFailureListener { Log.e("Firebase", "Error al cargar fondo: ${it.message}") }
 
+        // Publicaciones
+        val db = FirebaseFirestore.getInstance()
         db.collection("publicaciones").get()
             .addOnSuccessListener { snapshot ->
                 publicaciones = snapshot.documents.map { it.data ?: emptyMap() }
@@ -60,22 +55,29 @@ fun PublicacionesScreen(navController: NavHostController) {
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.LightGray)
+            )
         }
+
+        // Contenido principal
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = "Publicaciones",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = Color.Black,
+                modifier = Modifier.padding(bottom = 16.dp)
             )
-
-            Spacer(modifier = Modifier.height(16.dp))
 
             if (loading) {
                 CircularProgressIndicator()
@@ -212,7 +214,6 @@ fun publicarPublicacion(
 
     val publicacion = hashMapOf("mensaje" to mensaje)
 
-    // Subir imagen si existe
     if (imageUri != null) {
         val ref = storage.child("publicaciones/${System.currentTimeMillis()}.jpg")
         ref.putFile(imageUri).addOnSuccessListener {
