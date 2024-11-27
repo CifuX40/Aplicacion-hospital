@@ -95,7 +95,10 @@ fun PublicacionesScreen(navController: NavHostController) {
 
             // Botón para añadir publicación
             Button(
-                onClick = { navController.navigate("agregar_publicacion") },
+                onClick = {
+                    Log.d("PublicacionesScreen", "Navegando a la pantalla de agregar publicación")
+                    navController.navigate("agregar_publicacion")
+                },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Añadir publicación")
@@ -192,7 +195,11 @@ fun AgregarPublicacionUI(navController: NavHostController) {
             if (texto.isNotBlank() || imageUri != null) {
                 publicarPublicacion(texto, imageUri) {
                     successMessage = "Publicación realizada con éxito!"
-                    navController.popBackStack() // Regresar a la pantalla anterior
+                    Log.d("AgregarPublicacionUI", "Publicación realizada correctamente")
+                    // Navegar explícitamente a la pantalla de publicaciones
+                    navController.navigate("publicaciones_screen") {
+                        popUpTo("publicaciones_screen") { inclusive = true }
+                    }
                 }
             } else {
                 errorMessage = "Debe ingresar un mensaje o seleccionar una imagen."
