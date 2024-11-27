@@ -1,33 +1,45 @@
 package com.example.mardeluna.view
 
-import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import android.net.*
+import android.util.*
+import androidx.activity.compose.*
+import androidx.activity.result.contract.*
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import coil.compose.rememberAsyncImagePainter
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
+import androidx.compose.ui.*
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.text.font.*
+import androidx.compose.ui.unit.*
+import androidx.navigation.*
+import coil.compose.*
+import androidx.compose.ui.layout.*
+import com.google.firebase.firestore.*
+import com.google.firebase.storage.*
 
 @Composable
 fun PublicacionesScreen(navController: NavHostController) {
+    var backgroundUrl by remember { mutableStateOf("") }
     var publicaciones by remember { mutableStateOf<List<Map<String, Any>>?>(null) }
     var loading by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
         val db = FirebaseFirestore.getInstance()
+        val storage = FirebaseStorage.getInstance().reference
+
+        // Fondo
+        val backgroundRef =
+            storage.child("fondo_de_pantalla.jpg")
+        backgroundRef.downloadUrl
+            .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
+            .addOnFailureListener { exception ->
+                Log.e(
+                    "Firebase",
+                    "Error al cargar fondo: ${exception.message}"
+                )
+            }
+
         db.collection("publicaciones").get()
             .addOnSuccessListener { snapshot ->
                 publicaciones = snapshot.documents.map { it.data ?: emptyMap() }
@@ -39,36 +51,47 @@ fun PublicacionesScreen(navController: NavHostController) {
             }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "Publicaciones",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        if (loading) {
-            CircularProgressIndicator()
-        } else if (publicaciones.isNullOrEmpty()) {
-            Text("No hay publicaciones disponibles.")
-        } else {
-            publicaciones?.forEach { publicacion ->
-                PublicacionItem(publicacion)
-            }
+    Box(modifier = Modifier.fillMaxSize()) {
+        // Fondo de pantalla
+        if (backgroundUrl.isNotEmpty()) {
+            Image(
+                painter = rememberAsyncImagePainter(backgroundUrl),
+                contentDescription = "Fondo de pantalla",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
         }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Publicaciones",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        Button(onClick = { navController.navigate("agregar_publicacion") }) {
-            Text("Añadir Publicación")
+            if (loading) {
+                CircularProgressIndicator()
+            } else if (publicaciones.isNullOrEmpty()) {
+                Text("No hay publicaciones disponibles.")
+            } else {
+                publicaciones?.forEach { publicacion ->
+                    PublicacionItem(publicacion)
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(onClick = { navController.navigate("agregar_publicacion") }) {
+                Text("Añadir Publicación")
+            }
         }
     }
 }
@@ -179,7 +202,7 @@ fun AgregarPublicacionUI(navController: NavHostController) {
     }
 }
 
-private fun publicarPublicacion(
+fun publicarPublicacion(
     mensaje: String,
     imageUri: Uri?,
     onSuccess: () -> Unit

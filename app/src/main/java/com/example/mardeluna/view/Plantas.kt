@@ -98,7 +98,7 @@ fun MainLogoScreen(navController: NavHostController) {
 
                 // Botón para ir a Publicaciones
                 Button(
-                    onClick = { navController.navigate("AgregarPublicacionUI") },
+                    onClick = { navController.navigate("PublicacionesScreen") },
                     modifier = Modifier.fillMaxWidth(0.6f)
                 ) {
                     Text("Ir a publicaciones")
