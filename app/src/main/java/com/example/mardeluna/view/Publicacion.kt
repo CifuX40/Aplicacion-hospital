@@ -93,8 +93,12 @@ fun PublicacionesScreen(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Button(onClick = { navController.navigate("agregar_publicacion") }) {
-                Text("Añadir Publicación")
+            // Botón para añadir publicación
+            Button(
+                onClick = { navController.navigate("agregar_publicacion") },
+                modifier = Modifier.fillMaxWidth() // Asegurarse de que el botón ocupe el ancho completo
+            ) {
+                Text("Añadir publicación")
             }
         }
     }
@@ -132,6 +136,7 @@ fun AgregarPublicacionUI(navController: NavHostController) {
     var texto by remember { mutableStateOf("") }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var errorMessage by remember { mutableStateOf("") }
+    var successMessage by remember { mutableStateOf("") }
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
         imageUri = it
     }
@@ -186,6 +191,7 @@ fun AgregarPublicacionUI(navController: NavHostController) {
         Button(onClick = {
             if (texto.isNotBlank() || imageUri != null) {
                 publicarPublicacion(texto, imageUri) {
+                    successMessage = "Publicación realizada con éxito!"
                     navController.popBackStack() // Regresar a la pantalla anterior
                 }
             } else {
@@ -200,6 +206,15 @@ fun AgregarPublicacionUI(navController: NavHostController) {
             Text(
                 text = errorMessage,
                 color = Color.Red,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
+
+        // Mensaje de éxito
+        if (successMessage.isNotBlank()) {
+            Text(
+                text = successMessage,
+                color = Color.Green,
                 modifier = Modifier.padding(top = 8.dp)
             )
         }
