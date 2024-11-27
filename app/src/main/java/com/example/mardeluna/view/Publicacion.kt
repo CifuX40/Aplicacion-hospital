@@ -96,7 +96,7 @@ fun PublicacionesScreen(navController: NavHostController) {
             // Botón para añadir publicación
             Button(
                 onClick = { navController.navigate("agregar_publicacion") },
-                modifier = Modifier.fillMaxWidth() // Asegurarse de que el botón ocupe el ancho completo
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Añadir publicación")
             }
