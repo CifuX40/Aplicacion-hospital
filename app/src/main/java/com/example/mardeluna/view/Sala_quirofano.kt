@@ -18,19 +18,28 @@ import com.google.firebase.storage.ktx.*
 @Composable
 fun SalaQuirofanoScreen(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
+    var salaQuirofanoImageUrl by remember { mutableStateOf("") }
 
-    // Cargar fondo desde Firebase Storage
+    // Cargar imágenes desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = Firebase.storage
+
+        // Cargar fondo
         val backgroundRef =
             storage.getReferenceFromUrl("gs://mar-de-luna-ada79.firebasestorage.app/fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
             .addOnFailureListener { exception ->
-                Log.e(
-                    "Firebase",
-                    "Error al cargar fondo: ${exception.message}"
-                )
+                Log.e("Firebase", "Error al cargar fondo: ${exception.message}")
+            }
+
+        // Cargar imagen de sala quirófano
+        val salaQuirofanoRef =
+            storage.getReferenceFromUrl("gs://mar-de-luna-ada79.firebasestorage.app/sala_quirofano.jpg")
+        salaQuirofanoRef.downloadUrl
+            .addOnSuccessListener { uri -> salaQuirofanoImageUrl = uri.toString() }
+            .addOnFailureListener { exception ->
+                Log.e("Firebase", "Error al cargar imagen de sala quirófano: ${exception.message}")
             }
     }
 
@@ -51,6 +60,7 @@ fun SalaQuirofanoScreen(navController: NavHostController) {
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
             // Título
             Text(
                 text = "Sala quirófano",
@@ -59,6 +69,19 @@ fun SalaQuirofanoScreen(navController: NavHostController) {
                 color = Color.Black,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
+
+            // Imagen de sala quirófano
+            if (salaQuirofanoImageUrl.isNotEmpty()) {
+                Image(
+                    painter = rememberAsyncImagePainter(salaQuirofanoImageUrl),
+                    contentDescription = "Sala quirófano",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .padding(bottom = 16.dp)
+                )
+            }
 
             // Descripción
             Text(
