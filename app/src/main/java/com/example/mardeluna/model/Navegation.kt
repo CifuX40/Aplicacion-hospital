@@ -48,5 +48,7 @@ fun AppNavigation(navController: NavHostController) {
         composable("controles_carga_autoclaves_screen") { ControlesCargaScreen(navController) }
         composable("agregar_publicacion") { AgregarPublicacionUI(navController) }
         composable("PublicacionesScreen") { PublicacionesScreen(navController) }
+        composable("equipo_quirofano_screen") { EquipoQuirofanoScreen(navController) }
+        composable("chequeo_respirador_screen") { ChequeoRespiradorScreen(navController) }
     }
 }

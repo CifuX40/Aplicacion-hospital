@@ -51,13 +51,39 @@ fun SalaQuirofanoScreen(navController: NavHostController) {
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Título
             Text(
                 text = "Sala quirófano",
                 fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
+                fontSize = 24.sp,
                 color = Color.Black,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
+
+            // Descripción
+            Text(
+                text = "Es el lugar donde se realizan las intervenciones quirúrgicas. Deberá proporcionar un ambiente seguro, eficiente y aséptico para la realización de procedimientos quirúrgicos.",
+                fontSize = 16.sp,
+                color = Color.DarkGray,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            // Botones
+            Button(
+                onClick = { navController.navigate("equipo_quirofano_screen") },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "Equipos de quirófano")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = { navController.navigate("chequeo_respirador_screen") },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "Chequeo respirador")
+            }
         }
     }
 }
