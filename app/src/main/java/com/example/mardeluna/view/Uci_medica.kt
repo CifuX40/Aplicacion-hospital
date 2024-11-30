@@ -18,35 +18,30 @@ import androidx.compose.ui.layout.*
 fun UciMedicaScreen(navController: NavHostController) {
     var backgroundImageUrl by remember { mutableStateOf<String?>(null) }
     var salaImageUrl by remember { mutableStateOf<String?>(null) }
+    var criteriosImageUrl by remember { mutableStateOf<String?>(null) }
     var loadError by remember { mutableStateOf(false) }
 
-    // Descargar la URL de la imagen de fondo y de la sala de UCI
+    // Descargar URLs de imágenes
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
 
         // Cargar fondo
         val fondoRef = storage.reference.child("fondo_de_pantalla.jpg")
         fondoRef.downloadUrl
-            .addOnSuccessListener { uri ->
-                backgroundImageUrl = uri.toString()
-                Log.d("Firebase", "URL de fondo obtenida: $backgroundImageUrl")
-            }
-            .addOnFailureListener { exception ->
-                loadError = true
-                Log.e("Firebase", "Error al obtener URL del fondo: ${exception.message}")
-            }
+            .addOnSuccessListener { uri -> backgroundImageUrl = uri.toString() }
+            .addOnFailureListener { loadError = true }
 
         // Cargar imagen de la sala de UCI
         val salaRef = storage.reference.child("sala_uci_uno.jpg")
         salaRef.downloadUrl
-            .addOnSuccessListener { uri ->
-                salaImageUrl = uri.toString()
-                Log.d("Firebase", "URL de imagen de sala obtenida: $salaImageUrl")
-            }
-            .addOnFailureListener { exception ->
-                loadError = true
-                Log.e("Firebase", "Error al obtener URL de la imagen de sala: ${exception.message}")
-            }
+            .addOnSuccessListener { uri -> salaImageUrl = uri.toString() }
+            .addOnFailureListener { loadError = true }
+
+        // Cargar imagen de criterios de admisión
+        val criteriosRef = storage.reference.child("criterios_admision_uci.jpg")
+        criteriosRef.downloadUrl
+            .addOnSuccessListener { uri -> criteriosImageUrl = uri.toString() }
+            .addOnFailureListener { loadError = true }
     }
 
     Box(
@@ -80,7 +75,7 @@ fun UciMedicaScreen(navController: NavHostController) {
                 .fillMaxSize()
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -103,10 +98,38 @@ fun UciMedicaScreen(navController: NavHostController) {
                 )
             }
 
+            // Texto: Criterios de admisión
+            Text(
+                text = "Criterios de admisión en UCI Médica",
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            Text(
+                text = "La definición dada a la UCI delimita los dos criterios clave para los pacientes en la Unidad:\n" +
+                        "- Que precisen un elevado nivel de cuidados.\n" +
+                        "- Que sean recuperables.",
+                fontSize = 14.sp,
+                color = Color.DarkGray,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            // Imagen de criterios de admisión
+            criteriosImageUrl?.let {
+                Image(
+                    painter = rememberAsyncImagePainter(model = it),
+                    contentDescription = "Criterios de admisión en UCI",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(250.dp),
+                    contentScale = ContentScale.Crop
+                )
+            }
+
             // Botones de navegación
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(16.dp) // Espacio entre los botones
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Button(
                     onClick = { navController.navigate("desfibrilador_screen") },
@@ -119,7 +142,7 @@ fun UciMedicaScreen(navController: NavHostController) {
                     onClick = { navController.navigate("evita_300_screen") },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "Evita 300")
+                    Text(text = "Evita 600")
                 }
             }
         }
