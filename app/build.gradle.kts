@@ -64,38 +64,37 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation (libs.androidx.recyclerview)
+    implementation(libs.androidx.recyclerview)
 
-    // Compose
+    // Compose UI & Material
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.ui)
-    implementation(libs.ui.tooling.preview)
-    implementation(libs.material3)
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.material3)
 
-    // Navegación
-    implementation(libs.androidx.navigation.runtime.ktx)
+    // Navigation for Compose
     implementation(libs.androidx.navigation.compose)
 
-    // Firebase
+    // Firebase dependencies
     implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.auth.ktx)
-    implementation(libs.google.firebase.storage.ktx)
-    implementation(libs.google.firebase.firestore.ktx)
+    implementation(libs.google.firebase.auth.ktx)
+    implementation(libs.firebase.storage.ktx)
+    implementation(libs.firebase.firestore.ktx)
 
-    // Imagen con Coil
+    // Image loading with Coil
     implementation(libs.coil.compose)
 
-    // Media3
+    // Media3 for video playback
     implementation(libs.androidx.media3.ui.v150)
     implementation(libs.androidx.media3.exoplayer.v150)
 
-    // Testing
+    // Testing dependencies
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.ui.test.junit4)
+    androidTestImplementation(libs.androidx.ui.test.junit4)
 
-    // Debugging
-    debugImplementation(libs.ui.tooling)
+    // Debugging tools
+    debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
 }
