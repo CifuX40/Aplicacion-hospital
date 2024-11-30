@@ -22,10 +22,16 @@ fun SalaQuirofanoScreen(navController: NavHostController) {
     // Cargar fondo desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = Firebase.storage
-        val backgroundRef = storage.getReferenceFromUrl("gs://mar-de-luna-ada79.firebasestorage.app/fondo_de_pantalla.jpg")
+        val backgroundRef =
+            storage.getReferenceFromUrl("gs://mar-de-luna-ada79.firebasestorage.app/fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
-            .addOnFailureListener { exception -> Log.e("Firebase", "Error al cargar fondo: ${exception.message}") }
+            .addOnFailureListener { exception ->
+                Log.e(
+                    "Firebase",
+                    "Error al cargar fondo: ${exception.message}"
+                )
+            }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
