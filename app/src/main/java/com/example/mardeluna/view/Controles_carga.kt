@@ -11,9 +11,7 @@ import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import androidx.compose.ui.layout.*
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.text.*
 import coil.compose.*
 import com.google.firebase.ktx.*
 import com.google.firebase.storage.ktx.*

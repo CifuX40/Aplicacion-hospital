@@ -1,21 +1,20 @@
 package com.example.mardeluna.view
 
 import android.util.*
-import android.widget.VideoView
+import android.widget.*
 import android.net.*
-import android.widget.MediaController
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.navigation.NavHostController
-import coil.compose.rememberAsyncImagePainter
-import com.google.firebase.storage.FirebaseStorage
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.layout.*
+import androidx.compose.ui.unit.*
+import androidx.compose.ui.viewinterop.*
+import androidx.navigation.*
+import coil.compose.*
+import com.google.firebase.storage.*
 
 @Composable
 fun DesfibriladorScreen(navController: NavHostController) {
