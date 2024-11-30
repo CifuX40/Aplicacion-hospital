@@ -1,18 +1,18 @@
 package com.example.mardeluna.view
 
-import android.util.*
-import androidx.compose.foundation.*
+import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.*
-import androidx.compose.ui.unit.*
-import androidx.navigation.*
-import androidx.compose.ui.layout.*
-import coil.compose.*
-import com.google.firebase.firestore.*
-import com.google.firebase.ktx.*
-import com.google.firebase.storage.ktx.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 
 // Pantalla de administración de usuarios
 @Composable
@@ -145,6 +145,21 @@ fun AdminScreen(navController: NavHostController) {
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.error
                 )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Botón de cerrar sesión
+            Button(
+                onClick = {
+                    // Navegar de regreso a StartScreen
+                    navController.navigate("StartScreen") {
+                        popUpTo("AdminScreen") { inclusive = true }
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Cerrar sesión")
             }
         }
     }
