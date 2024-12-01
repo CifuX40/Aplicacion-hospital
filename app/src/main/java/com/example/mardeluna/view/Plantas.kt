@@ -107,6 +107,18 @@ fun MainLogoScreen(navController: NavHostController) {
                 // Mostrar un mensaje de error si la carga falló
                 Text(text = "Error al cargar las imágenes", color = Color.Red)
             }
+
+            // Botón de cerrar sesión
+            Button(
+                onClick = {
+                    navController.navigate("start") {
+                        popUpTo("start") { inclusive = true }
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Cerrar sesión")
+            }
         }
     }
 }

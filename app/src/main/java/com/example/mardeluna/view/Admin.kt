@@ -160,7 +160,6 @@ fun AdminScreen(navController: NavHostController) {
             ) {
                 Text("Cerrar sesión")
             }
-
         }
     }
 }
