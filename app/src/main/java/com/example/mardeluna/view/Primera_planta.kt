@@ -1,7 +1,6 @@
 package com.example.mardeluna.view
 
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.*
 import androidx.compose.material.icons.filled.*
@@ -9,7 +8,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.input.pointer.*
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
@@ -20,11 +18,6 @@ import com.google.firebase.storage.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FirstFloorScreen(navController: NavHostController = rememberNavController()) {
-    // Variables de estado para transformar la imagen
-    var scale by remember { mutableFloatStateOf(1f) }
-    var offsetX by remember { mutableFloatStateOf(0f) }
-    var offsetY by remember { mutableFloatStateOf(0f) }
-    var rotationState by remember { mutableFloatStateOf(0f) }
 
     // Variables de estado para almacenar las URLs de las imágenes y el estado de carga
     var backgroundUrl by remember { mutableStateOf("") }
@@ -118,21 +111,6 @@ fun FirstFloorScreen(navController: NavHostController = rememberNavController())
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(400.dp)
-                                .graphicsLayer(
-                                    scaleX = scale,
-                                    scaleY = scale,
-                                    translationX = offsetX,
-                                    translationY = offsetY,
-                                    rotationZ = rotationState
-                                )
-                                .pointerInput(Unit) {
-                                    detectTransformGestures { _, pan, zoom, rotation ->
-                                        scale *= zoom
-                                        rotationState += rotation
-                                        offsetX += pan.x
-                                        offsetY += pan.y
-                                    }
-                                }
                         )
                     } else if (loadError) {
                         Text(

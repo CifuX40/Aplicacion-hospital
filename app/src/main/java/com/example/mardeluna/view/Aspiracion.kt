@@ -3,6 +3,8 @@ package com.example.mardeluna.view
 import android.util.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -14,6 +16,7 @@ import com.google.firebase.storage.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AspiracionScreen(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
@@ -48,81 +51,108 @@ fun AspiracionScreen(navController: NavHostController) {
             }
     }
 
-    // Contenido con fondo
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        // Fondo de pantalla
-        if (backgroundUrl.isNotEmpty()) {
-            Image(
-                painter = rememberAsyncImagePainter(backgroundUrl),
-                contentDescription = "Fondo de pantalla",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+    // Scaffold con TopAppBar
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Mar de Luna",
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = Color.White
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigate("main_logo") }) {
+                        Icon(
+                            imageVector = Icons.Default.Home,
+                            contentDescription = "Home",
+                            tint = Color.White
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
             )
-        } else {
+        },
+        content = { paddingValues ->
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Gray)
-            )
-        }
-
-        // Contenido principal
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "Aspiración",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 16.dp),
-                color = Color.Black
-            )
-
-            // Imagen de aspiración
-            when {
-                imageUrl.isNotEmpty() && !loadError -> {
+                    .padding(paddingValues)
+            ) {
+                // Fondo de pantalla
+                if (backgroundUrl.isNotEmpty()) {
                     Image(
-                        painter = rememberAsyncImagePainter(imageUrl),
-                        contentDescription = "Imagen de aspiración",
+                        painter = rememberAsyncImagePainter(backgroundUrl),
+                        contentDescription = "Fondo de pantalla",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(300.dp)
-                            .padding(bottom = 16.dp)
+                            .fillMaxSize()
+                            .background(Color.Gray)
                     )
                 }
 
-                loadError -> {
+                // Contenido principal
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                        .verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     Text(
-                        text = "Error al cargar la imagen.",
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(bottom = 16.dp)
+                        text = "Aspiración",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = 16.dp),
+                        color = Color.Black
                     )
-                }
 
-                else -> {
+                    // Imagen de aspiración
+                    when {
+                        imageUrl.isNotEmpty() && !loadError -> {
+                            Image(
+                                painter = rememberAsyncImagePainter(imageUrl),
+                                contentDescription = "Imagen de aspiración",
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(300.dp)
+                                    .padding(bottom = 16.dp)
+                            )
+                        }
+
+                        loadError -> {
+                            Text(
+                                text = "Error al cargar la imagen.",
+                                color = MaterialTheme.colorScheme.error,
+                                modifier = Modifier.padding(bottom = 16.dp)
+                            )
+                        }
+
+                        else -> {
+                            Text(
+                                text = "Cargando imagen...",
+                                modifier = Modifier.padding(bottom = 16.dp)
+                            )
+                        }
+                    }
+
+                    // Procedimiento
                     Text(
-                        text = "Cargando imagen...",
-                        modifier = Modifier.padding(bottom = 16.dp)
+                        text = "PROCEDIMIENTO:",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = 8.dp),
+                        color = Color.Black
                     )
-                }
-            }
-
-            // Procedimiento
-            Text(
-                text = "PROCEDIMIENTO:",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 8.dp),
-                color = Color.Black
-            )
-            Text(
-                text = """
+                    Text(
+                        text = """
 1. Verificar el funcionamiento del aspirador conectándolo a la toma de vacío, asegurando una presión negativa adecuada (80 a 120 mmHg).
 2. Limpiar externamente las fosas nasales del paciente si es necesario.
 3. Abrir la sonda de aspiración y conectar el tubo a la pieza en "Y".
@@ -139,11 +169,13 @@ fun AspiracionScreen(navController: NavHostController) {
    - Lavar la sonda y el tubo aspirador con agua destilada o suero fisiológico.
    - Desechar el material en los contenedores indicados.
    - Retirar los guantes y realizar higiene de manos.
-            """.trimIndent(),
-                fontSize = 16.sp,
-                lineHeight = 24.sp,
-                color = Color.Black
-            )
+                    """.trimIndent(),
+                        fontSize = 16.sp,
+                        lineHeight = 24.sp,
+                        color = Color.Black
+                    )
+                }
+            }
         }
-    }
+    )
 }

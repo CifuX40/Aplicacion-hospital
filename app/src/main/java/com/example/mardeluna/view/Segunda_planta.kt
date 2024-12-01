@@ -1,30 +1,32 @@
 package com.example.mardeluna.view
 
-import android.util.*
-import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.graphics.*
-import androidx.compose.ui.input.pointer.*
-import androidx.compose.ui.layout.*
-import androidx.compose.ui.unit.*
-import androidx.navigation.*
-import androidx.navigation.compose.*
-import coil.compose.*
-import com.google.firebase.ktx.*
-import com.google.firebase.storage.ktx.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import coil.compose.rememberAsyncImagePainter
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SecondFloorScreen(navController: NavHostController = rememberNavController()) {
     var scale by remember { mutableFloatStateOf(1f) }
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
-    var rotationState by remember { mutableFloatStateOf(1f) }
+    var rotationState by remember { mutableFloatStateOf(0f) }
     var imageUrl by remember { mutableStateOf<String?>(null) }
     var backgroundUrl by remember { mutableStateOf<String?>(null) }
     var loadError by remember { mutableStateOf(false) }
@@ -33,125 +35,124 @@ fun SecondFloorScreen(navController: NavHostController = rememberNavController()
     LaunchedEffect(Unit) {
         val storage = Firebase.storage
 
-        // Cargar el fondo de pantalla
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
-            .addOnSuccessListener { uri ->
-                backgroundUrl = uri.toString()
-                Log.d("Firebase", "Fondo cargado exitosamente: $backgroundUrl")
-            }
-            .addOnFailureListener { exception ->
-                loadError = true
-                Log.e("Firebase", "Error al cargar el fondo: ${exception.message}")
-            }
+            .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
+            .addOnFailureListener { loadError = true }
 
-        // Cargar la imagen principal
         val imageRef = storage.reference.child("segunda_planta.png")
         imageRef.downloadUrl
-            .addOnSuccessListener { uri ->
-                imageUrl = uri.toString()
-                Log.d("Firebase", "Imagen cargada exitosamente: $imageUrl")
-            }
-            .addOnFailureListener { exception ->
-                loadError = true
-                Log.e("Firebase", "Error al cargar la imagen: ${exception.message}")
-            }
+            .addOnSuccessListener { uri -> imageUrl = uri.toString() }
+            .addOnFailureListener { loadError = true }
     }
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        // Mostrar el fondo de pantalla
-        if (backgroundUrl != null) {
-            Image(
-                painter = rememberAsyncImagePainter(model = backgroundUrl),
-                contentDescription = "Fondo de pantalla",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Mar de Luna",
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = Color.White
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigate("main_logo") }) {
+                        Icon(
+                            imageVector = Icons.Default.Home,
+                            contentDescription = "Home",
+                            tint = Color.White
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
             )
-        } else if (loadError) {
+        },
+        content = { paddingValues ->
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.LightGray) // Fondo alternativo si no se carga la imagen
-            )
-        }
-
-        // Contenido principal
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            when {
-                imageUrl != null -> {
-                    // Mostrar la imagen si se obtuvo la URL
+                    .padding(paddingValues)
+            ) {
+                // Fondo de pantalla
+                if (backgroundUrl != null) {
                     Image(
-                        painter = rememberAsyncImagePainter(model = imageUrl),
-                        contentDescription = "Second Floor",
+                        painter = rememberAsyncImagePainter(backgroundUrl),
+                        contentDescription = "Fondo de pantalla",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else if (loadError) {
+                    Box(
                         modifier = Modifier
-                            .size(300.dp)
-                            .graphicsLayer(
-                                scaleX = scale,
-                                scaleY = scale,
-                                translationX = offsetX,
-                                translationY = offsetY,
-                                rotationZ = rotationState
-                            )
-                            .pointerInput(Unit) {
-                                detectTransformGestures { _, pan, zoom, rotation ->
-                                    scale *= zoom
-                                    rotationState += rotation
-                                    offsetX += pan.x
-                                    offsetY += pan.y
-                                }
-                            }
+                            .fillMaxSize()
+                            .background(Color.Gray)
                     )
                 }
 
-                loadError -> {
-                    // Mensaje de error si hubo un problema al cargar la imagen
-                    Text("Error al cargar la imagen. Verifica tu conexión o permisos.")
+                // Contenido principal
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    if (imageUrl != null) {
+                        Image(
+                            painter = rememberAsyncImagePainter(imageUrl),
+                            contentDescription = "Segunda planta",
+                            modifier = Modifier
+                                .size(300.dp)
+                                .graphicsLayer(
+                                    scaleX = scale,
+                                    scaleY = scale,
+                                    translationX = offsetX,
+                                    translationY = offsetY,
+                                    rotationZ = rotationState
+                                )
+                                .pointerInput(Unit) {
+                                    detectTransformGestures { _, pan, zoom, rotation ->
+                                        scale *= zoom
+                                        rotationState += rotation
+                                        offsetX += pan.x
+                                        offsetY += pan.y
+                                    }
+                                }
+                        )
+                    } else if (loadError) {
+                        Text("Error al cargar la imagen. Verifica tu conexión o permisos.")
+                    } else {
+                        Text("Cargando imagen...")
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Botones de navegación
+                    Button(
+                        onClick = { navController.navigate("hospitalization_screen") },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Hospitalización")
+                    }
+
+                    Button(
+                        onClick = { navController.navigate("icu_screen") },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("UCI")
+                    }
+
+                    Button(
+                        onClick = { navController.navigate("surgery_screen") },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Quirófano")
+                    }
                 }
-
-                else -> {
-                    // Mensaje de carga mientras se obtiene la URL
-                    Text("Cargando imagen...")
-                }
-            }
-
-            // Botones de navegación
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(
-                onClick = { navController.navigate("hospitalization_screen") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 32.dp)
-            ) {
-                Text(text = "Hospitalización")
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(
-                onClick = { navController.navigate("icu_screen") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 32.dp)
-            ) {
-                Text(text = "UCI")
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(
-                onClick = { navController.navigate("surgery_screen") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 32.dp)
-            ) {
-                Text(text = "Quirófano")
             }
         }
-    }
+    )
 }
