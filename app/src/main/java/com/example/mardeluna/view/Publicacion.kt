@@ -15,19 +15,20 @@ import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import coil.compose.*
+import com.google.firebase.auth.*
 import com.google.firebase.firestore.*
 import com.google.firebase.storage.*
 
 @Composable
 fun PublicacionesScreen(navController: NavHostController) {
+    val currentUser = FirebaseAuth.getInstance().currentUser
+    val userId = currentUser?.uid
     var backgroundUrl by remember { mutableStateOf("") }
     var publicaciones by remember { mutableStateOf<List<Map<String, Any>>?>(null) }
     var loading by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
-        cargarFondo { url ->
-            backgroundUrl = url
-        }
+        cargarFondo { url -> backgroundUrl = url }
         cargarPublicaciones { lista ->
             publicaciones = lista
             loading = false
@@ -35,7 +36,6 @@ fun PublicacionesScreen(navController: NavHostController) {
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Fondo de pantalla
         if (backgroundUrl.isNotEmpty()) {
             Image(
                 painter = rememberAsyncImagePainter(backgroundUrl),
@@ -51,7 +51,6 @@ fun PublicacionesScreen(navController: NavHostController) {
             )
         }
 
-        // Contenido principal
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -73,13 +72,16 @@ fun PublicacionesScreen(navController: NavHostController) {
                 Text("No hay publicaciones disponibles.")
             } else {
                 publicaciones?.forEach { publicacion ->
-                    PublicacionItem(publicacion)
+                    PublicacionItem(publicacion, userId) { postId ->
+                        eliminarPublicacion(postId) {
+                            publicaciones = publicaciones?.filter { it["id"] != postId }
+                        }
+                    }
                 }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botón para añadir publicación
             Button(
                 onClick = { navController.navigate("agregar_publicacion") },
                 modifier = Modifier.fillMaxWidth()
@@ -91,16 +93,25 @@ fun PublicacionesScreen(navController: NavHostController) {
 }
 
 @Composable
-fun PublicacionItem(publicacion: Map<String, Any>) {
+fun PublicacionItem(
+    publicacion: Map<String, Any>,
+    currentUserId: String?,
+    onDelete: (String) -> Unit
+) {
+    val mensaje = publicacion["mensaje"] as? String ?: "Sin mensaje"
+    val imagen = publicacion["imagen"] as? String
+    val autor = publicacion["autor"] as? String ?: "Anónimo"
+    val postId = publicacion["id"] as? String ?: ""
+    val userId = publicacion["userId"] as? String
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
             .background(Color.White)
     ) {
-        val mensaje = publicacion["mensaje"] as? String ?: "Sin mensaje"
-        val imagen = publicacion["imagen"] as? String
-
+        Text(text = autor, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color.Gray)
+        Spacer(modifier = Modifier.height(4.dp))
         Text(text = mensaje, fontSize = 16.sp, color = Color.Black)
         Spacer(modifier = Modifier.height(8.dp))
         imagen?.let {
@@ -111,6 +122,16 @@ fun PublicacionItem(publicacion: Map<String, Any>) {
                     .fillMaxWidth()
                     .height(200.dp)
             )
+        }
+
+        if (currentUserId == userId) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(
+                onClick = { onDelete(postId) },
+                colors = ButtonDefaults.buttonColors(Color.Red)
+            ) {
+                Text("Eliminar")
+            }
         }
     }
 }
@@ -127,15 +148,11 @@ fun AgregarPublicacionUI(navController: NavHostController) {
         imageUri = it
     }
 
-    // Cargar el fondo
     LaunchedEffect(Unit) {
-        cargarFondo { url ->
-            backgroundUrl = url
-        }
+        cargarFondo { url -> backgroundUrl = url }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Fondo de pantalla
         if (backgroundUrl.isNotEmpty()) {
             Image(
                 painter = rememberAsyncImagePainter(backgroundUrl),
@@ -241,11 +258,20 @@ private fun cargarPublicaciones(onSuccess: (List<Map<String, Any>>?) -> Unit) {
         .orderBy("timestamp", Query.Direction.DESCENDING)
         .get()
         .addOnSuccessListener { snapshot ->
-            onSuccess(snapshot.documents.map { it.data ?: emptyMap() })
+            onSuccess(snapshot.documents.map {
+                it.data?.toMutableMap()?.apply { put("id", it.id) } ?: emptyMap()
+            })
         }
         .addOnFailureListener {
             onSuccess(emptyList())
         }
+}
+
+private fun eliminarPublicacion(postId: String, onComplete: () -> Unit) {
+    val db = FirebaseFirestore.getInstance()
+    db.collection("publicaciones").document(postId)
+        .delete()
+        .addOnSuccessListener { onComplete() }
 }
 
 private fun publicarPublicacion(
@@ -255,9 +281,11 @@ private fun publicarPublicacion(
 ) {
     val db = FirebaseFirestore.getInstance()
     val storage = FirebaseStorage.getInstance().reference
+    val currentUser = FirebaseAuth.getInstance().currentUser
 
     val publicacion = hashMapOf(
         "mensaje" to mensaje,
+        "userId" to currentUser?.uid,
         "timestamp" to FieldValue.serverTimestamp()
     )
 
