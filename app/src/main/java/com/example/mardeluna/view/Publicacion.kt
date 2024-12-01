@@ -176,7 +176,7 @@ fun AgregarPublicacionUI(navController: NavHostController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Añadir Publicación",
+                text = "Añadir publicación",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
@@ -194,7 +194,7 @@ fun AgregarPublicacionUI(navController: NavHostController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(onClick = { launcher.launch("image/*") }) {
-                Text("Seleccionar Imagen")
+                Text("Seleccionar imagen")
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -215,8 +215,8 @@ fun AgregarPublicacionUI(navController: NavHostController) {
                 if (texto.isNotBlank() || imageUri != null) {
                     publicarPublicacion(texto, imageUri) {
                         successMessage = "Publicación realizada con éxito!"
-                        navController.navigate("publicaciones_screen") {
-                            popUpTo("publicaciones_screen") { inclusive = true }
+                        navController.navigate("PublicacionesScreen") {
+                            popUpTo("PublicacionesScreen") { inclusive = true }
                         }
                     }
                 } else {
