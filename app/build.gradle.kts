@@ -87,6 +87,7 @@ dependencies {
     // Media3 for video playback
     implementation(libs.androidx.media3.ui.v150)
     implementation(libs.androidx.media3.exoplayer.v150)
+    implementation(libs.androidx.storage)
 
     // Testing dependencies
     testImplementation(libs.junit)

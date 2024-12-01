@@ -15,7 +15,6 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.google.firebase.storage.FirebaseStorage
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Evita600Screen(navController: NavHostController) {
     var backgroundImageUrl by remember { mutableStateOf<String?>(null) }
