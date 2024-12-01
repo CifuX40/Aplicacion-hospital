@@ -152,15 +152,15 @@ fun AdminScreen(navController: NavHostController) {
             // Botón de cerrar sesión
             Button(
                 onClick = {
-                    // Navegar de regreso a StartScreen
-                    navController.navigate("StartScreen") {
-                        popUpTo("AdminScreen") { inclusive = true }
+                    navController.navigate("start") {
+                        popUpTo("start") { inclusive = true }
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Cerrar sesión")
             }
+
         }
     }
 }
