@@ -3,6 +3,8 @@ package com.example.mardeluna.view
 import android.util.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -14,6 +16,7 @@ import androidx.navigation.*
 import coil.compose.*
 import com.google.firebase.storage.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Endoscopias(navController: NavHostController) {
     var imageUrl by remember { mutableStateOf("") }
@@ -43,37 +46,65 @@ fun Endoscopias(navController: NavHostController) {
         }
     }
 
-    // Contenedor principal con fondo
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        // Fondo de pantalla
-        if (backgroundUrl.isNotEmpty()) {
-            Image(
-                painter = rememberAsyncImagePainter(backgroundUrl),
-                contentDescription = "Fondo de pantalla",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Mar de Luna",
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = Color.White
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigate("main_logo") }) {
+                        Icon(
+                            imageVector = Icons.Default.Home,
+                            contentDescription = "Home",
+                            tint = Color.White
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
             )
-        } else {
+        },
+        content = { paddingValues ->
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.LightGray)
-            )
-        }
+                    .padding(paddingValues)
+            ) {
+                // Fondo de pantalla
+                if (backgroundUrl.isNotEmpty()) {
+                    Image(
+                        painter = rememberAsyncImagePainter(backgroundUrl),
+                        contentDescription = "Fondo de pantalla",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.LightGray)
+                    )
+                }
 
-        // Contenido principal
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Content(navController, loadError, imageUrl)
+                // Contenido principal
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Content(navController, loadError, imageUrl)
+                }
+            }
         }
-    }
+    )
 }
 
 // Encapsulando la lógica de carga de imagen
