@@ -3,6 +3,8 @@ package com.example.mardeluna.view
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -20,23 +22,32 @@ fun AdminScreen(navController: NavHostController) {
     val firestore = remember { Firestore() }
     val auth = remember { FirebaseAuth.getInstance() }
 
+    var dni by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
     var name by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var message by remember { mutableStateOf("") }
     var backgroundUrl by remember { mutableStateOf("") }
+    var userList by remember { mutableStateOf<List<User>>(emptyList()) }
 
     // Cargar el fondo desde Firebase Storage
-    val backgroundRef =
-        Firebase.storage.getReferenceFromUrl("gs://mar-de-luna-ada79.firebasestorage.app/fondo_de_pantalla.jpg")
-    backgroundRef.downloadUrl
-        .addOnSuccessListener { uri ->
-            backgroundUrl = uri.toString()
-        }
-        .addOnFailureListener { exception ->
-            Log.e("Firebase", "Error al cargar fondo: ${exception.message}")
-        }
+    LaunchedEffect(Unit) {
+        val backgroundRef =
+            Firebase.storage.getReferenceFromUrl("gs://mar-de-luna-ada79.firebasestorage.app/fondo_de_pantalla.jpg")
+        backgroundRef.downloadUrl
+            .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
+            .addOnFailureListener { exception ->
+                Log.e("Firebase", "Error al cargar fondo: ${exception.message}")
+            }
+
+        // Cargar la lista de usuarios
+        firestore.getAllUsers(
+            onSuccess = { users -> userList = users },
+            onError = { exception ->
+                Log.e("Firestore", "Error al obtener usuarios: ${exception.message}")
+            }
+        )
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         if (backgroundUrl.isNotEmpty()) {
@@ -57,17 +68,17 @@ fun AdminScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
-                label = { Text("Email") },
+                value = dni,
+                onValueChange = { dni = it },
+                label = { Text("DNI") },
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(8.dp))
 
             OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
-                label = { Text("Contraseña") },
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Email") },
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -88,36 +99,96 @@ fun AdminScreen(navController: NavHostController) {
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            Button(onClick = {
-                if (email.isBlank() || password.isBlank() || name.isBlank() || lastName.isBlank()) {
-                    message = "Todos los campos son obligatorios."
-                } else {
-                    auth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                val userId = task.result?.user?.uid ?: return@addOnCompleteListener
-                                firestore.addUserToFirestore(
-                                    userId = userId,
-                                    name = name,
-                                    lastName = lastName,
-                                    email = email,
-                                    onSuccess = {
-                                        message = "Usuario creado con éxito."
-                                    },
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Button(onClick = {
+                    if (dni.isBlank() || email.isBlank() || name.isBlank() || lastName.isBlank()) {
+                        message = "Todos los campos son obligatorios."
+                    } else {
+                        auth.createUserWithEmailAndPassword(email, dni)
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    firestore.addUserToFirestore(
+                                        userId = dni,
+                                        name = name,
+                                        lastName = lastName,
+                                        email = email,
+                                        onSuccess = {
+                                            message = "Usuario creado con éxito."
+                                            firestore.getAllUsers(
+                                                onSuccess = { users -> userList = users },
+                                                onError = { exception ->
+                                                    Log.e(
+                                                        "Firestore",
+                                                        "Error al actualizar lista: ${exception.message}"
+                                                    )
+                                                }
+                                            )
+                                        },
+                                        onError = { exception ->
+                                            message =
+                                                "Error al guardar en Firestore: ${exception.message}"
+                                        }
+                                    )
+                                } else {
+                                    message = "Error al crear usuario: ${task.exception?.message}"
+                                }
+                            }
+                    }
+                }) {
+                    Text("Crear Usuario")
+                }
+
+                Button(onClick = {
+                    if (dni.isBlank()) {
+                        message = "DNI es obligatorio para eliminar."
+                    } else {
+                        firestore.deleteUser(dni,
+                            onSuccess = {
+                                message = "Usuario eliminado con éxito."
+                                firestore.getAllUsers(
+                                    onSuccess = { users -> userList = users },
                                     onError = { exception ->
-                                        message =
-                                            "Error al guardar en Firestore: ${exception.message}"
+                                        Log.e(
+                                            "Firestore",
+                                            "Error al actualizar lista: ${exception.message}"
+                                        )
                                     }
                                 )
-                            } else {
-                                message = "Error al crear usuario: ${task.exception?.message}"
+                            },
+                            onError = { exception ->
+                                message = "Error al eliminar usuario: ${exception.message}"
                             }
-                        }
+                        )
+                    }
+                }) {
+                    Text("Eliminar Usuario")
                 }
-            }) {
-                Text("Crear Usuario")
             }
+
             Spacer(modifier = Modifier.height(16.dp))
+
+            LazyColumn(modifier = Modifier.weight(1f)) {
+                items(userList) { user ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column {
+                            Text("DNI: ${user.dni}", style = MaterialTheme.typography.bodyMedium)
+                            Text(
+                                "Nombre: ${user.name} ${user.lastName}",
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                            Text("Email: ${user.email}", style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
+                }
+            }
 
             if (message.isNotEmpty()) {
                 Text(
@@ -143,6 +214,13 @@ fun AdminScreen(navController: NavHostController) {
     }
 }
 
+data class User(
+    val dni: String = "",
+    val name: String = "",
+    val lastName: String = "",
+    val email: String = ""
+)
+
 class Firestore {
     private val db = FirebaseFirestore.getInstance()
 
@@ -155,6 +233,7 @@ class Firestore {
         onError: (Exception) -> Unit
     ) {
         val userMap = mapOf(
+            "dni" to userId,
             "name" to name,
             "lastName" to lastName,
             "email" to email
@@ -163,13 +242,22 @@ class Firestore {
         db.collection("Usuarios")
             .document(userId)
             .set(userMap)
-            .addOnSuccessListener {
-                Log.d("Firestore", "Usuario guardado en Firestore con ID: $userId")
-                onSuccess()
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { onError(it) }
+    }
+
+    fun deleteUser(dni: String, onSuccess: () -> Unit, onError: (Exception) -> Unit) {
+        db.collection("Usuarios").document(dni).delete()
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { onError(it) }
+    }
+
+    fun getAllUsers(onSuccess: (List<User>) -> Unit, onError: (Exception) -> Unit) {
+        db.collection("Usuarios").get()
+            .addOnSuccessListener { snapshot ->
+                val users = snapshot.documents.mapNotNull { it.toObject(User::class.java) }
+                onSuccess(users)
             }
-            .addOnFailureListener { exception ->
-                Log.e("Firestore", "Error al guardar usuario en Firestore", exception)
-                onError(exception)
-            }
+            .addOnFailureListener { onError(it) }
     }
 }
