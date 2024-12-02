@@ -1,5 +1,6 @@
 package com.example.mardeluna.view
 
+import android.content.ContentValues.TAG
 import android.net.*
 import android.util.*
 import androidx.activity.compose.*
@@ -103,6 +104,19 @@ fun PublicacionItem(
     val autor = publicacion["autor"] as? String ?: "Anónimo"
     val postId = publicacion["id"] as? String ?: ""
     val userId = publicacion["userId"] as? String
+
+    val db = FirebaseFirestore.getInstance()
+    db.collection("cities")
+        .whereEqualTo("capital", true)
+        .get()
+        .addOnSuccessListener { documents ->
+            for (document in documents) {
+                Log.d(TAG, "${document.id} => ${document.data}")
+            }
+        }
+        .addOnFailureListener { exception ->
+            Log.w(TAG, "Error getting documents: ", exception)
+        }
 
     Column(
         modifier = Modifier
