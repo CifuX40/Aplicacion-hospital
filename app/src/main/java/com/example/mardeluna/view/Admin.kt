@@ -10,22 +10,24 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 
-// Pantalla de administración de usuarios
 @Composable
 fun AdminScreen(navController: NavHostController) {
     val firestore = remember { Firestore() }
-    var dni by remember { mutableStateOf("") }
+    val auth = remember { FirebaseAuth.getInstance() }
+
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
     var name by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
     var message by remember { mutableStateOf("") }
     var backgroundUrl by remember { mutableStateOf("") }
 
-    // Obtener referencia del fondo de pantalla desde Firebase Storage
+    // Cargar el fondo desde Firebase Storage
     val backgroundRef =
         Firebase.storage.getReferenceFromUrl("gs://mar-de-luna-ada79.firebasestorage.app/fondo_de_pantalla.jpg")
     backgroundRef.downloadUrl
@@ -55,9 +57,17 @@ fun AdminScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
-                value = dni,
-                onValueChange = { dni = it },
-                label = { Text("DNI") },
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Email") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Contraseña") },
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -76,72 +86,42 @@ fun AdminScreen(navController: NavHostController) {
                 label = { Text("Apellidos") },
                 modifier = Modifier.fillMaxWidth()
             )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
-                label = { Text("Email") },
-                modifier = Modifier.fillMaxWidth()
-            )
             Spacer(modifier = Modifier.height(16.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Button(onClick = {
-                    if (dni.isBlank() || name.isBlank() || lastName.isBlank() || email.isBlank()) {
-                        message = "Todos los campos son obligatorios."
-                    } else {
-                        val user = User(dni, name, lastName, email)
-                        firestore.addUser(user,
-                            onSuccess = { },
-                            onError = { exception ->
-                                Log.e("Firestore", "Error al crear usuario", exception)
-                            },
-                            updateMessage = { newMessage -> message = newMessage }
-                        )
-                    }
-                }) {
-                    Text("Crear")
+            Button(onClick = {
+                if (email.isBlank() || password.isBlank() || name.isBlank() || lastName.isBlank()) {
+                    message = "Todos los campos son obligatorios."
+                } else {
+                    auth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                val userId = task.result?.user?.uid ?: return@addOnCompleteListener
+                                firestore.addUserToFirestore(
+                                    userId = userId,
+                                    name = name,
+                                    lastName = lastName,
+                                    email = email,
+                                    onSuccess = {
+                                        message = "Usuario creado con éxito."
+                                    },
+                                    onError = { exception ->
+                                        message =
+                                            "Error al guardar en Firestore: ${exception.message}"
+                                    }
+                                )
+                            } else {
+                                message = "Error al crear usuario: ${task.exception?.message}"
+                            }
+                        }
                 }
-
-                Button(onClick = {
-                    firestore.updateUser(dni,
-                        updatedFields = mapOf(
-                            "name" to name,
-                            "lastName" to lastName,
-                            "email" to email
-                        ),
-                        onSuccess = { },
-                        onError = { exception ->
-                            message = "Error al actualizar usuario: ${exception.message}"
-                        },
-                        updateMessage = { newMessage -> message = newMessage }
-                    )
-                }) {
-                    Text("Actualizar")
-                }
-
-                Button(onClick = {
-                    firestore.deleteUser(dni,
-                        onSuccess = { },
-                        onError = { exception ->
-                            message = "Error al eliminar usuario: ${exception.message}"
-                        },
-                        updateMessage = { newMessage -> message = newMessage }
-                    )
-                }) {
-                    Text("Eliminar")
-                }
+            }) {
+                Text("Crear Usuario")
             }
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Display Message
             if (message.isNotEmpty()) {
                 Text(
-                    message,
+                    text = message,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.error
                 )
@@ -149,7 +129,6 @@ fun AdminScreen(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botón de cerrar sesión
             Button(
                 onClick = {
                     navController.navigate("start") {
@@ -164,91 +143,32 @@ fun AdminScreen(navController: NavHostController) {
     }
 }
 
-data class User(
-    val dni: String = "",
-    val name: String = "",
-    val lastName: String = "",
-    val email: String = ""
-)
-
 class Firestore {
     private val db = FirebaseFirestore.getInstance()
 
-    fun addUser(
-        user: User,
+    fun addUserToFirestore(
+        userId: String,
+        name: String,
+        lastName: String,
+        email: String,
         onSuccess: () -> Unit,
-        onError: (Exception) -> Unit,
-        updateMessage: (String) -> Unit
+        onError: (Exception) -> Unit
     ) {
-        db.collection("Usuarios")
-            .document(user.dni)
-            .get()
-            .addOnSuccessListener { documentSnapshot ->
-                if (!documentSnapshot.exists()) {
-                    db.collection("Usuarios")
-                        .document(user.dni)
-                        .set(user)
-                        .addOnSuccessListener {
-                            Log.d("Firestore", "Usuario agregado correctamente: ${user.dni}")
-                            updateMessage("Usuario creado con éxito.")
-                            onSuccess()
-                        }
-                        .addOnFailureListener { exception ->
-                            Log.e("Firestore", "Error al agregar usuario", exception)
-                            updateMessage("Error al crear usuario: ${exception.message}")
-                            onError(exception)
-                        }
-                } else {
-                    Log.d("Firestore", "El usuario ya existe: ${user.dni}")
-                    updateMessage("El usuario ya existe.")
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.e("Firestore", "Error al verificar si el usuario existe", exception)
-                updateMessage("Error al verificar si el usuario existe: ${exception.message}")
-                onError(exception)
-            }
-    }
+        val userMap = mapOf(
+            "name" to name,
+            "lastName" to lastName,
+            "email" to email
+        )
 
-    fun updateUser(
-        dni: String,
-        updatedFields: Map<String, Any>,
-        onSuccess: () -> Unit,
-        onError: (Exception) -> Unit,
-        updateMessage: (String) -> Unit
-    ) {
         db.collection("Usuarios")
-            .document(dni)
-            .update(updatedFields)
+            .document(userId)
+            .set(userMap)
             .addOnSuccessListener {
-                Log.d("Firestore", "Usuario actualizado correctamente: $dni")
-                updateMessage("Usuario actualizado con éxito.")
+                Log.d("Firestore", "Usuario guardado en Firestore con ID: $userId")
                 onSuccess()
             }
             .addOnFailureListener { exception ->
-                Log.e("Firestore", "Error al actualizar usuario", exception)
-                updateMessage("Error al actualizar usuario: ${exception.message}")
-                onError(exception)
-            }
-    }
-
-    fun deleteUser(
-        dni: String,
-        onSuccess: () -> Unit,
-        onError: (Exception) -> Unit,
-        updateMessage: (String) -> Unit
-    ) {
-        db.collection("Usuarios")
-            .document(dni)
-            .delete()
-            .addOnSuccessListener {
-                Log.d("Firestore", "Usuario eliminado correctamente: $dni")
-                updateMessage("Usuario eliminado con éxito.")
-                onSuccess()
-            }
-            .addOnFailureListener { exception ->
-                Log.e("Firestore", "Error al eliminar usuario", exception)
-                updateMessage("Error al eliminar usuario: ${exception.message}")
+                Log.e("Firestore", "Error al guardar usuario en Firestore", exception)
                 onError(exception)
             }
     }
