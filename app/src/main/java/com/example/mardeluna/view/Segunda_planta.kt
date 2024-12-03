@@ -132,7 +132,7 @@ fun SecondFloorScreen(navController: NavHostController = rememberNavController()
 
                     // Botones de navegación
                     Button(
-                        onClick = { navController.navigate("hospitalization_screen") },
+                        onClick = { navController.navigate("hospitalizacion") },
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text("Hospitalización")

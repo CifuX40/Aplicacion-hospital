@@ -3,22 +3,25 @@ package com.example.mardeluna.view
 import android.util.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.*
+import androidx.compose.ui.platform.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
+import androidx.compose.ui.viewinterop.*
 import androidx.navigation.*
 import coil.compose.*
 import com.google.firebase.storage.*
-import androidx.compose.ui.platform.*
 import androidx.media3.common.*
 import androidx.media3.exoplayer.*
 import androidx.media3.ui.*
-import androidx.compose.ui.viewinterop.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Lavado(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
@@ -47,72 +50,100 @@ fun Lavado(navController: NavHostController) {
         }
     }
 
-    // Crear un contenedor con el fondo de pantalla
-    Box(modifier = Modifier.fillMaxSize()) {
-        // Imagen de fondo
-        if (backgroundUrl.isNotEmpty()) {
-            Image(
-                painter = rememberAsyncImagePainter(backgroundUrl),
-                contentDescription = "Fondo de pantalla",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Mar de Luna",
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = Color.White
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigate("main_logo") }) {
+                        Icon(
+                            imageVector = Icons.Default.Home,
+                            contentDescription = "Home",
+                            tint = Color.White
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
             )
-        } else {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.LightGray) // Color de fondo provisional
-            )
-        }
-
-        // Contenido principal
-        Column(
-            modifier = Modifier
+        },
+        content = { paddingValues ->
+            Box(modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "Lavadora de endoscopias",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
-            Spacer(modifier = Modifier.height(16.dp))
+                .padding(paddingValues)) {
+                // Imagen de fondo
+                if (backgroundUrl.isNotEmpty()) {
+                    Image(
+                        painter = rememberAsyncImagePainter(backgroundUrl),
+                        contentDescription = "Fondo de pantalla",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.LightGray) // Color de fondo provisional
+                    )
+                }
 
-            // Mostrar la imagen cargada desde Firebase Storage
-            if (!loadError && imageUrl.isNotEmpty()) {
-                AsyncImage(
-                    model = imageUrl,
-                    contentDescription = "Lavadora de endoscopias",
+                // Contenido principal
+                Column(
                     modifier = Modifier
-                        .size(300.dp)
-                        .padding(8.dp)
-                )
-            } else if (loadError) {
-                Text(
-                    text = "Error al cargar la imagen",
-                    color = Color.Red,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
-            }
+                        .fillMaxSize()
+                        .padding(16.dp)
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Lavadora de endoscopias",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+                    // Mostrar la imagen cargada desde Firebase Storage
+                    if (!loadError && imageUrl.isNotEmpty()) {
+                        AsyncImage(
+                            model = imageUrl,
+                            contentDescription = "Lavadora de endoscopias",
+                            modifier = Modifier
+                                .size(300.dp)
+                                .padding(8.dp)
+                        )
+                    } else if (loadError) {
+                        Text(
+                            text = "Error al cargar la imagen",
+                            color = Color.Red,
+                            modifier = Modifier.padding(vertical = 8.dp)
+                        )
+                    }
 
-            // Mostrar el reproductor de video si la URL se cargó correctamente
-            if (!loadError && videoUrl.isNotEmpty()) {
-                VideoPlayer(videoUrl)
-            } else if (loadError) {
-                Text(
-                    text = "Error al cargar el video",
-                    color = Color.Red,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Mostrar el reproductor de video si la URL se cargó correctamente
+                    if (!loadError && videoUrl.isNotEmpty()) {
+                        VideoPlayer(videoUrl)
+                    } else if (loadError) {
+                        Text(
+                            text = "Error al cargar el video",
+                            color = Color.Red,
+                            modifier = Modifier.padding(vertical = 8.dp)
+                        )
+                    }
+                }
             }
         }
-    }
+    )
 }
 
 // Función para cargar URLs desde Firebase Storage

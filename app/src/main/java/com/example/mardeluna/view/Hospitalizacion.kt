@@ -15,7 +15,7 @@ import coil.compose.*
 import com.google.firebase.storage.*
 
 @Composable
-fun HospitalizationScreen(navController: NavHostController) {
+fun Hospitalizacion(navController: NavHostController) {
     // Estado para la URL de la imagen
     var imageUrl by remember { mutableStateOf("") }
     var backgroundUrl by remember { mutableStateOf("") }

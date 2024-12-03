@@ -3,6 +3,8 @@ package com.example.mardeluna.view
 import android.util.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -14,6 +16,7 @@ import androidx.navigation.*
 import coil.compose.*
 import com.google.firebase.storage.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HospitalDeDiaScreen(navController: NavHostController) {
     var imageUrl by remember { mutableStateOf("") }
@@ -38,97 +41,125 @@ fun HospitalDeDiaScreen(navController: NavHostController) {
         }
     }
 
-    // Estructura principal con fondo
-    Box(modifier = Modifier.fillMaxSize()) {
-        if (backgroundUrl.isNotEmpty()) {
-            Image(
-                painter = rememberAsyncImagePainter(backgroundUrl),
-                contentDescription = "Fondo de pantalla",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Mar de Luna",
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = Color.White
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigate("main_logo") }) {
+                        Icon(
+                            imageVector = Icons.Default.Home,
+                            contentDescription = "Home",
+                            tint = Color.White
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
             )
-        } else {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.LightGray)
-            )
-        }
-
-        Column(
-            modifier = Modifier
+        },
+        content = { paddingValues ->
+            Box(modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "Hospital de Día",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
+                .padding(paddingValues)) {
+                if (backgroundUrl.isNotEmpty()) {
+                    Image(
+                        painter = rememberAsyncImagePainter(backgroundUrl),
+                        contentDescription = "Fondo de pantalla",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.LightGray)
+                    )
+                }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Mostrar la imagen cargada desde Firebase Storage
-            if (!loadError && imageUrl.isNotEmpty()) {
-                Image(
-                    painter = rememberAsyncImagePainter(imageUrl),
-                    contentDescription = "Hospital de Día",
+                Column(
                     modifier = Modifier
-                        .size(300.dp)
-                        .padding(8.dp)
-                )
-            } else if (loadError) {
-                Text(
-                    text = "Error al cargar la imagen",
-                    color = Color.Red,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
-            }
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Hospital de Día",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
 
-            Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-            // Mostrar el texto con la descripción
-            Text(
-                text = """
-                    El Hospital de Día consta de 7 habitaciones donde ingresarán los pacientes de cirugía menor ambulatoria.
-                    La enfermera de Hospital de Día recepcionará a los pacientes del siguiente modo:
-                    
-                    - Recepción del paciente, acompañamiento a su habitación y resolución de dudas.
-                    - Comprobación de nombre, apellidos y pulsera identificativa.
-                    - Valoración de enfermería (posibles alergias, medicación habitual, …).
-                    - Tomas de constantes.
-                    - Recopilación de documentos necesarios para la intervención (preanestesia y consentimientos).
-                """.trimIndent(),
-                fontSize = 16.sp,
-                color = Color.Black,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
+                    // Mostrar la imagen cargada desde Firebase Storage
+                    if (!loadError && imageUrl.isNotEmpty()) {
+                        Image(
+                            painter = rememberAsyncImagePainter(imageUrl),
+                            contentDescription = "Hospital de Día",
+                            modifier = Modifier
+                                .size(300.dp)
+                                .padding(8.dp)
+                        )
+                    } else if (loadError) {
+                        Text(
+                            text = "Error al cargar la imagen",
+                            color = Color.Red,
+                            modifier = Modifier.padding(vertical = 8.dp)
+                        )
+                    }
 
-            Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-            // Botón para navegación a la pantalla de Toma de Constantes
-            Button(onClick = { navController.navigate("Toma_constantes") }) {
-                Text(text = "Toma de constantes")
-            }
+                    // Mostrar el texto con la descripción
+                    Text(
+                        text = """
+                            El Hospital de Día consta de 7 habitaciones donde ingresarán los pacientes de cirugía menor ambulatoria.
+                            La enfermera del Hospital de Día recepcionará a los pacientes del siguiente modo:
+                            
+                            - Recepción del paciente, acompañamiento a su habitación y resolución de dudas.
+                            - Comprobación de nombre, apellidos y pulsera identificativa.
+                            - Valoración de enfermería (posibles alergias, medicación habitual, etc).
+                            - Tomas de constantes.
+                            - Recopilación de documentos necesarios para la intervención (preanestesia y consentimientos).
+                        """.trimIndent(),
+                        fontSize = 16.sp,
+                        color = Color.Black,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
 
-            Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-            // Botón para navegación a la pantalla de Hoja Informativa Pacientes
-            Button(onClick = { navController.navigate("Hoja_informativa_pacientes") }) {
-                Text(text = "Hoja informativa pacientes")
-            }
+                    // Botón para navegación a la pantalla de Toma de Constantes
+                    Button(onClick = { navController.navigate("Toma_constantes") }) {
+                        Text(text = "Toma de constantes")
+                    }
 
-            Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-            // Botón para navegación a la pantalla de Procedimiento Ingresos
-            Button(onClick = { navController.navigate("Procedimiento_ingresos") }) {
-                Text(text = "Procedimiento ingresos")
+                    // Botón para navegación a la pantalla de Hoja Informativa Pacientes
+                    Button(onClick = { navController.navigate("Hoja_informativa_pacientes") }) {
+                        Text(text = "Hoja informativa pacientes")
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Botón para navegación a la pantalla de Procedimiento Ingresos
+                    Button(onClick = { navController.navigate("Procedimiento_ingresos") }) {
+                        Text(text = "Procedimiento ingresos")
+                    }
+                }
             }
         }
-    }
+    )
 }
 
 // Función para cargar imágenes desde Firebase Storage

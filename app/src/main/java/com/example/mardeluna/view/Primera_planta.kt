@@ -147,7 +147,7 @@ fun FirstFloorScreen(navController: NavHostController = rememberNavController())
                     }
 
                     Button(
-                        onClick = { navController.navigate("hospitalization_screen") },
+                        onClick = { navController.navigate("hospitalizacion") },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 8.dp)

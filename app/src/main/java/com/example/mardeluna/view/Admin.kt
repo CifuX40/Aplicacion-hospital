@@ -3,8 +3,7 @@ package com.example.mardeluna.view
 import android.util.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -12,7 +11,7 @@ import androidx.compose.ui.layout.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import com.google.firebase.auth.*
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.*
 import com.google.firebase.ktx.*
 import coil.compose.*
 import com.google.firebase.storage.ktx.*
@@ -123,9 +122,11 @@ fun AdminContent(
     onDeleteUser: () -> Unit,
     onLogout: () -> Unit
 ) {
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
         Text("Administración de usuarios", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(16.dp))
 
