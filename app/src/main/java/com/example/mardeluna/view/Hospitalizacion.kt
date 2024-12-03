@@ -3,6 +3,8 @@ package com.example.mardeluna.view
 import android.util.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -14,6 +16,7 @@ import androidx.navigation.*
 import coil.compose.*
 import com.google.firebase.storage.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Hospitalizacion(navController: NavHostController) {
     // Estado para la URL de la imagen
@@ -44,112 +47,142 @@ fun Hospitalizacion(navController: NavHostController) {
             }
     }
 
-    // Estructura principal con fondo
-    Box(modifier = Modifier.fillMaxSize()) {
-        // Imagen de fondo
-        if (backgroundUrl.isNotEmpty()) {
-            Image(
-                painter = rememberAsyncImagePainter(backgroundUrl),
-                contentDescription = "Fondo de pantalla",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Mar de Luna",
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = Color.White
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigate("main_logo") }) {
+                        Icon(
+                            imageVector = Icons.Default.Home,
+                            contentDescription = "Home",
+                            tint = Color.White
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
             )
-        } else {
+        },
+        content = { paddingValues ->
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.LightGray)
-            )
-        }
-
-        // Contenido principal
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "Habitaciones de hospitalización.",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(8.dp),
-                color = Color.Black
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Box(
-                modifier = Modifier.size(300.dp),
-                contentAlignment = Alignment.Center
+                    .padding(paddingValues)
             ) {
-                if (imageUrl.isNotEmpty() && !loadError) {
+                // Imagen de fondo
+                if (backgroundUrl.isNotEmpty()) {
                     Image(
-                        painter = rememberAsyncImagePainter(imageUrl),
-                        contentDescription = "Room",
+                        painter = rememberAsyncImagePainter(backgroundUrl),
+                        contentDescription = "Fondo de pantalla",
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()
                     )
-                } else if (loadError) {
-                    Text(
-                        text = "Error al cargar la imagen",
-                        color = MaterialTheme.colorScheme.error
-                    )
                 } else {
-                    Text(text = "Cargando imagen...")
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = "Todas las habitaciones tienen una aspiración y una toma de oxígeno " +
-                        "que se deberán comprobar su funcionamiento después de cada alta de paciente " +
-                        "y limpieza de las mismas.",
-                fontSize = 16.sp,
-                modifier = Modifier.padding(8.dp),
-                color = Color.Black
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "Aparataje",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(8.dp),
-                color = Color.Black
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Botones dispuestos uno debajo del otro
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Button(
-                    onClick = { navController.navigate("carro_paradas") },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(text = "Carro de paradas")
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.LightGray)
+                    )
                 }
 
-                Button(
-                    onClick = { navController.navigate("control_enfermeria") },
-                    modifier = Modifier.fillMaxWidth()
+                // Contenido principal
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = "Control de enfermería")
-                }
+                    Text(
+                        text = "Habitaciones de hospitalización.",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(8.dp),
+                        color = Color.Black
+                    )
 
-                Button(
-                    onClick = { navController.navigate("room_screen") },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(text = "Habitación")
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Box(
+                        modifier = Modifier.size(300.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (imageUrl.isNotEmpty() && !loadError) {
+                            Image(
+                                painter = rememberAsyncImagePainter(imageUrl),
+                                contentDescription = "Room",
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        } else if (loadError) {
+                            Text(
+                                text = "Error al cargar la imagen",
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        } else {
+                            Text(text = "Cargando imagen...")
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        text = "Todas las habitaciones tienen una aspiración y una toma de oxígeno " +
+                                "que se deberán comprobar su funcionamiento después de cada alta de paciente " +
+                                "y limpieza de las mismas.",
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(8.dp),
+                        color = Color.Black
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "Aparataje",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(8.dp),
+                        color = Color.Black
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Botones dispuestos uno debajo del otro
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Button(
+                            onClick = { navController.navigate("carro_paradas") },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(text = "Carro de paradas")
+                        }
+
+                        Button(
+                            onClick = { navController.navigate("control_enfermeria") },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(text = "Control de enfermería")
+                        }
+
+                        Button(
+                            onClick = { navController.navigate("room_screen") },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(text = "Habitación")
+                        }
+                    }
                 }
             }
         }
-    }
+    )
 }
