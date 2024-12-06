@@ -34,7 +34,7 @@ fun Hospitalizacion(navController: NavHostController) {
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
             .addOnFailureListener { Log.e("Firebase", "Error al cargar fondo: ${it.message}") }
 
-        // Cargar imagen específica de la pantalla
+        // Cargar imagen específica
         val storageRef = storage.reference.child("hospitalizacion.jpg")
         storageRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -93,7 +93,6 @@ fun Hospitalizacion(navController: NavHostController) {
                     )
                 }
 
-                // Contenido principal
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -154,7 +153,6 @@ fun Hospitalizacion(navController: NavHostController) {
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Botones dispuestos uno debajo del otro
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally,

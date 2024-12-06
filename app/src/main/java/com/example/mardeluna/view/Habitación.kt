@@ -3,18 +3,21 @@ package com.example.mardeluna.view
 import android.util.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.text.font.*
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import coil.compose.*
 import com.google.firebase.storage.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Habitacion(navController: NavHostController) {
     var imageUrl by remember { mutableStateOf("") }
@@ -48,128 +51,134 @@ fun Habitacion(navController: NavHostController) {
                 Log.e("Firebase", "Error al cargar la imagen: ${exception.message}")
             }
     }
-
-    // Contenedor principal con fondo
-    Box(modifier = Modifier.fillMaxSize()) {
-        // Fondo de pantalla
-        if (backgroundUrl.isNotEmpty()) {
-            Image(
-                painter = rememberAsyncImagePainter(backgroundUrl),
-                contentDescription = "Fondo de pantalla",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Mar de Luna",
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = Color.White
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigate("main_logo") }) {
+                        Icon(
+                            imageVector = Icons.Default.Home,
+                            contentDescription = "Home",
+                            tint = Color.White
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
             )
-        } else {
+        },
+        content = { paddingValues ->
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.LightGray)
-            )
-        }
-
-        Column(modifier = Modifier.fillMaxSize()) {
-            // TabBar azul en la parte superior
-            TabRow(selectedTabIndex = 0, containerColor = Color.Blue) {
-                Tab(selected = true, onClick = {}) {
-                    Text(
-                        text = "Tab 1",
-                        color = Color.White,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
-                Tab(selected = false, onClick = {}) {
-                    Text(
-                        text = "Tab 2",
-                        color = Color.White,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
-            }
-
-            // Título "Habitación" en negrita centrado
-            Text(
-                text = "Habitación",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                textAlign = TextAlign.Center
-            )
-
-            // Contenido principal
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .padding(paddingValues)
             ) {
-                // Imagen principal
-                Box(
-                    modifier = Modifier.size(300.dp),
-                    contentAlignment = Alignment.TopStart
-                ) {
-                    if (imageUrl.isNotEmpty() && !loadError) {
-                        Image(
-                            painter = rememberAsyncImagePainter(imageUrl),
-                            contentDescription = "Imagen de la habitación",
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    } else if (loadError) {
-                        Text(
-                            text = "Error al cargar la imagen",
-                            color = MaterialTheme.colorScheme.error,
-                            modifier = Modifier.align(Alignment.Center)
-                        )
-                    } else {
-                        Text(
-                            text = "Cargando imagen...",
-                            modifier = Modifier.align(Alignment.Center)
-                        )
-                    }
+                // Fondo de pantalla
+                if (backgroundUrl.isNotEmpty()) {
+                    Image(
+                        painter = rememberAsyncImagePainter(backgroundUrl),
+                        contentDescription = "Fondo de pantalla",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.LightGray)
+                    )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Column(modifier = Modifier.fillMaxSize()) {
+                    Text(
+                        text = "Habitación",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp),
+                        textAlign = TextAlign.Center
+                    )
 
-                // Descripción de las habitaciones
-                Text(
-                    text = "Todas las habitaciones tienen una aspiración y una toma de oxígeno " +
-                            "que se deberán comprobar su funcionamiento después de cada alta de paciente " +
-                            "y limpieza de las mismas.",
-                    fontSize = 16.sp,
-                    color = Color.Black,
-                    modifier = Modifier.padding(8.dp)
-                )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Box(
+                            modifier = Modifier.size(300.dp),
+                            contentAlignment = Alignment.TopStart
+                        ) {
+                            if (imageUrl.isNotEmpty() && !loadError) {
+                                Image(
+                                    painter = rememberAsyncImagePainter(imageUrl),
+                                    contentDescription = "Imagen de la habitación",
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            } else if (loadError) {
+                                Text(
+                                    text = "Error al cargar la imagen",
+                                    color = MaterialTheme.colorScheme.error,
+                                    modifier = Modifier.align(Alignment.Center)
+                                )
+                            } else {
+                                Text(
+                                    text = "Cargando imagen...",
+                                    modifier = Modifier.align(Alignment.Center)
+                                )
+                            }
+                        }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                // Título "Aparataje" en negrita
-                Text(
-                    text = "Aparataje",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black,
-                    modifier = Modifier.padding(8.dp)
-                )
+                        // Descripción de las habitaciones
+                        Text(
+                            text = "Todas las habitaciones tienen una aspiración y una toma de oxígeno " +
+                                    "que se deberán comprobar su funcionamiento después de cada alta de paciente " +
+                                    "y limpieza de las mismas.",
+                            fontSize = 16.sp,
+                            color = Color.Black,
+                            modifier = Modifier.padding(8.dp)
+                        )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
 
-                // Botones para navegar
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    Button(onClick = { navController.navigate("aspiracion_screen") }) {
-                        Text(text = "Aspiración")
-                    }
+                        Text(
+                            text = "Aparataje",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black,
+                            modifier = Modifier.padding(8.dp)
+                        )
 
-                    Button(onClick = { navController.navigate("toma_oxigeno_screen") }) {
-                        Text(text = "Toma de oxígeno")
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceEvenly
+                        ) {
+                            Button(onClick = { navController.navigate("aspiracion_screen") }) {
+                                Text(text = "Aspiración")
+                            }
+
+                            Button(onClick = { navController.navigate("toma_oxigeno_screen") }) {
+                                Text(text = "Toma de oxígeno")
+                            }
+                        }
                     }
                 }
             }
         }
-    }
+    )
 }
