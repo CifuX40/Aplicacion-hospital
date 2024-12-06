@@ -30,7 +30,7 @@ fun AppNavigation(navController: NavHostController) {
         composable("lavadora_screen") { Lavado(navController) }
         composable("carro_paradas") { CarroParadasScreen(navController) }
         composable("control_enfermeria") { ControlEnfermeriaScreen(navController) }
-        composable("paginas_web_screen") { PaginasWebScreen(navController) }
+        composable("paginas_web") { PaginasWeb(navController) }
         composable("rcp_screen") { RCPScreen(navController) }
         composable("residuos_hospitalarios_screen") { ResiduosHospitalariosScreen(navController) }
         composable("Toma_constantes") { TomaConstantesScreen(navController) }

@@ -147,7 +147,7 @@ fun ControlEnfermeriaScreen(navController: NavHostController) {
 
                     // Botón "Páginas web"
                     Button(
-                        onClick = { navController.navigate("paginas_web_screen") },
+                        onClick = { navController.navigate("paginas_web") },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 16.dp)

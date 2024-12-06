@@ -5,6 +5,8 @@ import android.util.*
 import android.widget.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -12,11 +14,12 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
-import androidx.compose.ui.layout.*
+import com.google.firebase.storage.*
 import androidx.compose.ui.viewinterop.*
 import coil.compose.*
-import com.google.firebase.storage.*
+import androidx.compose.ui.layout.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RCPScreen(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
@@ -49,102 +52,133 @@ fun RCPScreen(navController: NavHostController) {
             }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        if (backgroundUrl.isNotEmpty()) {
-            Image(
-                painter = rememberAsyncImagePainter(backgroundUrl),
-                contentDescription = "Fondo de pantalla",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Mar de Luna",
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = Color.White
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigate("main_logo") }) {
+                        Icon(
+                            imageVector = Icons.Default.Home,
+                            contentDescription = "Home",
+                            tint = Color.White
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
             )
-        } else {
+        },
+        content = { innerPadding ->
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.LightGray)
-            )
+                    .padding(innerPadding)
+            ) {
+                if (backgroundUrl.isNotEmpty()) {
+                    Image(
+                        painter = rememberAsyncImagePainter(backgroundUrl),
+                        contentDescription = "Fondo de pantalla",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.LightGray)
+                    )
+                }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "RCP",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+
+                    videoBasicUrl?.let {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = "RCP Básico",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Medium,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        AndroidView(
+                            factory = { context ->
+                                VideoView(context).apply {
+                                    setVideoURI(Uri.parse(it))
+                                    val mediaController = MediaController(context)
+                                    mediaController.setAnchorView(this)
+                                    setMediaController(mediaController)
+                                    requestFocus()
+                                }
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(250.dp)
+                        )
+                    }
+
+                    if (imageUrl.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = "Esquema RCP",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Medium,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        Image(
+                            painter = rememberAsyncImagePainter(imageUrl),
+                            contentDescription = "Esquema RCP",
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp)
+                        )
+                    }
+
+                    videoAdvancedUrl?.let {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = "RCP Avanzado",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Medium,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        AndroidView(
+                            factory = { context ->
+                                VideoView(context).apply {
+                                    setVideoURI(Uri.parse(it))
+                                    val mediaController = MediaController(context)
+                                    mediaController.setAnchorView(this)
+                                    setMediaController(mediaController)
+                                    requestFocus()
+                                }
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(250.dp)
+                        )
+                    }
+                }
+            }
         }
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "RCP",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-
-            videoBasicUrl?.let {
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = "RCP Básico",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-                AndroidView(
-                    factory = { context ->
-                        VideoView(context).apply {
-                            setVideoURI(Uri.parse(it))
-                            val mediaController = MediaController(context)
-                            mediaController.setAnchorView(this)
-                            setMediaController(mediaController)
-                            requestFocus()
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(250.dp)
-                )
-            }
-
-            if (imageUrl.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = "Esquema RCP",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-                Image(
-                    painter = rememberAsyncImagePainter(imageUrl),
-                    contentDescription = "Esquema RCP",
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                )
-            }
-
-            videoAdvancedUrl?.let {
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = "RCP Avanzado",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-                AndroidView(
-                    factory = { context ->
-                        VideoView(context).apply {
-                            setVideoURI(Uri.parse(it))
-                            val mediaController = MediaController(context)
-                            mediaController.setAnchorView(this)
-                            setMediaController(mediaController)
-                            requestFocus()
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(250.dp)
-                )
-            }
-        }
-    }
+    )
 }
