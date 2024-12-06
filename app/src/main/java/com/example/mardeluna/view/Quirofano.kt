@@ -16,7 +16,7 @@ import com.google.firebase.ktx.*
 import com.google.firebase.storage.ktx.*
 
 @Composable
-fun SurgeryScreen(navController: NavHostController) {
+fun Quirofano(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
     var surgeryImageUrl by remember { mutableStateOf("") }
 

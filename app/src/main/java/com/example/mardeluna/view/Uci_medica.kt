@@ -1,6 +1,5 @@
 package com.example.mardeluna.view
 
-import android.util.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -15,7 +14,7 @@ import com.google.firebase.storage.*
 import androidx.compose.ui.layout.*
 
 @Composable
-fun UciMedicaScreen(navController: NavHostController) {
+fun UciMedica(navController: NavHostController) {
     var backgroundImageUrl by remember { mutableStateOf<String?>(null) }
     var salaImageUrl by remember { mutableStateOf<String?>(null) }
     var criteriosImageUrl by remember { mutableStateOf<String?>(null) }

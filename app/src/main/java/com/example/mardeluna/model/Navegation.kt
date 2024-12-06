@@ -14,8 +14,8 @@ fun AppNavigation(navController: NavHostController) {
         composable("main_logo") { MainLogoScreen(navController) }
         composable("admin") { AdminScreen(navController) }
         composable("second_floor") { SecondFloorScreen(navController) }
-        composable("icu_screen") { ICUScreen(navController) }
-        composable("surgery_screen") { SurgeryScreen(navController) }
+        composable("UCI") { Uci(navController) }
+        composable("Quirófano") { Quirofano(navController) }
         composable("hospitalizacion") { Hospitalizacion(navController) }
         composable("habitacion") { Habitacion(navController) }
         composable("first_floor") { FirstFloorScreen(navController) }
@@ -23,7 +23,7 @@ fun AppNavigation(navController: NavHostController) {
         composable("toma_oxigeno_screen") { TomaOxigenoScreen(navController) }
         composable("carina_screen") { CarinaScreen(navController) }
         composable("uci_postquirurgica") { UciPostquirurgicaScreen(navController) }
-        composable("uci_medica") { UciMedicaScreen(navController) }
+        composable("uci_medica") { UciMedica(navController) }
         composable("endoscopias_screen") { Endoscopias(navController) }
         composable("hospital_dia_screen") { HospitalDeDiaScreen(navController) }
         composable("endoscopios_screen") { Endoscopios(navController) }
