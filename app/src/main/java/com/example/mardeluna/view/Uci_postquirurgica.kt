@@ -1,19 +1,22 @@
 package com.example.mardeluna.view
 
 import android.util.*
-import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.*
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.layout.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import coil.compose.*
 import com.google.firebase.storage.*
-import androidx.compose.ui.layout.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UciPostquirurgica(navController: NavHostController) {
     var imageUrl by remember { mutableStateOf<String?>(null) }
@@ -52,6 +55,28 @@ fun UciPostquirurgica(navController: NavHostController) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
+        TopAppBar(
+            title = {
+                Text(
+                    text = "Mar de Luna",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = Color.White
+                )
+            },
+            navigationIcon = {
+                IconButton(onClick = { navController.navigate("main_logo") }) {
+                    Icon(
+                        imageVector = Icons.Default.Home,
+                        contentDescription = "Home",
+                        tint = Color.White
+                    )
+                }
+            },
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.primary
+            ) // Aquí faltaba el cierre del paréntesis
+        )
+
         // Imagen de fondo
         if (imageUrl != null) {
             Image(
@@ -79,7 +104,8 @@ fun UciPostquirurgica(navController: NavHostController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
+                .padding(top = 56.dp),  // Para que el contenido no quede tapado por el TopAppBar
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -138,54 +164,14 @@ fun UciPostquirurgica(navController: NavHostController) {
                         " \tCirugía general y digestiva: neoplasias intestinales, tiroidectomía total,  linfadenectomía regional, quiste hidatídico hepático, biopsia, hepática, gastrectomía, esplenectomía, resección intestinal, cirugía de la obesidad (sleeve gástrico).\n" +
                         " \tCOT: prótesis de cadera, prótesis de rodilla, osteosíntesis de fémur, artrodesis columna\n" +
                         " \tCirugía maxilofacial: exéresis neoplasias\n" +
-                        " \tCirugía vascular: cirugía carotídea, amputación de extremidades, derivación by-pass  \tGinecología: histerectomía con anexectomía,\tneoplasias sin necesidad de linfadenectomía asociada.  \tORL: neoplasias, SAOS\n" +
-                        " \tUrología: adenomectomía prostática retropúbica, cistectomía, nefrectomía cirugía renal.\n" +
-                        "GRADO IV\n" +
-                        " \tCirugía general: gran cirugía neoplásica (pelvi-peritonectomía), Colectomía total o subtotal, hepatectomía mayor. Cirugía hepato-bilio-pancreática, Obesidad mórbida\n" +
-                        " \n" +
-                        "(bypass gástrico)\n" +
-                        " \tCOT: recambio de prótesis de cadera  \tCirugía vascular: cirugía aórtica.\n" +
-                        " \tCirugía Torácica: Neumonectomía, trasplante pulmonar   Cirugía Cardiaca: en general.\n" +
-                        " \tGinecología: cirugía neoplásica agresiva (con linfadenectomía, con necesidad de cirugía sobre metástasis peritoneales, etc.).\n" +
-                        " \tNeurocirugía: cirugía intracraneal, tumores raquídeos.\n" +
-                        " \tUrología: cistectomía o prostatectomía radical, trasplante renal.\n" +
-                        "Clasificación ASA riesgo anestésico\n" +
-                        "Tabla 1 . Clasificación perioperatoria según el estado ( Sociedad Americana de Anestesiología)\tico\n" +
-                        "Grado\tCaracterísticas del paciente\n" +
-                        "Normal, sano-\n" +
-                        "Con enfermedad sistémica moderada a leve, sin limitaciones funcionales \n" +
-                        "Con enfermedad sistémica moderada a grave, limitante, pero no incapacitante. Con enfermedad sistémica grave incapacitante, con amenaza para su vida\n" +
-                        "Moribundo, que no se espera que sobreviva 24 horas, con cirugía o sin ella\n" +
-                        "Con muerte cerebral, cuyos órganos se toman para trasplante\n" +
-                        "Si la cirugía es de urgencia, se añadirá una U al estado físico (por ejemplo, IU)-\n" +
-                        " \n" +
-                        "Protocolo de ingreso en unidad de UVI o REA posquirúrgica.\n" +
-                        "A.- NO VIGILANCIA (pueden pasar a la planta, aunque siempre debe existir disponible una REA o despertar con anestesista que sea capaz de realizar vigilancia durante un periodo de tiempo que no exceda las 6 horas):\n" +
-                        "\t \tComplejidad quirúrgica menor (Grado 1- 1 1 ) y ASA 1- 1 1 .\n" +
-                        "B.- VIGILANCIA hasta 12 horas (REANIMACIÓN POST-QUIRÚRGICA):\n" +
-                        " \tComplejidad quirúrgica 1 1 -1 1 1 y riesgo anestésico: o Pacientes mayores de 65 años ASA ll o Pacientes menores de 65 años hasta ASA III\n" +
-                        "C.-VIGILANCIA DE 12 a 24 HORAS (REANIMACIÓN POST-QUIRÚRGICA)\n" +
-                        "\t \tComplejidad quirúrgica III con ASA hasta III.\n" +
-                        "  Complejidad quirúrgica IV, con ASA hasta III: En estos casos, se valorarán excepciones en cirugías programadas, en procedimientos muy estandarizados en el proceder quirúrgico, y con equipos quirúrgicos muy experimentados en las mismas. (cirugía de cadera sin ser recambio, by-pass gástrico).\n" +
-                        "D.-VIGILANCIA de más de 24 horas (UCI permanente)\n" +
-                        "  Complejidad quirúrgica IV   Riesgo anestésico:\n" +
-                        "o ASA IV y superiores siempre, independientemente de la edad\n" +
-                        " Procedimientos quirúrgicos oncológicos (cirugía oncológica)\n" +
-                        " Procedimientos quirúrgicos urgentes con inestabilidad hemodinámica previa (los urgentes sin inestabilidad hemodinámica se deberán incluir en su categoría propia, independientemente de la urgencia)\n" +
-                        "\t \tCirugía mayor, con apertura de cavidades.\n" +
-                        "Eventos excepcionales que requieren ingreso en UCI o REA (Criterios C y D)\n" +
-                        "Existen eventos adversos durante la realización de la anestesia y el procedimiento quirúrgico que cambiarán, sin duda, la necesidad previamente establecida de cuidados postoperatorios. Entre ellos los siguientes:\n" +
-                        " \tCirugía urgente durante la cual ha existido inestabilidad hemodinámica de difícil corrección.\n" +
-                        " Cirugía programada con efecto quirúrgico adverso inesperado que puede suponer inestabilidad hemodinámica en las primeras 24-48h.\n" +
-                        "  Cirugía con prolongación del tiempo quirúrgico por encima de una hora del tiempo inicialmente esperado.\n" +
-                        "  Evento adverso inesperado no relacionado con la cirugía durante la inducción  anestésica o el despertar ( shock anafiláctico, broncoespasmo, angina, IAM, crisis comicial, etc.) con gravedad clínica que no se recupera en la primera hora.\n" +
-                        "La actividad obstétrica, por la necesidad no esperable de intervenciones complejas para la recuperación de problemas médico-quirúrgicos, debería hacerse siempre en centros que al  menos contasen con la posibilidad de una REA nivel C.\n" +
-                        "Todos estos casos, tras la cirugía, en caso de no existir UCI, deberán pasar al despertar/REA con vigilancia anestésica, y en el menor tiempo posible, trasladarse a un centro con UCI para su mayor seguridad.\n" +
-                        "En aquellos centros sin UCI, y por tanto, sin presencia de especialistas en Medicina Intensiva,  sería recomendable a pesar del mayor coste probable, contratar especialistas en la citada rama para el trabajo en el Servicio de Urgencias.",
-                fontSize = 16.sp,
-                color = Color.Black,
-                modifier = Modifier.padding(bottom = 16.dp)
+                        " \tCirugía vascular: cirugía carotídea, amputación de extremidades, derivación by-pass  \tGinecología: histerectomía radical, neoplasias.\n" +
+                        " \tOftalmología: queratoplastia, cirugía del glaucoma.\n" +
+                        " \tORL: laringectomía, cirugía transoral de base de cráneo.\n" +
+                        " \tUrología: prostatectomía radical, cistoscopia quirúrgica.\n" +
+                        " \tGrado IV: Cirugía urgente de gran complejidad, con gran pérdida sanguínea o que requieren derivación a UCIP.\n"
             )
+
+            Spacer(modifier = Modifier.height(32.dp))
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -193,16 +179,16 @@ fun UciPostquirurgica(navController: NavHostController) {
             ) {
                 Button(
                     onClick = {
-                        navController.navigate("respirador_screen")
+                        navController.navigate("respirador")
                     },
                     modifier = Modifier.padding(bottom = 8.dp)
                 ) {
-                    Text("Respirador Savina 300")
+                    Text("Respirador Savina 600")
                 }
 
                 Button(
                     onClick = {
-                        navController.navigate("carro_ingresos_screen")
+                        navController.navigate("carro_ingresos")
                     }
                 ) {
                     Text("Carro de ingresos")

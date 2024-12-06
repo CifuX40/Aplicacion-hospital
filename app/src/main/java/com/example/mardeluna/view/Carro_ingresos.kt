@@ -15,7 +15,7 @@ import androidx.navigation.*
 import androidx.compose.ui.layout.*
 
 @Composable
-fun CarroIngresosScreen(navController: NavHostController) {
+fun CarroIngresos(navController: NavHostController) {
     var backgroundImageUrl by remember { mutableStateOf<String?>(null) }
     var carroImageUrl by remember { mutableStateOf<String?>(null) }
     var loadError by remember { mutableStateOf(false) }

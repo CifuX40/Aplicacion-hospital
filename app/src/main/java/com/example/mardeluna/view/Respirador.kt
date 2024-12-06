@@ -19,7 +19,7 @@ import androidx.navigation.*
 import coil.compose.*
 
 @Composable
-fun RespiradorScreen(navController: NavHostController) {
+fun Respirador(navController: NavHostController) {
     val context = LocalContext.current
     var backgroundUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }

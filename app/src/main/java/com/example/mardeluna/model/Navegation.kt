@@ -36,9 +36,9 @@ fun AppNavigation(navController: NavHostController) {
         composable("Toma_constantes") { TomaConstantesScreen(navController) }
         composable("hoja_informativa_pacientes") { HojaInformativaPacientesScreen(navController) }
         composable("procedimiento_ingresos") { ProcedimientoIngresosScreen(navController) }
-        composable("respirador_screen") { RespiradorScreen(navController) }
+        composable("respirador") { Respirador(navController) }
         composable("savina_screen") { SavinaScreen(navController) }
-        composable("carro_ingresos_screen") { CarroIngresosScreen(navController) }
+        composable("carro_ingresos") { CarroIngresos(navController) }
         composable("desfibrilador") { Desfibrilador(navController) }
         composable("evita_600") { Evita600(navController) }
         composable("esterilizacion_screen") { EsterilizacionScreen(navController) }
