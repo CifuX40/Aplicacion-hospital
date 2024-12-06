@@ -175,7 +175,7 @@ fun Hospitalizacion(navController: NavHostController) {
                         }
 
                         Button(
-                            onClick = { navController.navigate("room_screen") },
+                            onClick = { navController.navigate("habitacion") },
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Text(text = "Habitación")

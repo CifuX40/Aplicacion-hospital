@@ -1,10 +1,12 @@
 package com.example.mardeluna.view
 
+import android.content.*
+import android.net.*
 import android.util.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -175,7 +177,7 @@ fun PaginasWeb(navController: NavHostController) {
 
                             secondLoadError -> {
                                 Text(
-                                    text = "Error al cargar la imagen de Páginas web",
+                                    text = "Error al cargar la imagen.",
                                     color = MaterialTheme.colorScheme.error,
                                     modifier = Modifier.padding(bottom = 24.dp)
                                 )
@@ -193,19 +195,70 @@ fun PaginasWeb(navController: NavHostController) {
                 }
 
                 1 -> {
-                    // Contenido de la segunda pestaña "Recursos"
-                    Box(
+                    // Contenido de la pestaña "Páginas Web"
+                    Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp),
-                        contentAlignment = Alignment.Center
+                            .padding(16.dp)
+                            .verticalScroll(rememberScrollState()),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        // Título para las páginas web
                         Text(
-                            text = "Páginas web no disponibles.",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = Color.Gray
+                            text = "Links para ir a las diferentes paginas",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black,
+                            modifier = Modifier.padding(bottom = 16.dp)
                         )
+
+                        // Botón para aTurnos
+                        Button(
+                            onClick = {
+                                val intent = Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse("https://www.aturnos.com/?gad_source=1&gclid=Cj0KCQiA3sq6BhD2ARIsAJ8MRwXZR34QAw4n8zVEZcTcJmqQJ-yS-QGKBnwfDAey41QQmykOfeE5t-IaApdsEALw_wcB")
+                                )
+                                navController.context.startActivity(intent)
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 16.dp)
+                        ) {
+                            Text(text = "aTurnos")
+                        }
+
+                        // Botón para Gesdie
+                        Button(
+                            onClick = {
+                                val intent = Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse("https://gesdie.hmhospitales.com/gesdie/helloentrada.htm")
+                                )
+                                navController.context.startActivity(intent)
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 16.dp)
+                        ) {
+                            Text(text = "Gesdie")
+                        }
+
+                        // Botón para el Portal del Empleado
+                        Button(
+                            onClick = {
+                                val intent = Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse("https://www.portalempleado.net/indexc.html")
+                                )
+                                navController.context.startActivity(intent)
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 16.dp)
+                        ) {
+                            Text(text = "Portal del Empleado")
+                        }
                     }
                 }
             }

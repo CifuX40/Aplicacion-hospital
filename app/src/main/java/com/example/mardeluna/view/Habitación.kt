@@ -9,6 +9,7 @@ import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.text.font.*
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import coil.compose.*
@@ -66,95 +67,107 @@ fun Habitacion(navController: NavHostController) {
             )
         }
 
-        // Contenido principal
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            // Título "Habitación" en negrita
+        Column(modifier = Modifier.fillMaxSize()) {
+            // TabBar azul en la parte superior
+            TabRow(selectedTabIndex = 0, containerColor = Color.Blue) {
+                Tab(selected = true, onClick = {}) {
+                    Text(
+                        text = "Tab 1",
+                        color = Color.White,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+                Tab(selected = false, onClick = {}) {
+                    Text(
+                        text = "Tab 2",
+                        color = Color.White,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+            }
+
+            // Título "Habitación" en negrita centrado
             Text(
                 text = "Habitación",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp),
+                textAlign = TextAlign.Center
             )
 
-            // Subtítulo "Habitaciones de hospitalización"
-            Text(
-                text = "Habitaciones de hospitalización.",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                modifier = Modifier.padding(8.dp)
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Imagen principal
-            Box(
-                modifier = Modifier.size(300.dp),
-                contentAlignment = Alignment.TopStart
+            // Contenido principal
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (imageUrl.isNotEmpty() && !loadError) {
-                    Image(
-                        painter = rememberAsyncImagePainter(imageUrl),
-                        contentDescription = "Imagen de la habitación",
-                        modifier = Modifier.fillMaxSize()
-                    )
-                } else if (loadError) {
-                    Text(
-                        text = "Error al cargar la imagen",
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                } else {
-                    Text(
-                        text = "Cargando imagen...",
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Descripción de las habitaciones
-            Text(
-                text = "Todas las habitaciones tienen una aspiración y una toma de oxígeno " +
-                        "que se deberán comprobar su funcionamiento después de cada alta de paciente " +
-                        "y limpieza de las mismas.",
-                fontSize = 16.sp,
-                color = Color.Black,
-                modifier = Modifier.padding(8.dp)
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Título "Aparataje" en negrita
-            Text(
-                text = "Aparataje",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                modifier = Modifier.padding(8.dp)
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Botones para navegar
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Button(onClick = { navController.navigate("aspiracion_screen") }) {
-                    Text(text = "Aspiración")
+                // Imagen principal
+                Box(
+                    modifier = Modifier.size(300.dp),
+                    contentAlignment = Alignment.TopStart
+                ) {
+                    if (imageUrl.isNotEmpty() && !loadError) {
+                        Image(
+                            painter = rememberAsyncImagePainter(imageUrl),
+                            contentDescription = "Imagen de la habitación",
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    } else if (loadError) {
+                        Text(
+                            text = "Error al cargar la imagen",
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    } else {
+                        Text(
+                            text = "Cargando imagen...",
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
                 }
 
-                Button(onClick = { navController.navigate("toma_oxigeno_screen") }) {
-                    Text(text = "Toma de oxígeno")
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Descripción de las habitaciones
+                Text(
+                    text = "Todas las habitaciones tienen una aspiración y una toma de oxígeno " +
+                            "que se deberán comprobar su funcionamiento después de cada alta de paciente " +
+                            "y limpieza de las mismas.",
+                    fontSize = 16.sp,
+                    color = Color.Black,
+                    modifier = Modifier.padding(8.dp)
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Título "Aparataje" en negrita
+                Text(
+                    text = "Aparataje",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black,
+                    modifier = Modifier.padding(8.dp)
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Botones para navegar
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Button(onClick = { navController.navigate("aspiracion_screen") }) {
+                        Text(text = "Aspiración")
+                    }
+
+                    Button(onClick = { navController.navigate("toma_oxigeno_screen") }) {
+                        Text(text = "Toma de oxígeno")
+                    }
                 }
             }
         }
