@@ -131,7 +131,7 @@ fun Uci(navController: NavHostController) {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
-                    onClick = { navController.navigate("uci_postquirúrgica") },
+                    onClick = { navController.navigate("uci_postquirurgica") },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp)

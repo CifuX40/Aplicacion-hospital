@@ -17,13 +17,13 @@ import coil.compose.*
 import com.google.firebase.storage.*
 
 @Composable
-fun DesfibriladorScreen(navController: NavHostController) {
+fun Desfibrilador(navController: NavHostController) {
     var backgroundImageUrl by remember { mutableStateOf<String?>(null) }
     var videoUrl by remember { mutableStateOf<String?>(null) }
     var listadoCarroParadasUrl by remember { mutableStateOf<String?>(null) }
     var loadError by remember { mutableStateOf(false) }
 
-    // Descargar la URL de la imagen de fondo, video y listado_carro_paradas.jpg
+    // Descargar la URL de la imagen de fondo
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
 

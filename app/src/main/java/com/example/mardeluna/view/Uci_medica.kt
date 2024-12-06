@@ -1,18 +1,21 @@
 package com.example.mardeluna.view
 
-import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.*
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.layout.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import coil.compose.*
 import com.google.firebase.storage.*
-import androidx.compose.ui.layout.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UciMedica(navController: NavHostController) {
     var backgroundImageUrl by remember { mutableStateOf<String?>(null) }
@@ -43,105 +46,133 @@ fun UciMedica(navController: NavHostController) {
             .addOnFailureListener { loadError = true }
     }
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        // Imagen de fondo
-        if (backgroundImageUrl != null) {
-            Image(
-                painter = rememberAsyncImagePainter(model = backgroundImageUrl),
-                contentDescription = "Fondo de pantalla",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
-        } else if (loadError) {
-            Text(
-                text = "Error al cargar el fondo",
-                color = Color.Red,
-                modifier = Modifier.align(Alignment.Center)
-            )
-        } else {
-            Text(
-                text = "Cargando fondo...",
-                color = Color.Gray,
-                modifier = Modifier.align(Alignment.Center)
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Mar de Luna",
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = Color.White
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigate("main_logo") }) {
+                        Icon(
+                            imageVector = Icons.Default.Home,
+                            contentDescription = "Home",
+                            tint = Color.White
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
             )
         }
-
-        // Contenido principal
-        Column(
+    ) { paddingValues ->
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(paddingValues)
         ) {
-            Text(
-                text = "UCI Médica",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-
-            // Imagen de la sala de UCI
-            salaImageUrl?.let {
+            // Imagen de fondo
+            if (backgroundImageUrl != null) {
                 Image(
-                    painter = rememberAsyncImagePainter(model = it),
-                    contentDescription = "Sala de UCI",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(300.dp)
-                        .padding(bottom = 16.dp),
+                    painter = rememberAsyncImagePainter(model = backgroundImageUrl),
+                    contentDescription = "Fondo de pantalla",
+                    modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
+                )
+            } else if (loadError) {
+                Text(
+                    text = "Error al cargar el fondo",
+                    color = Color.Red,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            } else {
+                Text(
+                    text = "Cargando fondo...",
+                    color = Color.Gray,
+                    modifier = Modifier.align(Alignment.Center)
                 )
             }
 
-            // Texto: Criterios de admisión
-            Text(
-                text = "Criterios de admisión en UCI Médica",
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            Text(
-                text = "La definición dada a la UCI delimita los dos criterios clave para los pacientes en la Unidad:\n" +
-                        "- Que precisen un elevado nivel de cuidados.\n" +
-                        "- Que sean recuperables.",
-                fontSize = 14.sp,
-                color = Color.DarkGray,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-
-            // Imagen de criterios de admisión
-            criteriosImageUrl?.let {
-                Image(
-                    painter = rememberAsyncImagePainter(model = it),
-                    contentDescription = "Criterios de admisión en UCI",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(250.dp),
-                    contentScale = ContentScale.Crop
-                )
-            }
-
-            // Botones de navegación
+            // Contenido principal
             Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Button(
-                    onClick = { navController.navigate("desfibrilador_screen") },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(text = "Desfibrilador")
+                Text(
+                    text = "UCI Médica",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+
+                // Imagen de la sala de UCI
+                salaImageUrl?.let {
+                    Image(
+                        painter = rememberAsyncImagePainter(model = it),
+                        contentDescription = "Sala de UCI",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(300.dp)
+                            .padding(bottom = 16.dp),
+                        contentScale = ContentScale.Crop
+                    )
                 }
 
-                Button(
-                    onClick = { navController.navigate("evita_300_screen") },
-                    modifier = Modifier.fillMaxWidth()
+                // Texto: Criterios de admisión
+                Text(
+                    text = "Criterios de admisión en UCI Médica",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    text = "La definición dada a la UCI delimita los dos criterios clave para los pacientes en la Unidad:\n" +
+                            "- Que precisen un elevado nivel de cuidados.\n" +
+                            "- Que sean recuperables.",
+                    fontSize = 14.sp,
+                    color = Color.DarkGray,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+
+                // Imagen de criterios de admisión
+                criteriosImageUrl?.let {
+                    Image(
+                        painter = rememberAsyncImagePainter(model = it),
+                        contentDescription = "Criterios de admisión en UCI",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(250.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+
+                // Botones de navegación
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Text(text = "Evita 600")
+                    Button(
+                        onClick = { navController.navigate("desfibrilador") },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Desfibrilador")
+                    }
+
+                    Button(
+                        onClick = { navController.navigate("evita_600") },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Evita 600")
+                    }
                 }
             }
         }

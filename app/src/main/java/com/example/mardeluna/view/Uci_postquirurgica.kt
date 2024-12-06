@@ -15,7 +15,7 @@ import com.google.firebase.storage.*
 import androidx.compose.ui.layout.*
 
 @Composable
-fun UciPostquirurgicaScreen(navController: NavHostController) {
+fun UciPostquirurgica(navController: NavHostController) {
     var imageUrl by remember { mutableStateOf<String?>(null) }
     var roomImageUrl by remember { mutableStateOf<String?>(null) }
     var loadError by remember { mutableStateOf(false) }

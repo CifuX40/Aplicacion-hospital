@@ -16,7 +16,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.google.firebase.storage.FirebaseStorage
 
 @Composable
-fun Evita600Screen(navController: NavHostController) {
+fun Evita600(navController: NavHostController) {
     var backgroundImageUrl by remember { mutableStateOf<String?>(null) }
     var evita600ImageUrl by remember { mutableStateOf<String?>(null) }
     var loadError by remember { mutableStateOf(false) }
