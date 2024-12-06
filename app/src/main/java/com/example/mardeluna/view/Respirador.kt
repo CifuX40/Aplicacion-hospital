@@ -65,7 +65,7 @@ fun Respirador(navController: NavHostController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Respirador\nSavina 300",
+                text = "Respirador\nSavina 600",
                 fontWeight = FontWeight.Bold,
                 fontSize = 30.sp,
                 color = Color.Black
@@ -79,21 +79,6 @@ fun Respirador(navController: NavHostController) {
                 contentDescription = "Imagen del Respirador Savina 300",
                 modifier = Modifier.size(300.dp)
             )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Botón para ver guía en YouTube
-            Button(
-                onClick = {
-                    val intent = android.content.Intent(
-                        android.content.Intent.ACTION_VIEW,
-                        Uri.parse("https://youtu.be/W51JlmJjPrc?si=hLXu81Fo2-6QVI43")
-                    )
-                    context.startActivity(intent)
-                }
-            ) {
-                Text(text = "Guía Savina 300")
-            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
