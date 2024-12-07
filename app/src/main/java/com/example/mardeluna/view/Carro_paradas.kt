@@ -18,7 +18,7 @@ import com.google.firebase.storage.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CarroParadasScreen(navController: NavHostController) {
+fun CarroParadas(navController: NavHostController) {
     // Variables de estado para las URLs de las imágenes
     var imageUrl by remember { mutableStateOf("") }
     var secondImageUrl by remember { mutableStateOf("") }

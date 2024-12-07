@@ -21,7 +21,7 @@ import com.google.firebase.firestore.*
 import com.google.firebase.storage.*
 
 @Composable
-fun PublicacionesScreen(navController: NavHostController) {
+fun Publicaciones(navController: NavHostController) {
     val currentUser = FirebaseAuth.getInstance().currentUser
     val userId = currentUser?.uid
     var backgroundUrl by remember { mutableStateOf("") }
