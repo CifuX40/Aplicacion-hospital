@@ -1,10 +1,12 @@
 package com.example.mardeluna.view
 
+import android.net.*
 import android.util.*
 import android.widget.*
-import android.net.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -16,6 +18,7 @@ import androidx.navigation.*
 import coil.compose.*
 import com.google.firebase.storage.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Desfibrilador(navController: NavHostController) {
     var backgroundImageUrl by remember { mutableStateOf<String?>(null) }
@@ -60,82 +63,114 @@ fun Desfibrilador(navController: NavHostController) {
             }
             .addOnFailureListener { exception ->
                 loadError = true
-                Log.e("Firebase", "Error al obtener URL de listado_carro_paradas: ${exception.message}")
+                Log.e(
+                    "Firebase",
+                    "Error al obtener URL de listado_carro_paradas: ${exception.message}"
+                )
             }
     }
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        // Imagen de fondo
-        if (backgroundImageUrl != null) {
-            Image(
-                painter = rememberAsyncImagePainter(model = backgroundImageUrl),
-                contentDescription = "Fondo de pantalla",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
-        } else if (loadError) {
-            Text(
-                text = "Error al cargar el fondo",
-                color = Color.Red,
-                modifier = Modifier.align(Alignment.Center)
-            )
-        } else {
-            Text(
-                text = "Cargando fondo...",
-                color = Color.Gray,
-                modifier = Modifier.align(Alignment.Center)
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Mar de Luna",
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = Color.White
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigate("main_logo") }) {
+                        Icon(
+                            imageVector = Icons.Default.Home,
+                            contentDescription = "Home",
+                            tint = Color.White
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
             )
         }
-
-        // Contenido principal
-        Column(
+    ) { paddingValues ->
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(paddingValues)
         ) {
-            // Título
-            Text(
-                text = "Desfibrilador",
-                style = MaterialTheme.typography.headlineMedium,
-                color = Color.Black,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-
-            // Video de Firebase (solo si la URL está disponible)
-            videoUrl?.let {
-                AndroidView(
-                    factory = { context ->
-                        VideoView(context).apply {
-                            setVideoURI(Uri.parse(it))
-                            val mediaController = MediaController(context).apply {
-                                setAnchorView(this@apply)
-                            }
-                            setMediaController(mediaController)
-                            requestFocus()
-                            start()
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(400.dp)
+            // Imagen de fondo
+            if (backgroundImageUrl != null) {
+                Image(
+                    painter = rememberAsyncImagePainter(model = backgroundImageUrl),
+                    contentDescription = "Fondo de pantalla",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            } else if (loadError) {
+                Text(
+                    text = "Error al cargar el fondo",
+                    color = Color.Red,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            } else {
+                Text(
+                    text = "Cargando fondo...",
+                    color = Color.Gray,
+                    modifier = Modifier.align(Alignment.Center)
                 )
             }
 
-            // Imagen listado_carro_paradas debajo del video
-            listadoCarroParadasUrl?.let {
-                Image(
-                    painter = rememberAsyncImagePainter(model = it),
-                    contentDescription = "Listado de carro de paradas",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp)
-                        .height(300.dp),
-                    contentScale = ContentScale.Crop
+            // Contenido principal con scroll vertical
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()) // Habilitar scroll vertical
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Título
+                Text(
+                    text = "Desfibrilador",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = Color.Black,
+                    modifier = Modifier.padding(bottom = 16.dp)
                 )
+
+                // Video de Firebase (solo si la URL está disponible)
+                videoUrl?.let {
+                    AndroidView(
+                        factory = { context ->
+                            VideoView(context).apply {
+                                setVideoURI(Uri.parse(it))
+                                val mediaController = MediaController(context).apply {
+                                    setAnchorView(this@apply)
+                                }
+                                setMediaController(mediaController)
+                                requestFocus()
+                                start()
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(400.dp)
+                    )
+                }
+
+                // Imagen listado_carro_paradas debajo del video
+                listadoCarroParadasUrl?.let {
+                    Image(
+                        painter = rememberAsyncImagePainter(model = it),
+                        contentDescription = "Listado de carro de paradas",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp)
+                            .height(300.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
         }
     }
