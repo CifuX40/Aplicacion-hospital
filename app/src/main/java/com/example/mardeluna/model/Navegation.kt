@@ -10,7 +10,7 @@ import com.example.mardeluna.view.*
 fun AppNavigation(navController: NavHostController) {
     NavHost(navController = navController, startDestination = "start") {
         composable("start") { StartScreen(navController) }
-        composable("history") { HistoryScreen(navController) }
+        composable("historia") { Historia(navController) }
         composable("main_logo") { MainLogoScreen(navController) }
         composable("admin") { AdminScreen(navController) }
         composable("second_floor") { SecondFloorScreen(navController) }

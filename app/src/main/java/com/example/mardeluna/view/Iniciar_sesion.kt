@@ -149,7 +149,7 @@ fun StartScreen(navController: NavHostController) {
 
             // Botón de la historia del hospital
             Button(
-                onClick = { navController.navigate("history") },
+                onClick = { navController.navigate("historia") },
                 modifier = Modifier.wrapContentSize()
             ) {
                 Text(text = "Historia del Hospital")

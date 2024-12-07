@@ -13,7 +13,7 @@ import coil.compose.*
 import com.google.firebase.storage.*
 
 @Composable
-fun HistoryScreen(navController: NavHostController) {
+fun Historia(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
 
     // Cargar la URL del fondo de pantalla desde Firebase Storage
