@@ -3,6 +3,8 @@ package com.example.mardeluna.view
 import android.util.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -14,8 +16,9 @@ import coil.compose.*
 import com.google.firebase.storage.*
 import androidx.navigation.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SavinaScreen(navController: NavHostController) {
+fun Savina(navController: NavHostController) {
     var backgroundImageUrl by remember { mutableStateOf<String?>(null) }
     var instructionsImageUrl by remember { mutableStateOf<String?>(null) }
     var loadError by remember { mutableStateOf(false) }
@@ -49,64 +52,91 @@ fun SavinaScreen(navController: NavHostController) {
             }
     }
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        // Imagen de fondo
-        if (backgroundImageUrl != null) {
-            Image(
-                painter = rememberAsyncImagePainter(model = backgroundImageUrl),
-                contentDescription = "Fondo de pantalla",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
-        } else if (loadError) {
-            Text(
-                text = "Error al cargar la imagen",
-                color = Color.Red,
-                modifier = Modifier.align(Alignment.Center)
-            )
-        } else {
-            Text(
-                text = "Cargando imagen...",
-                color = Color.Gray,
-                modifier = Modifier.align(Alignment.Center)
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Mar de Luna",
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = Color.White
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigate("main_logo") }) {
+                        Icon(
+                            imageVector = Icons.Default.Home,
+                            contentDescription = "Home",
+                            tint = Color.White
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
             )
         }
-
-        // Contenido principal
-        Column(
+    ) { paddingValues ->
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(paddingValues)
         ) {
-            Text(
-                text = "Respirador Savina 300",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-
-            // Mostrar imagen de instrucciones si está disponible
-            instructionsImageUrl?.let {
+            // Imagen de fondo
+            if (backgroundImageUrl != null) {
                 Image(
-                    painter = rememberAsyncImagePainter(model = it),
-                    contentDescription = "Instrucciones Savina 300",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(500.dp)
-                        .padding(bottom = 10.dp)
+                    painter = rememberAsyncImagePainter(model = backgroundImageUrl),
+                    contentDescription = "Fondo de pantalla",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
                 )
-            } ?: run {
+            } else if (loadError) {
                 Text(
-                    text = "Cargando instrucciones...",
-                    color = Color.Gray,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    text = "Error al cargar la imagen",
+                    color = Color.Red,
+                    modifier = Modifier.align(Alignment.Center)
                 )
+            } else {
+                Text(
+                    text = "Cargando imagen...",
+                    color = Color.Gray,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+
+            // Contenido principal
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Respirador Savina 300",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+
+                instructionsImageUrl?.let {
+                    Image(
+                        painter = rememberAsyncImagePainter(model = it),
+                        contentDescription = "Instrucciones Savina 300",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(500.dp)
+                            .padding(bottom = 10.dp)
+                    )
+                } ?: run {
+                    Text(
+                        text = "Cargando instrucciones...",
+                        color = Color.Gray,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                }
             }
         }
     }

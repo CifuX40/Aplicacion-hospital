@@ -3,17 +3,20 @@ package com.example.mardeluna.view
 import android.util.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.layout.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 import coil.compose.*
 import com.google.firebase.storage.*
 import androidx.navigation.*
-import androidx.compose.ui.layout.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CarroIngresos(navController: NavHostController) {
     var backgroundImageUrl by remember { mutableStateOf<String?>(null) }
@@ -52,81 +55,109 @@ fun CarroIngresos(navController: NavHostController) {
             }
     }
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        // Imagen de fondo
-        if (backgroundImageUrl != null) {
-            Image(
-                painter = rememberAsyncImagePainter(model = backgroundImageUrl),
-                contentDescription = "Fondo de pantalla",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
-        } else if (loadError) {
-            Text(
-                text = "Error al cargar el fondo",
-                color = Color.Red,
-                modifier = Modifier.align(Alignment.Center)
-            )
-        } else {
-            Text(
-                text = "Cargando fondo...",
-                color = Color.Gray,
-                modifier = Modifier.align(Alignment.Center)
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Mar de Luna",
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = Color.White
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigate("main_logo") }) {
+                        Icon(
+                            imageVector = Icons.Default.Home,
+                            contentDescription = "Home",
+                            tint = Color.White
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
             )
         }
-
-        Column(
+    ) { paddingValues ->
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(paddingValues)
         ) {
-            // Título
-            Text(
-                text = "Carro de ingresos",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-
-            carroImageUrl?.let {
+            // Imagen de fondo
+            if (backgroundImageUrl != null) {
                 Image(
-                    painter = rememberAsyncImagePainter(model = it),
-                    contentDescription = "Carro de ingresos",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(500.dp)
-                        .padding(bottom = 16.dp)
+                    painter = rememberAsyncImagePainter(model = backgroundImageUrl),
+                    contentDescription = "Fondo de pantalla",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
                 )
-            } ?: run {
+            } else if (loadError) {
                 Text(
-                    text = "Cargando imagen del carro...",
+                    text = "Error al cargar el fondo",
+                    color = Color.Red,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            } else {
+                Text(
+                    text = "Cargando fondo...",
                     color = Color.Gray,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    modifier = Modifier.align(Alignment.Center)
                 )
             }
 
-            Text(
-                text = "CARRO INGRESO EN UCI",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Título
+                Text(
+                    text = "Carro de ingresos",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
 
-            Text(
-                text = "El carro e ingreso de UCI contiene todo el material necesario para el ingreso de cualquier paciente, evitando pérdidas de tiempo y faltas de material en un momento tan crítico.\n" +
-                        "Cada cajón lleva un cartel con el contenido que deberá haber dentro del mismo. \n" +
-                        "Antes de recibir cualquier ingreso y siempre después de haber hecho uso de él deberá revisarse y reponerse todo el material utilizado.",
-                fontSize = 16.sp,
-                color = Color.Black,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
+                carroImageUrl?.let {
+                    Image(
+                        painter = rememberAsyncImagePainter(model = it),
+                        contentDescription = "Carro de ingresos",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(500.dp)
+                            .padding(bottom = 16.dp)
+                    )
+                } ?: run {
+                    Text(
+                        text = "Cargando imagen del carro...",
+                        color = Color.Gray,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                }
+
+                Text(
+                    text = "CARRO INGRESO EN UCI",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+
+                Text(
+                    text = "El carro e ingreso de UCI contiene todo el material necesario para el ingreso de cualquier paciente, evitando pérdidas de tiempo y faltas de material en un momento tan crítico.\n" +
+                            "Cada cajón lleva un cartel con el contenido que deberá haber dentro del mismo. \n" +
+                            "Antes de recibir cualquier ingreso y siempre después de haber hecho uso de él deberá revisarse y reponerse todo el material utilizado.",
+                    fontSize = 16.sp,
+                    color = Color.Black,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+            }
         }
     }
 }

@@ -183,11 +183,11 @@ fun UciPostquirurgica(navController: NavHostController) {
                     ) {
                         Button(
                             onClick = {
-                                navController.navigate("respirador")
+                                navController.navigate("savina")
                             },
                             modifier = Modifier.padding(bottom = 8.dp)
                         ) {
-                            Text("Respirador Savina 600")
+                            Text("Respirador Savina 300")
                         }
 
                         Button(
