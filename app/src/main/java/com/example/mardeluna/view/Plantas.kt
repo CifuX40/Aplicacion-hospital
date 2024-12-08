@@ -112,8 +112,8 @@ fun MainLogoScreen(navController: NavHostController) {
             // Botón de cerrar sesión
             Button(
                 onClick = {
-                    navController.navigate("start") {
-                        popUpTo("start") { inclusive = true }
+                    navController.navigate("iniciar_sesion") {
+                        popUpTo("iniciar_sesion") { inclusive = true }
                     }
                 },
                 modifier = Modifier.fillMaxWidth()

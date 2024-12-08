@@ -7,9 +7,9 @@ import com.example.mardeluna.view.*
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "start") {
+    NavHost(navController = navController, startDestination = "iniciar_sesion") {
         composable("agregar_publicacion") { AgregarPublicacionUI(navController) }
-        composable("admin") { AdminScreen(navController) }
+        composable("admin") { Admin(navController) }
         composable("aspiracion") { Aspiracion(navController) }
         composable("carro_ingresos") { CarroIngresos(navController) }
         composable("carro_paradas") { CarroParadas(navController) }
@@ -42,7 +42,7 @@ fun AppNavigation(navController: NavHostController) {
         composable("sala_quirofano") { SalaQuirofano(navController) }
         composable("savina") { Savina(navController) }
         composable("segunda_planta") { SegundaPlanta(navController) }
-        composable("start") { IniciarSesion(navController) }
+        composable("iniciar_sesion") { IniciarSesion(navController) }
         composable("toma_oxigeno") { TomaOxigeno(navController) }
         composable("uci") { Uci(navController) }
         composable("uci_medica") { UciMedica(navController) }

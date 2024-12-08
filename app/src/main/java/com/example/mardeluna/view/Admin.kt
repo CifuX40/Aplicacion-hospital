@@ -19,7 +19,7 @@ import com.google.firebase.storage.ktx.*
 data class User(val dni: String, val name: String, val lastName: String, val email: String)
 
 @Composable
-fun AdminScreen(navController: NavHostController) {
+fun Admin(navController: NavHostController) {
     val firestore = FirebaseFirestore.getInstance()
     val auth = FirebaseAuth.getInstance()
 
@@ -101,7 +101,7 @@ fun AdminScreen(navController: NavHostController) {
                     message = "DNI y Email son obligatorios para eliminar."
                 }
             },
-            onLogout = { navController.navigate("start") { popUpTo("start") { inclusive = true } } }
+            onLogout = { navController.navigate("iniciar_sesion") { popUpTo("iniciar_sesion") { inclusive = true } } }
         )
     }
 }
