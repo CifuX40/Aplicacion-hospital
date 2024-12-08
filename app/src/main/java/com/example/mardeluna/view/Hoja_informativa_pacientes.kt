@@ -103,7 +103,6 @@ fun HojaInformativaPacientesScreen(navController: NavHostController) {
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Mostrar la imagen de la hoja informativa, si está disponible
                     if (imageUrl.isNotEmpty()) {
                         Image(
                             painter = rememberAsyncImagePainter(imageUrl),

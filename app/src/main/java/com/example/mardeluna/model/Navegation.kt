@@ -24,7 +24,6 @@ fun AppNavigation(navController: NavHostController) {
         composable("equipo_quirofano") { EquipoQuirofano(navController) }
         composable("esterilizacion") { Esterilizacion(navController) }
         composable("evita_600") { Evita600(navController) }
-        composable("first_floor") { FirstFloorScreen(navController) }
         composable("habitacion") { Habitacion(navController) }
         composable("historia") { Historia(navController) }
         composable("hoja_informativa_pacientes") { HojaInformativaPacientesScreen(navController) }
