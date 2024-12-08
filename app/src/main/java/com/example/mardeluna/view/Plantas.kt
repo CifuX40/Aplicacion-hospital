@@ -96,9 +96,8 @@ fun MainLogoScreen(navController: NavHostController) {
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Botón para ir a Publicaciones
                 Button(
-                    onClick = { navController.navigate("PublicacionesScreen") },
+                    onClick = { navController.navigate("publicaciones") },
                     modifier = Modifier.fillMaxWidth(0.6f)
                 ) {
                     Text("Ir a publicaciones")

@@ -16,7 +16,7 @@ import com.google.firebase.ktx.*
 import com.google.firebase.storage.ktx.*
 
 @Composable
-fun EsterilizacionScreen(navController: NavHostController) {
+fun Esterilizacion(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
     var sterilizationImageUrl by remember { mutableStateOf("") }
 
@@ -100,7 +100,7 @@ fun EsterilizacionScreen(navController: NavHostController) {
 
             // Botones
             Button(
-                onClick = { navController.navigate("empaquetado_screen") },
+                onClick = { navController.navigate("empaquetado") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
@@ -109,7 +109,7 @@ fun EsterilizacionScreen(navController: NavHostController) {
             }
 
             Button(
-                onClick = { navController.navigate("controles_carga_autoclaves_screen") },
+                onClick = { navController.navigate("controles_carga") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)

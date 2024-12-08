@@ -17,7 +17,7 @@ import com.google.firebase.storage.ktx.*
 import androidx.compose.ui.text.*
 
 @Composable
-fun EmpaquetadoScreen(navController: NavHostController) {
+fun Empaquetado(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
 
     // Cargar fondo desde Firebase Storage

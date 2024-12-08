@@ -168,11 +168,11 @@ fun Habitacion(navController: NavHostController) {
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
-                            Button(onClick = { navController.navigate("aspiracion_screen") }) {
+                            Button(onClick = { navController.navigate("aspiracion") }) {
                                 Text(text = "Aspiración")
                             }
 
-                            Button(onClick = { navController.navigate("toma_oxigeno_screen") }) {
+                            Button(onClick = { navController.navigate("toma_oxigeno") }) {
                                 Text(text = "Toma de oxígeno")
                             }
                         }

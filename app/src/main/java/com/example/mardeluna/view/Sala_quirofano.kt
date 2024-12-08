@@ -16,7 +16,7 @@ import com.google.firebase.ktx.*
 import com.google.firebase.storage.ktx.*
 
 @Composable
-fun SalaQuirofanoScreen(navController: NavHostController) {
+fun SalaQuirofano(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
     var salaQuirofanoImageUrl by remember { mutableStateOf("") }
 
@@ -93,7 +93,7 @@ fun SalaQuirofanoScreen(navController: NavHostController) {
 
             // Botones
             Button(
-                onClick = { navController.navigate("equipo_quirofano_screen") },
+                onClick = { navController.navigate("equipo_quirofano") },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = "Equipos de quirófano")
@@ -102,7 +102,7 @@ fun SalaQuirofanoScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = { navController.navigate("chequeo_respirador_screen") },
+                onClick = { navController.navigate("chequeo_respirador") },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = "Chequeo respirador")

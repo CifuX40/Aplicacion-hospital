@@ -21,7 +21,6 @@
         android:theme="@style/Theme.MarDeLuna"
         tools:targetApi="31">
 
-        <!-- Meta-data para notificaciones -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/logo" />

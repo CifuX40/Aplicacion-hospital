@@ -19,21 +19,19 @@ import androidx.compose.ui.viewinterop.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TomaConstantesScreen(navController: NavHostController) {
+fun TomaConstantes(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
     var videoUrl by remember { mutableStateOf<String?>(null) }
 
-    // Cargar la URL de la imagen de fondo y el video desde Firebase Storage
+    // Cargar las imagen y el video desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
 
-        // Cargar el fondo
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
             .addOnFailureListener { }
 
-        // Cargar video
         val videoRef = storage.reference.child("toma_constantes.mp4")
         videoRef.downloadUrl
             .addOnSuccessListener { uri -> videoUrl = uri.toString() }
@@ -104,7 +102,6 @@ fun TomaConstantesScreen(navController: NavHostController) {
                                     }
                                     setMediaController(mediaController)
                                     requestFocus()
-                                    start()
                                 }
                             },
                             modifier = Modifier

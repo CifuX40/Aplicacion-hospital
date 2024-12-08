@@ -18,7 +18,7 @@ import com.google.firebase.storage.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TomaOxigenoScreen(navController: NavHostController) {
+fun TomaOxigeno(navController: NavHostController) {
     var backgroundImageUrl by remember { mutableStateOf("") }
     var contentImageUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }

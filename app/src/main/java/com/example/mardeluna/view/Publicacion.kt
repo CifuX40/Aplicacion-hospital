@@ -1,10 +1,6 @@
 package com.example.mardeluna.view
 
-import android.content.ContentValues.TAG
-import android.net.*
 import android.util.*
-import androidx.activity.compose.*
-import androidx.activity.result.contract.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.*
 import androidx.compose.material3.*
@@ -105,19 +101,6 @@ fun PublicacionItem(
     val postId = publicacion["id"] as? String ?: ""
     val userId = publicacion["userId"] as? String
 
-    val db = FirebaseFirestore.getInstance()
-    db.collection("cities")
-        .whereEqualTo("capital", true)
-        .get()
-        .addOnSuccessListener { documents ->
-            for (document in documents) {
-                Log.d(TAG, "${document.id} => ${document.data}")
-            }
-        }
-        .addOnFailureListener { exception ->
-            Log.w(TAG, "Error getting documents: ", exception)
-        }
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -153,14 +136,9 @@ fun PublicacionItem(
 @Composable
 fun AgregarPublicacionUI(navController: NavHostController) {
     var texto by remember { mutableStateOf("") }
-    var imageUri by remember { mutableStateOf<Uri?>(null) }
     var errorMessage by remember { mutableStateOf("") }
     var successMessage by remember { mutableStateOf("") }
     var backgroundUrl by remember { mutableStateOf("") }
-
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
-        imageUri = it
-    }
 
     LaunchedEffect(Unit) {
         cargarFondo { url -> backgroundUrl = url }
@@ -207,34 +185,16 @@ fun AgregarPublicacionUI(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Button(onClick = { launcher.launch("image/*") }) {
-                Text("Seleccionar imagen")
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            imageUri?.let {
-                Image(
-                    painter = rememberAsyncImagePainter(it),
-                    contentDescription = "Imagen seleccionada",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
             Button(onClick = {
-                if (texto.isNotBlank() || imageUri != null) {
-                    publicarPublicacion(texto, imageUri) {
+                if (texto.isNotBlank()) {
+                    publicarPublicacion(texto) {
                         successMessage = "Publicación realizada con éxito!"
-                        navController.navigate("PublicacionesScreen") {
-                            popUpTo("PublicacionesScreen") { inclusive = true }
+                        navController.navigate("publicaciones") {
+                            popUpTo("publicaciones") { inclusive = true }
                         }
                     }
                 } else {
-                    errorMessage = "Debe ingresar un mensaje o seleccionar una imagen."
+                    errorMessage = "Debe ingresar un texto."
                 }
             }) {
                 Text("Publicar")
@@ -290,11 +250,9 @@ private fun eliminarPublicacion(postId: String, onComplete: () -> Unit) {
 
 private fun publicarPublicacion(
     mensaje: String,
-    imageUri: Uri?,
     onSuccess: () -> Unit
 ) {
     val db = FirebaseFirestore.getInstance()
-    val storage = FirebaseStorage.getInstance().reference
     val currentUser = FirebaseAuth.getInstance().currentUser
 
     val publicacion = hashMapOf(
@@ -303,19 +261,7 @@ private fun publicarPublicacion(
         "timestamp" to FieldValue.serverTimestamp()
     )
 
-    if (imageUri != null) {
-        val ref = storage.child("publicaciones/${System.currentTimeMillis()}.jpg")
-        ref.putFile(imageUri).addOnSuccessListener {
-            ref.downloadUrl.addOnSuccessListener { uri ->
-                publicacion["imagen"] = uri.toString()
-                db.collection("publicaciones").add(publicacion).addOnSuccessListener {
-                    onSuccess()
-                }
-            }
-        }
-    } else {
-        db.collection("publicaciones").add(publicacion).addOnSuccessListener {
-            onSuccess()
-        }
+    db.collection("publicaciones").add(publicacion).addOnSuccessListener {
+        onSuccess()
     }
 }

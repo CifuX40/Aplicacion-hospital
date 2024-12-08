@@ -16,7 +16,7 @@ import com.google.firebase.ktx.*
 import com.google.firebase.storage.ktx.*
 
 @Composable
-fun EquipoQuirofanoScreen(navController: NavHostController) {
+fun EquipoQuirofano(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
 
     // Cargar fondo desde Firebase Storage

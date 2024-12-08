@@ -17,7 +17,7 @@ import com.google.firebase.ktx.*
 import com.google.firebase.storage.ktx.*
 
 @Composable
-fun ControlesCargaScreen(navController: NavHostController) {
+fun ControlesCarga(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
 
     // Cargar fondo desde Firebase Storage

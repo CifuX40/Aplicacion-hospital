@@ -79,7 +79,7 @@ fun Quirofano(navController: NavHostController) {
             }
 
             Button(
-                onClick = { navController.navigate("esterilizacion_screen") },
+                onClick = { navController.navigate("esterilizacion") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
@@ -97,7 +97,7 @@ fun Quirofano(navController: NavHostController) {
             }
 
             Button(
-                onClick = { navController.navigate("sala_quirofano_screen") },
+                onClick = { navController.navigate("sala_quirofano") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)

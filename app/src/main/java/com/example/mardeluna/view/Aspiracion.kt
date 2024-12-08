@@ -18,7 +18,7 @@ import androidx.compose.ui.layout.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AspiracionScreen(navController: NavHostController) {
+fun Aspiracion(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
     var imageUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }

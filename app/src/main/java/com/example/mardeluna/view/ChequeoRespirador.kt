@@ -17,7 +17,7 @@ import coil.compose.*
 import com.google.firebase.storage.*
 
 @Composable
-fun ChequeoRespiradorScreen(navController: NavHostController) {
+fun ChequeoRespirador(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf<String?>(null) }
     var videoUrl by remember { mutableStateOf<String?>(null) }
     var loadError by remember { mutableStateOf(false) }
