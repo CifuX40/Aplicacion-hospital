@@ -18,7 +18,7 @@ import com.google.firebase.storage.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HospitalDeDiaScreen(navController: NavHostController) {
+fun HospitalDeDia(navController: NavHostController) {
     var imageUrl by remember { mutableStateOf("") }
     var backgroundUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }

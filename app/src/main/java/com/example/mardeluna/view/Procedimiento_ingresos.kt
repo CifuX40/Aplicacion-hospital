@@ -18,11 +18,10 @@ import com.google.firebase.storage.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProcedimientoIngresosScreen(navController: NavHostController) {
+fun ProcedimientoIngresos(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
     var imageUrl by remember { mutableStateOf("") }
 
-    // Cargar la URL de la imagen de fondo y la imagen del procedimiento desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
 

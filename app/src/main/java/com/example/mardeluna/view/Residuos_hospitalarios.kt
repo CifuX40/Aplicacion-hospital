@@ -21,7 +21,7 @@ import androidx.compose.ui.layout.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ResiduosHospitalariosScreen(navController: NavHostController) {
+fun ResiduosHospitalarios(navController: NavHostController) {
     var videoUrl by remember { mutableStateOf<String?>(null) }
     var backgroundUrl by remember { mutableStateOf("") }
 

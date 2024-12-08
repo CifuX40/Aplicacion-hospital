@@ -20,7 +20,7 @@ import com.google.firebase.auth.*
 import com.google.firebase.storage.*
 
 @Composable
-fun StartScreen(navController: NavHostController) {
+fun IniciarSesion(navController: NavHostController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var loginError by remember { mutableStateOf("") }

@@ -18,7 +18,7 @@ import com.google.firebase.storage.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ControlEnfermeriaScreen(navController: NavHostController) {
+fun ControlEnfermeria(navController: NavHostController) {
     // Variables de estado para las URLs de las imágenes
     var imageUrl by remember { mutableStateOf("") }
     var backgroundUrl by remember { mutableStateOf("") }
@@ -28,7 +28,6 @@ fun ControlEnfermeriaScreen(navController: NavHostController) {
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
 
-        // Cargar fondo de pantalla
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -39,7 +38,6 @@ fun ControlEnfermeriaScreen(navController: NavHostController) {
                 Log.e("Firebase", "Error al cargar el fondo: ${exception.message}")
             }
 
-        // Cargar imagen principal
         val imageRef = storage.reference.child("control_enfermeria.jpg")
         imageRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -82,7 +80,6 @@ fun ControlEnfermeriaScreen(navController: NavHostController) {
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {
-                // Fondo de pantalla
                 if (backgroundUrl.isNotEmpty()) {
                     Image(
                         painter = rememberAsyncImagePainter(backgroundUrl),
@@ -98,7 +95,6 @@ fun ControlEnfermeriaScreen(navController: NavHostController) {
                     )
                 }
 
-                // Contenido principal
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -106,7 +102,6 @@ fun ControlEnfermeriaScreen(navController: NavHostController) {
                         .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Título
                     Text(
                         text = "Control de enfermería",
                         fontSize = 24.sp,
@@ -115,7 +110,6 @@ fun ControlEnfermeriaScreen(navController: NavHostController) {
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
 
-                    // Imagen principal
                     when {
                         imageUrl.isNotEmpty() && !loadError -> {
                             Image(
@@ -145,7 +139,6 @@ fun ControlEnfermeriaScreen(navController: NavHostController) {
                         }
                     }
 
-                    // Botón "Páginas web"
                     Button(
                         onClick = { navController.navigate("paginas_web") },
                         modifier = Modifier
@@ -157,7 +150,7 @@ fun ControlEnfermeriaScreen(navController: NavHostController) {
 
                     // Botón "RCP"
                     Button(
-                        onClick = { navController.navigate("rcp_screen") },
+                        onClick = { navController.navigate("rcp") },
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(text = "RCP")
@@ -165,7 +158,7 @@ fun ControlEnfermeriaScreen(navController: NavHostController) {
 
                     // Botón "Residuos hospitalarios"
                     Button(
-                        onClick = { navController.navigate("residuos_hospitalarios_screen") },
+                        onClick = { navController.navigate("residuos_hospitalarios") },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 16.dp)

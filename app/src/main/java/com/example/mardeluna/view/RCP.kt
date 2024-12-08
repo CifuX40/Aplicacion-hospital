@@ -21,7 +21,7 @@ import androidx.compose.ui.layout.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RCPScreen(navController: NavHostController) {
+fun RCP(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
     var videoBasicUrl by remember { mutableStateOf<String?>(null) }
     var imageUrl by remember { mutableStateOf("") }

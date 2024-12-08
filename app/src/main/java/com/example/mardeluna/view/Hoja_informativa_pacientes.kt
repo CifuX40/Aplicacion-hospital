@@ -18,7 +18,7 @@ import com.google.firebase.storage.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HojaInformativaPacientesScreen(navController: NavHostController) {
+fun HojaInformativaPacientes(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
     var imageUrl by remember { mutableStateOf("") }
 

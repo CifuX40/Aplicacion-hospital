@@ -16,7 +16,7 @@ import com.google.firebase.ktx.*
 import com.google.firebase.storage.ktx.*
 
 @Composable
-fun ReaScreen(navController: NavHostController) {
+fun Rea(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
     var reaImageUrl by remember { mutableStateOf("") }
 

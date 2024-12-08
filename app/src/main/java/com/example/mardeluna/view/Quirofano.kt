@@ -88,7 +88,7 @@ fun Quirofano(navController: NavHostController) {
             }
 
             Button(
-                onClick = { navController.navigate("rea_screen") },
+                onClick = { navController.navigate("rea") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)

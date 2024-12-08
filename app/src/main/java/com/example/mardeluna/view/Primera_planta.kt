@@ -138,7 +138,7 @@ fun PrimeraPlanta(navController: NavHostController = rememberNavController()) {
                     }
 
                     Button(
-                        onClick = { navController.navigate("hospital_dia_screen") },
+                        onClick = { navController.navigate("hospital_dia") },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 8.dp)
