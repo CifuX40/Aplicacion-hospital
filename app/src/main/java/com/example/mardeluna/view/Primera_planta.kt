@@ -17,7 +17,7 @@ import com.google.firebase.storage.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FirstFloorScreen(navController: NavHostController = rememberNavController()) {
+fun PrimeraPlanta(navController: NavHostController = rememberNavController()) {
 
     // Variables de estado para almacenar las URLs de las imágenes y el estado de carga
     var backgroundUrl by remember { mutableStateOf("") }
@@ -129,7 +129,7 @@ fun FirstFloorScreen(navController: NavHostController = rememberNavController())
 
                     // Botones debajo de la imagen
                     Button(
-                        onClick = { navController.navigate("endoscopias_screen") },
+                        onClick = { navController.navigate("sala_endoscopias") },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 8.dp)

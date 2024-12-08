@@ -15,15 +15,14 @@ import com.google.firebase.storage.*
 
 @Composable
 fun MainLogoScreen(navController: NavHostController) {
-    var firstFloorLogoUrl by remember { mutableStateOf("") }
-    var secondFloorLogoUrl by remember { mutableStateOf("") }
+    var primeraPlantaUrl by remember { mutableStateOf("") }
+    var segundaPlantaUrl by remember { mutableStateOf("") }
     var backgroundUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
 
-        // Cargar imagen de fondo
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
@@ -32,13 +31,13 @@ fun MainLogoScreen(navController: NavHostController) {
         // Cargar imagen de la primera planta
         val firstFloorRef = storage.reference.child("piso_1_logo.png")
         firstFloorRef.downloadUrl
-            .addOnSuccessListener { uri -> firstFloorLogoUrl = uri.toString() }
+            .addOnSuccessListener { uri -> primeraPlantaUrl = uri.toString() }
             .addOnFailureListener { loadError = true }
 
         // Cargar imagen de la segunda planta
         val secondFloorRef = storage.reference.child("piso_2_logo.png")
         secondFloorRef.downloadUrl
-            .addOnSuccessListener { uri -> secondFloorLogoUrl = uri.toString() }
+            .addOnSuccessListener { uri -> segundaPlantaUrl = uri.toString() }
             .addOnFailureListener { loadError = true }
     }
 
@@ -52,12 +51,15 @@ fun MainLogoScreen(navController: NavHostController) {
                 modifier = Modifier.fillMaxSize()
             )
         } else if (loadError) {
-            Box(modifier = Modifier.fillMaxSize().background(Color.Gray))
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Gray))
         }
 
-        // Contenido de la pantalla
         Column(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -69,13 +71,13 @@ fun MainLogoScreen(navController: NavHostController) {
                 )
 
                 // Imagen de la primera planta desde Firebase Storage
-                if (firstFloorLogoUrl.isNotEmpty()) {
+                if (primeraPlantaUrl.isNotEmpty()) {
                     Image(
-                        painter = rememberAsyncImagePainter(firstFloorLogoUrl),
+                        painter = rememberAsyncImagePainter(primeraPlantaUrl),
                         contentDescription = "Logo de la Primera Planta",
                         modifier = Modifier
                             .size(200.dp)
-                            .clickable { navController.navigate("first_floor") }
+                            .clickable { navController.navigate("primera_planta") }
                             .padding(bottom = 16.dp)
                     )
                 }
@@ -83,13 +85,13 @@ fun MainLogoScreen(navController: NavHostController) {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Imagen de la segunda planta desde Firebase Storage
-                if (secondFloorLogoUrl.isNotEmpty()) {
+                if (segundaPlantaUrl.isNotEmpty()) {
                     Image(
-                        painter = rememberAsyncImagePainter(secondFloorLogoUrl),
+                        painter = rememberAsyncImagePainter(segundaPlantaUrl),
                         contentDescription = "Logo de la Segunda Planta",
                         modifier = Modifier
                             .size(200.dp)
-                            .clickable { navController.navigate("second_floor") }
+                            .clickable { navController.navigate("segunda_planta") }
                             .padding(bottom = 16.dp)
                     )
                 }

@@ -22,7 +22,7 @@ import com.google.firebase.storage.ktx.storage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SecondFloorScreen(navController: NavHostController = rememberNavController()) {
+fun SegundaPlanta(navController: NavHostController = rememberNavController()) {
     var scale by remember { mutableFloatStateOf(1f) }
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }

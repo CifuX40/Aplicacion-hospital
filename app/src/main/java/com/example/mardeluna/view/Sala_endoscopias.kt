@@ -18,7 +18,7 @@ import com.google.firebase.storage.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Endoscopias(navController: NavHostController) {
+fun SalaEndoscopias(navController: NavHostController) {
     var imageUrl by remember { mutableStateOf("") }
     var backgroundUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
@@ -182,11 +182,11 @@ private fun Content(navController: NavHostController, loadError: Boolean, imageU
 @Composable
 private fun NavigationButtons(navController: NavHostController) {
     Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-        Button(onClick = { navController.navigate("endoscopios_screen") }) {
+        Button(onClick = { navController.navigate("endoscopios") }) {
             Text("Endoscopios")
         }
 
-        Button(onClick = { navController.navigate("lavadora_screen") }) {
+        Button(onClick = { navController.navigate("lavado") }) {
             Text("Lavadora")
         }
     }
