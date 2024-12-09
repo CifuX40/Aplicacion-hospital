@@ -6,7 +6,7 @@ import androidx.navigation.compose.*
 import com.example.mardeluna.view.*
 
 @Composable
-fun AppNavigation(navController: NavHostController) {
+fun Navegacion(navController: NavHostController) {
     NavHost(navController = navController, startDestination = "iniciar_sesion") {
         composable("agregar_publicacion") { AgregarPublicacionUI(navController) }
         composable("admin") { Admin(navController) }
@@ -28,7 +28,7 @@ fun AppNavigation(navController: NavHostController) {
         composable("hospital_dia") { HospitalDeDia(navController) }
         composable("hospitalizacion") { Hospitalizacion(navController) }
         composable("lavado") { Lavado(navController) }
-        composable("main_logo") { MainLogoScreen(navController) }
+        composable("Plantas") { Plantas(navController) }
         composable("paginas_web") { PaginasWeb(navController) }
         composable("primera_planta") { PrimeraPlanta(navController) }
         composable("procedimiento_ingresos") { ProcedimientoIngresos(navController) }

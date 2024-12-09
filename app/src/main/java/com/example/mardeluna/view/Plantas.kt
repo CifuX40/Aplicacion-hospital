@@ -14,7 +14,7 @@ import coil.compose.*
 import com.google.firebase.storage.*
 
 @Composable
-fun MainLogoScreen(navController: NavHostController) {
+fun Plantas(navController: NavHostController) {
     var primeraPlantaUrl by remember { mutableStateOf("") }
     var segundaPlantaUrl by remember { mutableStateOf("") }
     var backgroundUrl by remember { mutableStateOf("") }

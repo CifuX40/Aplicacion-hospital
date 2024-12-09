@@ -54,7 +54,7 @@ fun HojaInformativaPacientes(navController: NavHostController) {
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate("main_logo") }) {
+                    IconButton(onClick = { navController.navigate("Plantas") }) {
                         Icon(
                             imageVector = Icons.Default.Home,
                             contentDescription = "Home",

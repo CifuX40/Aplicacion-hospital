@@ -73,7 +73,7 @@ fun IniciarSesion(navController: NavHostController) {
                                 popUpTo("start") { inclusive = true }
                             }
                         } else {
-                            navController.navigate("main_logo") {
+                            navController.navigate("Plantas") {
                                 popUpTo("start") { inclusive = true }
                             }
                         }

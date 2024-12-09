@@ -15,7 +15,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MarDeLunaTheme {
                 val navController = rememberNavController()
-                AppNavigation(navController)
+                Navegacion(navController)
             }
         }
     }
