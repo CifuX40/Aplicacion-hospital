@@ -25,16 +25,26 @@ fun Quirofano(navController: NavHostController) {
 
     LaunchedEffect(Unit) {
         val storage = Firebase.storage
-
-        val backgroundRef = storage.getReferenceFromUrl("gs://mar-de-luna-ada79.firebasestorage.app/fondo_de_pantalla.jpg")
+        val backgroundRef =
+            storage.getReferenceFromUrl("gs://mar-de-luna-ada79.firebasestorage.app/fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
-            .addOnFailureListener { exception -> Log.e("Firebase", "Error al cargar fondo: ${exception.message}") }
-
-        val surgeryImageRef = storage.getReferenceFromUrl("gs://mar-de-luna-ada79.firebasestorage.app/quirofano.jpg")
+            .addOnFailureListener { exception ->
+                Log.e(
+                    "Firebase",
+                    "Error al cargar fondo: ${exception.message}"
+                )
+            }
+        val surgeryImageRef =
+            storage.getReferenceFromUrl("gs://mar-de-luna-ada79.firebasestorage.app/quirofano.jpg")
         surgeryImageRef.downloadUrl
             .addOnSuccessListener { uri -> surgeryImageUrl = uri.toString() }
-            .addOnFailureListener { exception -> Log.e("Firebase", "Error al cargar imagen quirófano: ${exception.message}") }
+            .addOnFailureListener { exception ->
+                Log.e(
+                    "Firebase",
+                    "Error al cargar imagen quirófano: ${exception.message}"
+                )
+            }
     }
 
     Scaffold(
