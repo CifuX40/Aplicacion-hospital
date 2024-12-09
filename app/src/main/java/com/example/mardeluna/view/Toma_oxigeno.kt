@@ -23,11 +23,8 @@ fun TomaOxigeno(navController: NavHostController) {
     var contentImageUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
 
-    // Cargar imágenes desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-
-        // Cargar fondo de pantalla
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -38,8 +35,6 @@ fun TomaOxigeno(navController: NavHostController) {
                 loadError = true
                 Log.e("Firebase", "Error al cargar el fondo: ${exception.message}")
             }
-
-        // Cargar imagen de contenido
         val contentRef = storage.reference.child("toma_oxigeno.jpg")
         contentRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -82,7 +77,6 @@ fun TomaOxigeno(navController: NavHostController) {
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {
-                // Imagen de fondo
                 if (backgroundImageUrl.isNotEmpty() && !loadError) {
                     Image(
                         painter = rememberAsyncImagePainter(backgroundImageUrl),
@@ -92,7 +86,6 @@ fun TomaOxigeno(navController: NavHostController) {
                     )
                 }
 
-                // Contenido superpuesto
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -108,7 +101,6 @@ fun TomaOxigeno(navController: NavHostController) {
                         color = Color.Black
                     )
 
-                    // Imagen de contenido
                     when {
                         contentImageUrl.isNotEmpty() && !loadError -> {
                             Image(
@@ -147,15 +139,15 @@ fun TomaOxigeno(navController: NavHostController) {
                     )
                     Text(
                         text = """
-1. Colocar al paciente en una posición cómoda y estable.
-2. Conectar el caudalímetro a la toma de oxígeno de la pared.
-3. Conectar el humidificador al caudalímetro.
-4. Abrir el suministro de oxígeno para comprobar que el caudalímetro funciona correctamente y que el humidificador burbujea.
-5. Ajustar el flujo y la concentración de oxígeno según la prescripción médica.
-6. Conectar el extremo del circuito de oxígeno al dispositivo de administración correspondiente:
-   - Cánula nasal (gafas nasales)
-   - Mascarilla
-   - Sonda nasal (catéter nasal)
+                                1. Colocar al paciente en una posición cómoda y estable.
+                                2. Conectar el caudalímetro a la toma de oxígeno de la pared.
+                                3. Conectar el humidificador al caudalímetro.
+                                4. Abrir el suministro de oxígeno para comprobar que el caudalímetro funciona correctamente y que el humidificador burbujea.
+                                5. Ajustar el flujo y la concentración de oxígeno según la prescripción médica.
+                                6. Conectar el extremo del circuito de oxígeno al dispositivo de administración correspondiente:
+                                        - Cánula nasal (gafas nasales)
+                                        - Mascarilla
+                                        - Sonda nasal (catéter nasal)
                         """.trimIndent(),
                         fontSize = 16.sp,
                         lineHeight = 24.sp,

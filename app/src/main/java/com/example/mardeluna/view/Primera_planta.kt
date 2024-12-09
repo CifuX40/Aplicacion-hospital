@@ -18,23 +18,16 @@ import com.google.firebase.storage.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PrimeraPlanta(navController: NavHostController = rememberNavController()) {
-
-    // Variables de estado para almacenar las URLs de las imágenes y el estado de carga
     var backgroundUrl by remember { mutableStateOf("") }
     var imageUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
 
-    // Cargar las imágenes desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-
-        // Cargar la imagen de fondo
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
             .addOnFailureListener { loadError = true }
-
-        // Cargar la imagen de la primera planta
         val storageRef = storage.reference.child("primera_planta.png")
         storageRef.downloadUrl
             .addOnSuccessListener { uri -> imageUrl = uri.toString() }
@@ -71,7 +64,6 @@ fun PrimeraPlanta(navController: NavHostController = rememberNavController()) {
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {
-                // Fondo de pantalla
                 if (backgroundUrl.isNotEmpty() && !loadError) {
                     Image(
                         painter = rememberAsyncImagePainter(backgroundUrl),
@@ -87,7 +79,6 @@ fun PrimeraPlanta(navController: NavHostController = rememberNavController()) {
                     )
                 }
 
-                // Contenedor con Scroll
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -103,7 +94,6 @@ fun PrimeraPlanta(navController: NavHostController = rememberNavController()) {
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
 
-                    // Verificar si la imagen de la primera planta se cargó correctamente y mostrarla
                     if (imageUrl.isNotEmpty() && !loadError) {
                         Image(
                             painter = rememberAsyncImagePainter(imageUrl),
@@ -127,7 +117,6 @@ fun PrimeraPlanta(navController: NavHostController = rememberNavController()) {
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Botones debajo de la imagen
                     Button(
                         onClick = { navController.navigate("sala_endoscopias") },
                         modifier = Modifier

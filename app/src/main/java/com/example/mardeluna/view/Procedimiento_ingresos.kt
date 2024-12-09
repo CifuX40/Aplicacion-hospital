@@ -24,16 +24,12 @@ fun ProcedimientoIngresos(navController: NavHostController) {
 
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-
-        // Cargar fondo
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
             .addOnFailureListener { exception ->
                 Log.e("Firebase", "Error al cargar fondo: ${exception.message}")
             }
-
-        // Cargar la imagen del procedimiento
         val imageRef = storage.reference.child("procedimiento_ingresos.jpg")
         imageRef.downloadUrl
             .addOnSuccessListener { uri -> imageUrl = uri.toString() }
@@ -90,7 +86,6 @@ fun ProcedimientoIngresos(navController: NavHostController) {
                     )
                 }
 
-                // Contenido principal
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -106,7 +101,6 @@ fun ProcedimientoIngresos(navController: NavHostController) {
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Mostrar la imagen del procedimiento, si está disponible
                     if (imageUrl.isNotEmpty()) {
                         Image(
                             painter = rememberAsyncImagePainter(imageUrl),

@@ -21,23 +21,15 @@ import com.google.firebase.storage.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaginasWeb(navController: NavHostController) {
-    // Variables de estado para las URLs de las imágenes
     var backgroundImageUrl by remember { mutableStateOf<String?>(null) }
     var webPageImageUrl by remember { mutableStateOf<String?>(null) }
     var loadError by remember { mutableStateOf(false) }
     var secondLoadError by remember { mutableStateOf(false) }
-
-    // Estado para la pestaña seleccionada
     var selectedTabIndex by remember { mutableIntStateOf(0) }
-
-    // Opciones de las pestañas
     val tabs = listOf("Información", "Páginas Web")
 
-    // Cargar imágenes desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-
-        // Cargar fondo de pantalla
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -49,7 +41,6 @@ fun PaginasWeb(navController: NavHostController) {
                 Log.e("Firebase", "Error al cargar el fondo: ${exception.message}")
             }
 
-        // Cargar imagen de "Páginas web"
         val webPageRef = storage.reference.child("paginas_web.jpg")
         webPageRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -87,7 +78,6 @@ fun PaginasWeb(navController: NavHostController) {
                     )
                 )
 
-                // TabBar
                 TabRow(selectedTabIndex = selectedTabIndex) {
                     tabs.forEachIndexed { index, title ->
                         Tab(
@@ -111,7 +101,6 @@ fun PaginasWeb(navController: NavHostController) {
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // Imagen de fondo que ocupa toda la pantalla
             if (backgroundImageUrl != null && !loadError) {
                 Image(
                     painter = rememberAsyncImagePainter(backgroundImageUrl),
@@ -120,7 +109,6 @@ fun PaginasWeb(navController: NavHostController) {
                     modifier = Modifier.fillMaxSize()
                 )
             } else if (loadError) {
-                // Fondo alternativo en caso de error al cargar la imagen
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -128,7 +116,6 @@ fun PaginasWeb(navController: NavHostController) {
                 )
             }
 
-            // Contenido basado en la pestaña seleccionada
             when (selectedTabIndex) {
                 0 -> {
                     Column(
@@ -138,7 +125,6 @@ fun PaginasWeb(navController: NavHostController) {
                             .verticalScroll(rememberScrollState()),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        // Título principal "Páginas web"
                         Text(
                             text = "Páginas web",
                             fontSize = 24.sp,
@@ -147,7 +133,6 @@ fun PaginasWeb(navController: NavHostController) {
                             modifier = Modifier.padding(bottom = 16.dp)
                         )
 
-                        // Imagen de "Páginas web"
                         when {
                             webPageImageUrl != null && !secondLoadError -> {
                                 Image(
@@ -159,7 +144,6 @@ fun PaginasWeb(navController: NavHostController) {
                                         .padding(bottom = 16.dp)
                                 )
 
-                                // Texto informativo debajo de la imagen
                                 Text(
                                     text = """
                                         Las páginas web que debes conocer son las siguientes:
@@ -195,7 +179,6 @@ fun PaginasWeb(navController: NavHostController) {
                 }
 
                 1 -> {
-                    // Contenido de la pestaña "Páginas Web"
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -203,7 +186,6 @@ fun PaginasWeb(navController: NavHostController) {
                             .verticalScroll(rememberScrollState()),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        // Título para las páginas web
                         Text(
                             text = "Links para ir a las diferentes paginas",
                             fontSize = 20.sp,
@@ -212,7 +194,6 @@ fun PaginasWeb(navController: NavHostController) {
                             modifier = Modifier.padding(bottom = 16.dp)
                         )
 
-                        // Botón para aTurnos
                         Button(
                             onClick = {
                                 val intent = Intent(
@@ -228,7 +209,6 @@ fun PaginasWeb(navController: NavHostController) {
                             Text(text = "aTurnos")
                         }
 
-                        // Botón para Gesdie
                         Button(
                             onClick = {
                                 val intent = Intent(
@@ -244,7 +224,6 @@ fun PaginasWeb(navController: NavHostController) {
                             Text(text = "Gesdie")
                         }
 
-                        // Botón para el Portal del Empleado
                         Button(
                             onClick = {
                                 val intent = Intent(

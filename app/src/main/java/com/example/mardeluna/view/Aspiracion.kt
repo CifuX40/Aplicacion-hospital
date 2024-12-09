@@ -23,11 +23,8 @@ fun Aspiracion(navController: NavHostController) {
     var imageUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
 
-    // Cargar imagenes desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-
-        // Cargar el fondo de pantalla
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -38,7 +35,6 @@ fun Aspiracion(navController: NavHostController) {
                 Log.e("Firebase", "Error al cargar el fondo: ${exception.message}")
             }
 
-        // Cargar la imagen de aspiración
         val storageRef = storage.reference.child("aspiracion_paciente.jpg")
         storageRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -51,7 +47,6 @@ fun Aspiracion(navController: NavHostController) {
             }
     }
 
-    // Scaffold con TopAppBar
     Scaffold(
         topBar = {
             TopAppBar(
@@ -82,7 +77,6 @@ fun Aspiracion(navController: NavHostController) {
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {
-                // Fondo de pantalla
                 if (backgroundUrl.isNotEmpty()) {
                     Image(
                         painter = rememberAsyncImagePainter(backgroundUrl),
@@ -98,7 +92,6 @@ fun Aspiracion(navController: NavHostController) {
                     )
                 }
 
-                // Contenido principal
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -114,7 +107,6 @@ fun Aspiracion(navController: NavHostController) {
                         color = Color.Black
                     )
 
-                    // Imagen de aspiración
                     when {
                         imageUrl.isNotEmpty() && !loadError -> {
                             Image(
@@ -143,7 +135,6 @@ fun Aspiracion(navController: NavHostController) {
                         }
                     }
 
-                    // Procedimiento
                     Text(
                         text = "PROCEDIMIENTO:",
                         fontSize = 18.sp,
@@ -153,22 +144,22 @@ fun Aspiracion(navController: NavHostController) {
                     )
                     Text(
                         text = """
-1. Verificar el funcionamiento del aspirador conectándolo a la toma de vacío, asegurando una presión negativa adecuada (80 a 120 mmHg).
-2. Limpiar externamente las fosas nasales del paciente si es necesario.
-3. Abrir la sonda de aspiración y conectar el tubo a la pieza en "Y".
-4. Introducir suavemente la sonda en una fosa nasal, evitando la succión durante la introducción para proteger la mucosa nasal. 
-   - Una vez en la posición adecuada, iniciar la aspiración con movimientos rotatorios mientras se retira la sonda.
-   - Tapar intermitentemente el orificio de la conexión en "Y" para controlar la succión.
-5. Repetir el procedimiento en la otra fosa nasal utilizando una sonda nueva.
-6. Para aspirar la cavidad orofaríngea, repetir el proceso descrito anteriormente.
-7. Si se requiere acceder a los bronquios:
-   - Colocar la cabeza del paciente en hiperextensión.
-   - Girar la cabeza hacia el lado opuesto al bronquio que se desea aspirar.
-8. Si el objetivo es recolectar una muestra, utilizar una sonda con reservorio.
-9. Al finalizar:
-   - Lavar la sonda y el tubo aspirador con agua destilada o suero fisiológico.
-   - Desechar el material en los contenedores indicados.
-   - Retirar los guantes y realizar higiene de manos.
+                                1. Verificar el funcionamiento del aspirador conectándolo a la toma de vacío, asegurando una presión negativa adecuada (80 a 120 mmHg).
+                                2. Limpiar externamente las fosas nasales del paciente si es necesario.
+                                3. Abrir la sonda de aspiración y conectar el tubo a la pieza en "Y".
+                                4. Introducir suavemente la sonda en una fosa nasal, evitando la succión durante la introducción para proteger la mucosa nasal. 
+                                        - Una vez en la posición adecuada, iniciar la aspiración con movimientos rotatorios mientras se retira la sonda.
+                                        - Tapar intermitentemente el orificio de la conexión en "Y" para controlar la succión.
+                                5. Repetir el procedimiento en la otra fosa nasal utilizando una sonda nueva.
+                                6. Para aspirar la cavidad orofaríngea, repetir el proceso descrito anteriormente.
+                                7. Si se requiere acceder a los bronquios:
+                                        - Colocar la cabeza del paciente en hiperextensión.
+                                        - Girar la cabeza hacia el lado opuesto al bronquio que se desea aspirar.
+                                8. Si el objetivo es recolectar una muestra, utilizar una sonda con reservorio.
+                                9. Al finalizar:
+                                        - Lavar la sonda y el tubo aspirador con agua destilada o suero fisiológico.
+                                        - Desechar el material en los contenedores indicados.
+                                        - Retirar los guantes y realizar higiene de manos.
                     """.trimIndent(),
                         fontSize = 16.sp,
                         lineHeight = 24.sp,

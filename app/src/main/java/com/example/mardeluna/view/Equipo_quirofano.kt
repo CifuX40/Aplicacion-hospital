@@ -22,7 +22,6 @@ import com.google.firebase.storage.ktx.*
 fun EquipoQuirofano(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
 
-    // Cargar fondo desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = Firebase.storage
         val backgroundRef =

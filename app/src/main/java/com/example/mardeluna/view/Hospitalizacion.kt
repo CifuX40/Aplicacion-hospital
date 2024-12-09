@@ -19,22 +19,17 @@ import com.google.firebase.storage.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Hospitalizacion(navController: NavHostController) {
-    // Estado para la URL de la imagen
     var imageUrl by remember { mutableStateOf("") }
     var backgroundUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
 
-    // Cargar la URL de la imagen del fondo desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-
-        // Cargar fondo de pantalla
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
             .addOnFailureListener { Log.e("Firebase", "Error al cargar fondo: ${it.message}") }
 
-        // Cargar imagen específica
         val storageRef = storage.reference.child("hospitalizacion.jpg")
         storageRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -77,7 +72,6 @@ fun Hospitalizacion(navController: NavHostController) {
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {
-                // Imagen de fondo
                 if (backgroundUrl.isNotEmpty()) {
                     Image(
                         painter = rememberAsyncImagePainter(backgroundUrl),

@@ -62,7 +62,9 @@ fun ControlesCarga(navController: NavHostController) {
             )
         }
     ) { innerPadding ->
-        Box(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)) {
             if (backgroundUrl.isNotEmpty()) {
                 Image(
                     painter = rememberAsyncImagePainter(backgroundUrl),
@@ -96,7 +98,12 @@ fun ControlesCarga(navController: NavHostController) {
 
                 Text(
                     text = buildAnnotatedString {
-                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)) {
+                        withStyle(
+                            style = SpanStyle(
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 16.sp
+                            )
+                        ) {
                             append("Integrador\n")
                         }
                         append("Para el control de la carga se utilizan indicadores químicos de Clase 5. Los integradores ")
@@ -110,7 +117,12 @@ fun ControlesCarga(navController: NavHostController) {
 
                 Text(
                     text = buildAnnotatedString {
-                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)) {
+                        withStyle(
+                            style = SpanStyle(
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 16.sp
+                            )
+                        ) {
                             append("Control biológico\n")
                         }
                         append("Son dispositivos inoculados con esporas de los microorganismos más resistentes a la esterilización por vapor. Es el único control que nos asegura la destrucción total de los microorganismos.\n")

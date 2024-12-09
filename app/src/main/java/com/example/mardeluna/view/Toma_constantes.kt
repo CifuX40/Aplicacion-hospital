@@ -23,15 +23,12 @@ fun TomaConstantes(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
     var videoUrl by remember { mutableStateOf<String?>(null) }
 
-    // Cargar las imagen y el video desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
             .addOnFailureListener { }
-
         val videoRef = storage.reference.child("toma_constantes.mp4")
         videoRef.downloadUrl
             .addOnSuccessListener { uri -> videoUrl = uri.toString() }
@@ -77,7 +74,6 @@ fun TomaConstantes(navController: NavHostController) {
                     )
                 }
 
-                // Contenido principal
                 Column(
                     modifier = Modifier
                         .fillMaxSize()

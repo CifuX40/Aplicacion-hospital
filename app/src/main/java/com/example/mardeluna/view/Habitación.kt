@@ -24,11 +24,8 @@ fun Habitacion(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
 
-    // Cargar URLs desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-
-        // Cargar fondo de pantalla
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -39,7 +36,6 @@ fun Habitacion(navController: NavHostController) {
                 Log.e("Firebase", "Error al cargar el fondo: ${exception.message}")
             }
 
-        // Cargar imagen principal
         val imageRef = storage.reference.child("habitacion.jpg")
         imageRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -81,7 +77,6 @@ fun Habitacion(navController: NavHostController) {
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {
-                // Fondo de pantalla
                 if (backgroundUrl.isNotEmpty()) {
                     Image(
                         painter = rememberAsyncImagePainter(backgroundUrl),
@@ -142,7 +137,6 @@ fun Habitacion(navController: NavHostController) {
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        // Descripción de las habitaciones
                         Text(
                             text = "Todas las habitaciones tienen una aspiración y una toma de oxígeno " +
                                     "que se deberán comprobar su funcionamiento después de cada alta de paciente " +

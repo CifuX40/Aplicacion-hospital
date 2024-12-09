@@ -4,8 +4,8 @@ import android.util.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
@@ -23,11 +23,9 @@ fun Endoscopios(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
 
-    // Cargar imágenes desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
 
-        // Cargar fondo de pantalla
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -38,7 +36,6 @@ fun Endoscopios(navController: NavHostController) {
                 Log.e("Firebase", "Error al cargar el fondo: ${exception.message}")
             }
 
-        // Cargar imagen principal
         loadUrlFromFirebase("endoscopios.jpg") { url, error ->
             imageUrl = url ?: ""
             loadError = error != null
@@ -76,7 +73,6 @@ fun Endoscopios(navController: NavHostController) {
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {
-                // Fondo de pantalla
                 if (backgroundUrl.isNotEmpty()) {
                     Image(
                         painter = rememberAsyncImagePainter(backgroundUrl),
@@ -92,7 +88,6 @@ fun Endoscopios(navController: NavHostController) {
                     )
                 }
 
-                // Contenido principal
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -123,7 +118,6 @@ private fun Content(imageUrl: String, loadError: Boolean) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Mostrar imagen si se carga correctamente
         if (!loadError && imageUrl.isNotEmpty()) {
             AsyncImage(
                 model = imageUrl,
@@ -142,7 +136,6 @@ private fun Content(imageUrl: String, loadError: Boolean) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Descripción del endoscopio
         Text(
             text = """
                 El endoscopio es un instrumento en forma de tubo semiflexible que contiene una luz 
@@ -157,7 +150,6 @@ private fun Content(imageUrl: String, loadError: Boolean) {
     }
 }
 
-// Función para cargar URLs desde Firebase Storage
 private fun loadUrlFromFirebase(fileName: String, onResult: (String?, Exception?) -> Unit) {
     val storage = FirebaseStorage.getInstance()
     val storageRef = storage.reference.child(fileName)

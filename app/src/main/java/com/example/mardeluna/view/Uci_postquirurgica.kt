@@ -23,11 +23,8 @@ fun UciPostquirurgica(navController: NavHostController) {
     var roomImageUrl by remember { mutableStateOf<String?>(null) }
     var loadError by remember { mutableStateOf(false) }
 
-    // Descargar la URL de la imagen de fondo
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-
-        // Cargar fondo
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -38,8 +35,6 @@ fun UciPostquirurgica(navController: NavHostController) {
                 loadError = true
                 Log.e("Firebase", "Error al obtener URL del fondo: ${exception.message}")
             }
-
-        // Cargar imagen de la sala UCI
         val roomRef = storage.reference.child("sala_uci_dos.jpg")
         roomRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -82,7 +77,6 @@ fun UciPostquirurgica(navController: NavHostController) {
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {
-                // Imagen de fondo
                 if (imageUrl != null) {
                     Image(
                         painter = rememberAsyncImagePainter(model = imageUrl),
@@ -104,7 +98,6 @@ fun UciPostquirurgica(navController: NavHostController) {
                     )
                 }
 
-                // Contenido principal
                 Column(
                     modifier = Modifier
                         .fillMaxSize()

@@ -25,17 +25,12 @@ fun ResiduosHospitalarios(navController: NavHostController) {
     var videoUrl by remember { mutableStateOf<String?>(null) }
     var backgroundUrl by remember { mutableStateOf("") }
 
-    // Cargar fondo de pantalla desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-
-        // Cargar fondo
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
             .addOnFailureListener { Log.e("Firebase", "Error al cargar fondo: ${it.message}") }
-
-        // Cargar video desde Firebase Storage
         val videoRef = storage.reference.child("residuos.mp4")
         videoRef.downloadUrl
             .addOnSuccessListener { uri -> videoUrl = uri.toString() }
@@ -72,7 +67,6 @@ fun ResiduosHospitalarios(navController: NavHostController) {
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {
-                // Fondo de pantalla
                 if (backgroundUrl.isNotEmpty()) {
                     Image(
                         painter = rememberAsyncImagePainter(backgroundUrl),
@@ -82,7 +76,6 @@ fun ResiduosHospitalarios(navController: NavHostController) {
                     )
                 }
 
-                // Contenido principal
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -90,7 +83,6 @@ fun ResiduosHospitalarios(navController: NavHostController) {
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Título
                     Text(
                         text = "Residuos hospitalarios",
                         fontSize = 24.sp,
@@ -99,11 +91,9 @@ fun ResiduosHospitalarios(navController: NavHostController) {
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
 
-                    // Si hay una URL de video, mostrar el video
                     videoUrl?.let {
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        // Reproducir el video
                         AndroidView(
                             factory = { context ->
                                 VideoView(context).apply {

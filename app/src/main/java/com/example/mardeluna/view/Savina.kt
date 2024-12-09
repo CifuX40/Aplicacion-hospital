@@ -23,11 +23,8 @@ fun Savina(navController: NavHostController) {
     var instructionsImageUrl by remember { mutableStateOf<String?>(null) }
     var loadError by remember { mutableStateOf(false) }
 
-    // Descargar la URL de la imagen de fondo y de instrucciones
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-
-        // Cargar fondo
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -38,8 +35,6 @@ fun Savina(navController: NavHostController) {
                 loadError = true
                 Log.e("Firebase", "Error al obtener URL del fondo: ${exception.message}")
             }
-
-        // Cargar imagen de instrucciones
         val instructionsRef = storage.reference.child("instrucciones_savina_300.jpg")
         instructionsRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -82,7 +77,6 @@ fun Savina(navController: NavHostController) {
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // Imagen de fondo
             if (backgroundImageUrl != null) {
                 Image(
                     painter = rememberAsyncImagePainter(model = backgroundImageUrl),
@@ -104,7 +98,6 @@ fun Savina(navController: NavHostController) {
                 )
             }
 
-            // Contenido principal
             Column(
                 modifier = Modifier
                     .fillMaxSize()

@@ -23,11 +23,8 @@ fun CarroIngresos(navController: NavHostController) {
     var carroImageUrl by remember { mutableStateOf<String?>(null) }
     var loadError by remember { mutableStateOf(false) }
 
-    // Descargar la URL de la imagen de fondo y la del carro de ingresos
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-
-        // Cargar fondo
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -39,7 +36,6 @@ fun CarroIngresos(navController: NavHostController) {
                 Log.e("Firebase", "Error al obtener URL del fondo: ${exception.message}")
             }
 
-        // Cargar imagen del carro de ingresos
         val carroRef = storage.reference.child("carro_ingresos.jpg")
         carroRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -85,7 +81,6 @@ fun CarroIngresos(navController: NavHostController) {
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // Imagen de fondo
             if (backgroundImageUrl != null) {
                 Image(
                     painter = rememberAsyncImagePainter(model = backgroundImageUrl),
@@ -115,7 +110,6 @@ fun CarroIngresos(navController: NavHostController) {
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Título
                 Text(
                     text = "Carro de ingresos",
                     fontSize = 24.sp,

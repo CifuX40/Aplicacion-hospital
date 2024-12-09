@@ -22,19 +22,14 @@ fun Plantas(navController: NavHostController) {
 
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
             .addOnFailureListener { loadError = true }
-
-        // Cargar imagen de la primera planta
         val firstFloorRef = storage.reference.child("piso_1_logo.png")
         firstFloorRef.downloadUrl
             .addOnSuccessListener { uri -> primeraPlantaUrl = uri.toString() }
             .addOnFailureListener { loadError = true }
-
-        // Cargar imagen de la segunda planta
         val secondFloorRef = storage.reference.child("piso_2_logo.png")
         secondFloorRef.downloadUrl
             .addOnSuccessListener { uri -> segundaPlantaUrl = uri.toString() }
@@ -42,7 +37,6 @@ fun Plantas(navController: NavHostController) {
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Fondo de pantalla
         if (backgroundUrl.isNotEmpty() && !loadError) {
             Image(
                 painter = rememberAsyncImagePainter(backgroundUrl),
@@ -51,9 +45,11 @@ fun Plantas(navController: NavHostController) {
                 modifier = Modifier.fillMaxSize()
             )
         } else if (loadError) {
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Gray))
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Gray)
+            )
         }
 
         Column(
@@ -70,7 +66,6 @@ fun Plantas(navController: NavHostController) {
                     modifier = Modifier.padding(bottom = 24.dp)
                 )
 
-                // Imagen de la primera planta desde Firebase Storage
                 if (primeraPlantaUrl.isNotEmpty()) {
                     Image(
                         painter = rememberAsyncImagePainter(primeraPlantaUrl),
@@ -84,7 +79,6 @@ fun Plantas(navController: NavHostController) {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Imagen de la segunda planta desde Firebase Storage
                 if (segundaPlantaUrl.isNotEmpty()) {
                     Image(
                         painter = rememberAsyncImagePainter(segundaPlantaUrl),
@@ -105,11 +99,9 @@ fun Plantas(navController: NavHostController) {
                     Text("Ir a publicaciones")
                 }
             } else {
-                // Mostrar un mensaje de error si la carga falló
                 Text(text = "Error al cargar las imágenes", color = Color.Red)
             }
 
-            // Botón de cerrar sesión
             Button(
                 onClick = {
                     navController.navigate("iniciar_sesion") {

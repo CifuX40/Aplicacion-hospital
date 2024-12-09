@@ -22,11 +22,8 @@ fun Evita600(navController: NavHostController) {
     var evita600ImageUrl by remember { mutableStateOf<String?>(null) }
     var loadError by remember { mutableStateOf(false) }
 
-    // Descargar la URL de la imagen de fondo y evita_600.jpg
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-
-        // Cargar fondo
         val fondoRef = storage.reference.child("fondo_de_pantalla.jpg")
         fondoRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -38,7 +35,6 @@ fun Evita600(navController: NavHostController) {
                 Log.e("Firebase", "Error al obtener URL del fondo: ${exception.message}")
             }
 
-        // Cargar imagen evita_600.jpg
         val evita600Ref = storage.reference.child("evita_600.jpg")
         evita600Ref.downloadUrl
             .addOnSuccessListener { uri ->
@@ -81,7 +77,6 @@ fun Evita600(navController: NavHostController) {
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // Imagen de fondo
             if (backgroundImageUrl != null) {
                 Image(
                     painter = rememberAsyncImagePainter(model = backgroundImageUrl),
@@ -103,7 +98,6 @@ fun Evita600(navController: NavHostController) {
                 )
             }
 
-            // Contenido principal desplazable
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -112,7 +106,6 @@ fun Evita600(navController: NavHostController) {
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Título
                 Text(
                     text = "Evita 600",
                     style = MaterialTheme.typography.headlineMedium,
@@ -120,7 +113,6 @@ fun Evita600(navController: NavHostController) {
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
-                // Imagen evita_600.jpg debajo del título
                 evita600ImageUrl?.let {
                     Image(
                         painter = rememberAsyncImagePainter(model = it),
@@ -133,7 +125,6 @@ fun Evita600(navController: NavHostController) {
                     )
                 }
 
-                // Texto adicional
                 Column(
                     modifier = Modifier
                         .padding(top = 32.dp)
@@ -146,7 +137,7 @@ fun Evita600(navController: NavHostController) {
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
                     Text(
-                        text = "Funciones avanzadas de monitorización pulmonar y diagnóstico (p. ej. Smart Pulmonary View o maniobra de flujo lento)",
+                        text = "Funciones avanzadas de monitorización pulmonar y diagnóstico (Smart Pulmonary View, maniobra de flujo lento, etc)",
                         style = MaterialTheme.typography.bodyLarge,
                         color = Color.Black,
                         modifier = Modifier.padding(bottom = 8.dp)
@@ -158,7 +149,7 @@ fun Evita600(navController: NavHostController) {
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
                     Text(
-                        text = "Herramientas de reclutamiento (p. ej. QuickSet® y PressureLink) y apoyo para la toma de decisiones terapéuticas mediante las tendencias de la respiración en tiempo real (PEEP, EIP, Vt, Cdin)",
+                        text = "Herramientas de reclutamiento ( QuickSet®. PressureLink. etc) y apoyo para la toma de decisiones terapéuticas mediante las tendencias de la respiración en tiempo real (PEEP, EIP, Vt y Cdin)",
                         style = MaterialTheme.typography.bodyLarge,
                         color = Color.Black,
                         modifier = Modifier.padding(bottom = 8.dp)
@@ -170,7 +161,7 @@ fun Evita600(navController: NavHostController) {
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
                     Text(
-                        text = "Monitorización volumétrica de CO2 (VCO2, VTCO2, Pendiente de la Fase 3, Vds/VTe)",
+                        text = "Monitorización volumétrica de CO2 (VCO2, VTCO2, Pendiente de la Fase 3 y Vds/VTe)",
                         style = MaterialTheme.typography.bodyLarge,
                         color = Color.Black,
                         modifier = Modifier.padding(bottom = 8.dp)

@@ -3,8 +3,8 @@ package com.example.mardeluna.view
 import android.util.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -23,11 +23,8 @@ fun SalaEndoscopias(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
 
-    // Cargar imágenes desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-
-        // Cargar fondo de pantalla
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -38,7 +35,6 @@ fun SalaEndoscopias(navController: NavHostController) {
                 Log.e("Firebase", "Error al cargar el fondo: ${exception.message}")
             }
 
-        // Cargar imagen principal
         loadImageFromFirebase { url, error ->
             imageUrl = url ?: ""
             loadError = error != null
@@ -76,7 +72,6 @@ fun SalaEndoscopias(navController: NavHostController) {
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {
-                // Fondo de pantalla
                 if (backgroundUrl.isNotEmpty()) {
                     Image(
                         painter = rememberAsyncImagePainter(backgroundUrl),
@@ -92,7 +87,6 @@ fun SalaEndoscopias(navController: NavHostController) {
                     )
                 }
 
-                // Contenido principal
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -107,7 +101,6 @@ fun SalaEndoscopias(navController: NavHostController) {
     )
 }
 
-// Encapsulando la lógica de carga de imagen
 private fun loadImageFromFirebase(onResult: (String?, Exception?) -> Unit) {
     val storage = FirebaseStorage.getInstance()
     val storageRef = storage.reference.child("endoscopias_camilla.jpg")
@@ -132,7 +125,6 @@ private fun Content(navController: NavHostController, loadError: Boolean, imageU
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Mostrar imagen si se carga correctamente
         if (!loadError && imageUrl.isNotEmpty()) {
             AsyncImage(
                 model = imageUrl,
@@ -151,7 +143,6 @@ private fun Content(navController: NavHostController, loadError: Boolean, imageU
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Texto adicional sobre la sala y el procedimiento
         Text(
             text = """
                 En la sala de endoscopias encontramos:
@@ -174,20 +165,22 @@ private fun Content(navController: NavHostController, loadError: Boolean, imageU
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Botones de navegación
-        NavigationButtons(navController)
-    }
-}
-
-@Composable
-private fun NavigationButtons(navController: NavHostController) {
-    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-        Button(onClick = { navController.navigate("endoscopios") }) {
-            Text("Endoscopios")
+        Button(
+            onClick = { navController.navigate("lavadora") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
+        ) {
+            Text("Lavadora de endoscopias")
         }
 
-        Button(onClick = { navController.navigate("lavado") }) {
-            Text("Lavadora")
+        Button(
+            onClick = { navController.navigate("endoscopios") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
+        ) {
+            Text("Endoscopios")
         }
     }
 }

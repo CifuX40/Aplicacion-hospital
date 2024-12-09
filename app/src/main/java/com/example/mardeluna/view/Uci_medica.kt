@@ -23,23 +23,16 @@ fun UciMedica(navController: NavHostController) {
     var criteriosImageUrl by remember { mutableStateOf<String?>(null) }
     var loadError by remember { mutableStateOf(false) }
 
-    // Descargar URLs de imágenes
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-
-        // Cargar fondo
         val fondoRef = storage.reference.child("fondo_de_pantalla.jpg")
         fondoRef.downloadUrl
             .addOnSuccessListener { uri -> backgroundImageUrl = uri.toString() }
             .addOnFailureListener { loadError = true }
-
-        // Cargar imagen de la sala de UCI
         val salaRef = storage.reference.child("sala_uci_uno.jpg")
         salaRef.downloadUrl
             .addOnSuccessListener { uri -> salaImageUrl = uri.toString() }
             .addOnFailureListener { loadError = true }
-
-        // Cargar imagen de criterios de admisión
         val criteriosRef = storage.reference.child("criterios_admision_uci.jpg")
         criteriosRef.downloadUrl
             .addOnSuccessListener { uri -> criteriosImageUrl = uri.toString() }
@@ -76,7 +69,6 @@ fun UciMedica(navController: NavHostController) {
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // Imagen de fondo
             if (backgroundImageUrl != null) {
                 Image(
                     painter = rememberAsyncImagePainter(model = backgroundImageUrl),
@@ -98,7 +90,6 @@ fun UciMedica(navController: NavHostController) {
                 )
             }
 
-            // Contenido principal
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -114,7 +105,6 @@ fun UciMedica(navController: NavHostController) {
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
-                // Imagen de la sala de UCI
                 salaImageUrl?.let {
                     Image(
                         painter = rememberAsyncImagePainter(model = it),
@@ -127,7 +117,6 @@ fun UciMedica(navController: NavHostController) {
                     )
                 }
 
-                // Texto: Criterios de admisión
                 Text(
                     text = "Criterios de admisión en UCI Médica",
                     fontWeight = FontWeight.Bold,
@@ -143,7 +132,6 @@ fun UciMedica(navController: NavHostController) {
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
-                // Imagen de criterios de admisión
                 criteriosImageUrl?.let {
                     Image(
                         painter = rememberAsyncImagePainter(model = it),
@@ -155,7 +143,6 @@ fun UciMedica(navController: NavHostController) {
                     )
                 }
 
-                // Botones de navegación
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(16.dp)

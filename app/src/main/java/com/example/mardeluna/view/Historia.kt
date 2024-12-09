@@ -16,7 +16,6 @@ import com.google.firebase.storage.*
 fun Historia(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
 
-    // Cargar la URL del fondo de pantalla desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
@@ -29,9 +28,7 @@ fun Historia(navController: NavHostController) {
             }
     }
 
-    // Contenedor principal con fondo
     Box(modifier = Modifier.fillMaxSize()) {
-        // Fondo de pantalla
         if (backgroundUrl.isNotEmpty()) {
             Image(
                 painter = rememberAsyncImagePainter(backgroundUrl),
@@ -47,7 +44,6 @@ fun Historia(navController: NavHostController) {
             )
         }
 
-        // Contenido de la pantalla
         Column(
             modifier = Modifier
                 .fillMaxSize()

@@ -27,24 +27,20 @@ fun RCP(navController: NavHostController) {
     var imageUrl by remember { mutableStateOf("") }
     var videoAdvancedUrl by remember { mutableStateOf<String?>(null) }
 
-    // Cargar recursos desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
 
         storage.reference.child("fondo_de_pantalla.jpg").downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
             .addOnFailureListener { Log.e("Firebase", "Error al cargar fondo: ${it.message}") }
-
         storage.reference.child("rcp_basica.mp4").downloadUrl
             .addOnSuccessListener { uri -> videoBasicUrl = uri.toString() }
             .addOnFailureListener {
                 Log.e("Firebase", "Error al cargar video básico: ${it.message}")
             }
-
         storage.reference.child("esquema_rcp.jpg").downloadUrl
             .addOnSuccessListener { uri -> imageUrl = uri.toString() }
             .addOnFailureListener { Log.e("Firebase", "Error al cargar esquema: ${it.message}") }
-
         storage.reference.child("rcp_avanzada.mp4").downloadUrl
             .addOnSuccessListener { uri -> videoAdvancedUrl = uri.toString() }
             .addOnFailureListener {

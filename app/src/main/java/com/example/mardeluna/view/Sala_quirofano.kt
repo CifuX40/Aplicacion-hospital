@@ -25,7 +25,6 @@ fun SalaQuirofano(navController: NavHostController) {
 
     LaunchedEffect(Unit) {
         val storage = Firebase.storage
-
         val backgroundRef =
             storage.getReferenceFromUrl("gs://mar-de-luna-ada79.firebasestorage.app/fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
@@ -33,7 +32,6 @@ fun SalaQuirofano(navController: NavHostController) {
             .addOnFailureListener { exception ->
                 Log.e("Firebase", "Error al cargar fondo: ${exception.message}")
             }
-
         val salaQuirofanoRef =
             storage.getReferenceFromUrl("gs://mar-de-luna-ada79.firebasestorage.app/sala_quirofano.jpg")
         salaQuirofanoRef.downloadUrl

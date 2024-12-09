@@ -26,11 +26,8 @@ fun Desfibrilador(navController: NavHostController) {
     var listadoCarroParadasUrl by remember { mutableStateOf<String?>(null) }
     var loadError by remember { mutableStateOf(false) }
 
-    // Descargar la URL de la imagen de fondo
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-
-        // Cargar fondo
         val fondoRef = storage.reference.child("fondo_de_pantalla.jpg")
         fondoRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -42,7 +39,6 @@ fun Desfibrilador(navController: NavHostController) {
                 Log.e("Firebase", "Error al obtener URL del fondo: ${exception.message}")
             }
 
-        // Cargar video
         val videoRef = storage.reference.child("desfibrilador_UCI.mp4")
         videoRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -54,7 +50,6 @@ fun Desfibrilador(navController: NavHostController) {
                 Log.e("Firebase", "Error al obtener URL del video: ${exception.message}")
             }
 
-        // Cargar imagen listado_carro_paradas.jpg
         val listadoRef = storage.reference.child("listado_carro_paradas.jpg")
         listadoRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -100,7 +95,6 @@ fun Desfibrilador(navController: NavHostController) {
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // Imagen de fondo
             if (backgroundImageUrl != null) {
                 Image(
                     painter = rememberAsyncImagePainter(model = backgroundImageUrl),
@@ -122,16 +116,14 @@ fun Desfibrilador(navController: NavHostController) {
                 )
             }
 
-            // Contenido principal con scroll vertical
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .verticalScroll(rememberScrollState()) // Habilitar scroll vertical
+                    .verticalScroll(rememberScrollState())
                     .padding(16.dp),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Título
                 Text(
                     text = "Desfibrilador",
                     style = MaterialTheme.typography.headlineMedium,
@@ -139,7 +131,6 @@ fun Desfibrilador(navController: NavHostController) {
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
-                // Video de Firebase (solo si la URL está disponible)
                 videoUrl?.let {
                     AndroidView(
                         factory = { context ->
@@ -159,7 +150,6 @@ fun Desfibrilador(navController: NavHostController) {
                     )
                 }
 
-                // Imagen listado_carro_paradas debajo del video
                 listadoCarroParadasUrl?.let {
                     Image(
                         painter = rememberAsyncImagePainter(model = it),

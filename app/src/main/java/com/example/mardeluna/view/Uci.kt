@@ -23,19 +23,15 @@ fun Uci(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
 
-    // Cargar imágenes desde Firebase
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
 
-        // Cargar el fondo de pantalla
         storage.reference.child("fondo_de_pantalla.jpg").downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
             .addOnFailureListener { exception ->
                 loadError = true
                 Log.e("Firebase", "Error al cargar el fondo: ${exception.message}")
             }
-
-        // Cargar la imagen principal
         storage.reference.child("uci.jpg").downloadUrl
             .addOnSuccessListener { uri -> imageUrl = uri.toString() }
             .addOnFailureListener { exception ->
@@ -74,7 +70,6 @@ fun Uci(navController: NavHostController) {
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // Mostrar el fondo de pantalla
             if (backgroundUrl.isNotEmpty()) {
                 Image(
                     painter = rememberAsyncImagePainter(model = backgroundUrl),

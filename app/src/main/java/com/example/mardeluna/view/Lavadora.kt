@@ -23,26 +23,23 @@ import androidx.media3.ui.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Lavado(navController: NavHostController) {
+fun Lavadora(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
     var imageUrl by remember { mutableStateOf("") }
     var videoUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
 
-    // Cargar las URLs de la imagen de fondo, imagen principal y video desde Firebase Storage
     LaunchedEffect(Unit) {
         loadUrlFromFirebase("fondo_de_pantalla.jpg") { url, error ->
             backgroundUrl = url ?: ""
             loadError = error != null
             error?.let { Log.e("Firebase", "Error al cargar el fondo: ${it.message}") }
         }
-
         loadUrlFromFirebase("lavadora_endoscopias.jpg") { url, error ->
             imageUrl = url ?: ""
             loadError = loadError || (error != null)
             error?.let { Log.e("Firebase", "Error al cargar la imagen: ${it.message}") }
         }
-
         loadUrlFromFirebase("lavadora_de_endoscopias.mp4") { url, error ->
             videoUrl = url ?: ""
             loadError = loadError || (error != null)
@@ -75,10 +72,11 @@ fun Lavado(navController: NavHostController) {
             )
         },
         content = { paddingValues ->
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)) {
-                // Imagen de fondo
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+            ) {
                 if (backgroundUrl.isNotEmpty()) {
                     Image(
                         painter = rememberAsyncImagePainter(backgroundUrl),
@@ -90,11 +88,10 @@ fun Lavado(navController: NavHostController) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(Color.LightGray) // Color de fondo provisional
+                            .background(Color.LightGray)
                     )
                 }
 
-                // Contenido principal
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -111,7 +108,6 @@ fun Lavado(navController: NavHostController) {
                     )
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Mostrar la imagen cargada desde Firebase Storage
                     if (!loadError && imageUrl.isNotEmpty()) {
                         AsyncImage(
                             model = imageUrl,
@@ -130,7 +126,6 @@ fun Lavado(navController: NavHostController) {
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Mostrar el reproductor de video si la URL se cargó correctamente
                     if (!loadError && videoUrl.isNotEmpty()) {
                         VideoPlayer(videoUrl)
                     } else if (loadError) {
@@ -146,7 +141,6 @@ fun Lavado(navController: NavHostController) {
     )
 }
 
-// Función para cargar URLs desde Firebase Storage
 private fun loadUrlFromFirebase(fileName: String, onResult: (String?, Exception?) -> Unit) {
     val storage = FirebaseStorage.getInstance()
     val storageRef = storage.reference.child(fileName)

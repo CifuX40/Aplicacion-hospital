@@ -25,7 +25,6 @@ fun Rea(navController: NavHostController) {
 
     LaunchedEffect(Unit) {
         val storage = Firebase.storage
-
         val backgroundRef =
             storage.getReferenceFromUrl("gs://mar-de-luna-ada79.firebasestorage.app/fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
@@ -36,7 +35,6 @@ fun Rea(navController: NavHostController) {
                     "Error al cargar fondo: ${exception.message}"
                 )
             }
-
         val reaRef =
             storage.getReferenceFromUrl("gs://mar-de-luna-ada79.firebasestorage.app/rea.jpg")
         reaRef.downloadUrl

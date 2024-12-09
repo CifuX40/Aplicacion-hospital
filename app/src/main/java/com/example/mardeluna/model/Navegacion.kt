@@ -27,7 +27,7 @@ fun Navegacion(navController: NavHostController) {
         composable("hoja_informativa_pacientes") { HojaInformativaPacientes(navController) }
         composable("hospital_dia") { HospitalDeDia(navController) }
         composable("hospitalizacion") { Hospitalizacion(navController) }
-        composable("lavado") { Lavado(navController) }
+        composable("lavadora") { Lavadora(navController) }
         composable("Plantas") { Plantas(navController) }
         composable("paginas_web") { PaginasWeb(navController) }
         composable("primera_planta") { PrimeraPlanta(navController) }

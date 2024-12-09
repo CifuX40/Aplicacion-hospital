@@ -25,24 +25,18 @@ fun IniciarSesion(navController: NavHostController) {
     var password by remember { mutableStateOf("") }
     var loginError by remember { mutableStateOf("") }
     val auth = FirebaseAuth.getInstance()
-
-    // Recordar las cuentas utilizadas
     val sharedPrefs: SharedPreferences =
         LocalContext.current.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-
     val savedEmails = remember {
         mutableStateOf(
             sharedPrefs.getStringSet("emails", setOf())?.toMutableSet() ?: mutableSetOf()
         )
     }
-
-    // Guardar las contraseñas en una lista asociada a los correos electrónicos
     val savedPasswords = remember {
         mutableStateOf(
             savedEmails.value.map { sharedPrefs.getString(it, "") ?: "" }.toMutableList()
         )
     }
-
     var backgroundUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
 
@@ -59,11 +53,8 @@ fun IniciarSesion(navController: NavHostController) {
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        // Guardar el email en SharedPreferences para recordarlo la próxima vez
                         savedEmails.value.add(email)
                         sharedPrefs.edit().putStringSet("emails", savedEmails.value).apply()
-
-                        // Guardar la contraseña asociada al email
                         sharedPrefs.edit().putString(email, password).apply()
 
                         if (email == "admin@mardeluna.com") {
@@ -117,7 +108,6 @@ fun IniciarSesion(navController: NavHostController) {
             )
         }
 
-        // Contenido de la pantalla de inicio de sesión
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -148,7 +138,6 @@ fun IniciarSesion(navController: NavHostController) {
                 Text(text = "Historia del Hospital")
             }
 
-            // Campos de correo y contraseña
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
@@ -167,7 +156,6 @@ fun IniciarSesion(navController: NavHostController) {
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Mostrar error si existe
             if (loginError.isNotEmpty()) {
                 Text(
                     text = loginError,
@@ -187,7 +175,6 @@ fun IniciarSesion(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Mostrar botones de cuentas guardadas
             if (savedEmails.value.isNotEmpty()) {
                 Text(text = "Cuentas guardadas", style = MaterialTheme.typography.bodyLarge)
                 Spacer(modifier = Modifier.height(16.dp))
@@ -200,7 +187,6 @@ fun IniciarSesion(navController: NavHostController) {
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        // Botón para autocompletar campos
                         Button(
                             onClick = { autofillFields(storedEmail) },
                             modifier = Modifier.wrapContentSize()
@@ -210,7 +196,6 @@ fun IniciarSesion(navController: NavHostController) {
 
                         Spacer(modifier = Modifier.width(8.dp))
 
-                        // Botón para eliminar cuenta
                         IconButton(
                             onClick = { removeEmail(storedEmail) }
                         ) {

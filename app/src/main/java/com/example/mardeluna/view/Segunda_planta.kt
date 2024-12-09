@@ -29,15 +29,12 @@ fun SegundaPlanta(navController: NavHostController = rememberNavController()) {
     var backgroundUrl by remember { mutableStateOf<String?>(null) }
     var loadError by remember { mutableStateOf(false) }
 
-    // Cargar la imagen de fondo y la imagen principal desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = Firebase.storage
-
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
             .addOnFailureListener { loadError = true }
-
         val imageRef = storage.reference.child("segunda_planta.png")
         imageRef.downloadUrl
             .addOnSuccessListener { uri -> imageUrl = uri.toString() }
@@ -74,7 +71,6 @@ fun SegundaPlanta(navController: NavHostController = rememberNavController()) {
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {
-                // Fondo de pantalla
                 if (backgroundUrl != null) {
                     Image(
                         painter = rememberAsyncImagePainter(backgroundUrl),
@@ -90,7 +86,6 @@ fun SegundaPlanta(navController: NavHostController = rememberNavController()) {
                     )
                 }
 
-                // Contenido principal
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -128,7 +123,6 @@ fun SegundaPlanta(navController: NavHostController = rememberNavController()) {
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Botones de navegación
                     Button(
                         onClick = { navController.navigate("hospitalizacion") },
                         modifier = Modifier.fillMaxWidth()

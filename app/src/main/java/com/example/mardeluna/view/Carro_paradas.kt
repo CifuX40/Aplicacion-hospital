@@ -19,18 +19,14 @@ import com.google.firebase.storage.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CarroParadas(navController: NavHostController) {
-    // Variables de estado para las URLs de las imágenes
     var imageUrl by remember { mutableStateOf("") }
     var secondImageUrl by remember { mutableStateOf("") }
     var backgroundUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
     var secondLoadError by remember { mutableStateOf(false) }
 
-    // Cargar las imágenes desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-
-        // Cargar fondo de pantalla
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -41,7 +37,6 @@ fun CarroParadas(navController: NavHostController) {
                 Log.e("Firebase", "Error al cargar el fondo: ${exception.message}")
             }
 
-        // Cargar imagen principal
         val imageRef = storage.reference.child("carro_paradas.jpg")
         imageRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -53,7 +48,6 @@ fun CarroParadas(navController: NavHostController) {
                 Log.e("Firebase", "Error al cargar la imagen: ${exception.message}")
             }
 
-        // Cargar segunda imagen
         val secondImageRef = storage.reference.child("contenido_carro_paradas.jpg")
         secondImageRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -96,7 +90,6 @@ fun CarroParadas(navController: NavHostController) {
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {
-                // Fondo de pantalla
                 if (backgroundUrl.isNotEmpty()) {
                     Image(
                         painter = rememberAsyncImagePainter(backgroundUrl),
@@ -112,7 +105,6 @@ fun CarroParadas(navController: NavHostController) {
                     )
                 }
 
-                // Contenido principal
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -128,7 +120,6 @@ fun CarroParadas(navController: NavHostController) {
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
 
-                    // Imagen principal
                     when {
                         imageUrl.isNotEmpty() && !loadError -> {
                             Image(
@@ -158,7 +149,6 @@ fun CarroParadas(navController: NavHostController) {
                         }
                     }
 
-                    // Segunda imagen
                     when {
                         secondImageUrl.isNotEmpty() && !secondLoadError -> {
                             Image(

@@ -27,7 +27,6 @@ fun ChequeoRespirador(navController: NavHostController) {
 
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-
         val fondoRef = storage.reference.child("fondo_de_pantalla.jpg")
         fondoRef.downloadUrl
             .addOnSuccessListener { uri ->

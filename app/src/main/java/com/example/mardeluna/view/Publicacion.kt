@@ -69,7 +69,7 @@ fun Publicaciones(navController: NavHostController) {
                 Text("No hay publicaciones disponibles.")
             } else {
                 publicaciones?.forEach { publicacion ->
-                    PublicacionItem(publicacion, userId) { postId ->
+                    Publicacion(publicacion, userId) { postId ->
                         eliminarPublicacion(postId) {
                             publicaciones = publicaciones?.filter { it["id"] != postId }
                         }
@@ -90,14 +90,11 @@ fun Publicaciones(navController: NavHostController) {
 }
 
 @Composable
-fun PublicacionItem(
+fun Publicacion(
     publicacion: Map<String, Any>,
     currentUserId: String?,
     onDelete: (String) -> Unit
 ) {
-    val mensaje = publicacion["mensaje"] as? String ?: "Sin mensaje"
-    val imagen = publicacion["imagen"] as? String
-    val autor = publicacion["autor"] as? String ?: "Anónimo"
     val postId = publicacion["id"] as? String ?: ""
     val userId = publicacion["userId"] as? String
 
@@ -107,20 +104,6 @@ fun PublicacionItem(
             .padding(16.dp)
             .background(Color.White)
     ) {
-        Text(text = autor, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color.Gray)
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(text = mensaje, fontSize = 16.sp, color = Color.Black)
-        Spacer(modifier = Modifier.height(8.dp))
-        imagen?.let {
-            Image(
-                painter = rememberAsyncImagePainter(it),
-                contentDescription = "Imagen de la publicación",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-            )
-        }
-
         if (currentUserId == userId) {
             Spacer(modifier = Modifier.height(8.dp))
             Button(

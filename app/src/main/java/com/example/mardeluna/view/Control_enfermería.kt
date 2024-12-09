@@ -19,15 +19,12 @@ import com.google.firebase.storage.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ControlEnfermeria(navController: NavHostController) {
-    // Variables de estado para las URLs de las imágenes
     var imageUrl by remember { mutableStateOf("") }
     var backgroundUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
 
-    // Cargar las imágenes desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -148,7 +145,6 @@ fun ControlEnfermeria(navController: NavHostController) {
                         Text(text = "Páginas web")
                     }
 
-                    // Botón "RCP"
                     Button(
                         onClick = { navController.navigate("rcp") },
                         modifier = Modifier.fillMaxWidth()
@@ -156,7 +152,6 @@ fun ControlEnfermeria(navController: NavHostController) {
                         Text(text = "RCP")
                     }
 
-                    // Botón "Residuos hospitalarios"
                     Button(
                         onClick = { navController.navigate("residuos_hospitalarios") },
                         modifier = Modifier

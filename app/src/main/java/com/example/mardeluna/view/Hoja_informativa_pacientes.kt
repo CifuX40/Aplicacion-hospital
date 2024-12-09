@@ -22,11 +22,8 @@ fun HojaInformativaPacientes(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
     var imageUrl by remember { mutableStateOf("") }
 
-    // Cargar la URL de la imagen de fondo desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-
-        // Cargar fondo
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
@@ -34,7 +31,6 @@ fun HojaInformativaPacientes(navController: NavHostController) {
                 Log.e("Firebase", "Error al cargar fondo: ${exception.message}")
             }
 
-        // Cargar la imagen de la hoja informativa
         val imageRef = storage.reference.child("hoja_informativa_pacientes.jpg")
         imageRef.downloadUrl
             .addOnSuccessListener { uri -> imageUrl = uri.toString() }

@@ -3,8 +3,8 @@ package com.example.mardeluna.view
 import android.util.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -23,11 +23,8 @@ fun HospitalDeDia(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
 
-    // Cargar la URL de la imagen de fondo desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
-
-        // Cargar el fondo
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
@@ -100,7 +97,6 @@ fun HospitalDeDia(navController: NavHostController) {
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Mostrar la imagen cargada desde Firebase Storage
                     if (!loadError && imageUrl.isNotEmpty()) {
                         Image(
                             painter = rememberAsyncImagePainter(imageUrl),
@@ -119,7 +115,6 @@ fun HospitalDeDia(navController: NavHostController) {
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Mostrar el texto con la descripción
                     Text(
                         text = """
                             El Hospital de Día consta de 7 habitaciones donde ingresarán los pacientes de cirugía menor ambulatoria.
@@ -138,21 +133,18 @@ fun HospitalDeDia(navController: NavHostController) {
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Botón para navegación a la pantalla de Toma de Constantes
                     Button(onClick = { navController.navigate("Toma_constantes") }) {
                         Text(text = "Toma de constantes")
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Botón para navegación a la pantalla de Hoja Informativa Pacientes
                     Button(onClick = { navController.navigate("Hoja_informativa_pacientes") }) {
                         Text(text = "Hoja informativa pacientes")
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Botón para navegación a la pantalla de Procedimiento Ingresos
                     Button(onClick = { navController.navigate("Procedimiento_ingresos") }) {
                         Text(text = "Procedimiento ingresos")
                     }
@@ -162,7 +154,6 @@ fun HospitalDeDia(navController: NavHostController) {
     )
 }
 
-// Función para cargar imágenes desde Firebase Storage
 private fun loadImageFromFirebase(fileName: String, onResult: (String?, Exception?) -> Unit) {
     val storage = FirebaseStorage.getInstance()
     val storageRef = storage.reference.child(fileName)
