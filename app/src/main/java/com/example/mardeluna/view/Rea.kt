@@ -20,11 +20,9 @@ fun Rea(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
     var reaImageUrl by remember { mutableStateOf("") }
 
-    // Cargar imágenes desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = Firebase.storage
 
-        // Cargar fondo
         val backgroundRef =
             storage.getReferenceFromUrl("gs://mar-de-luna-ada79.firebasestorage.app/fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
@@ -36,7 +34,6 @@ fun Rea(navController: NavHostController) {
                 )
             }
 
-        // Cargar imagen REA
         val reaRef =
             storage.getReferenceFromUrl("gs://mar-de-luna-ada79.firebasestorage.app/rea.jpg")
         reaRef.downloadUrl
@@ -50,7 +47,6 @@ fun Rea(navController: NavHostController) {
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Imagen de fondo
         if (backgroundUrl.isNotEmpty()) {
             Image(
                 painter = rememberAsyncImagePainter(backgroundUrl),
@@ -60,7 +56,6 @@ fun Rea(navController: NavHostController) {
             )
         }
 
-        // Contenido principal
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -68,7 +63,6 @@ fun Rea(navController: NavHostController) {
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Título
             Text(
                 text = "REA",
                 fontWeight = FontWeight.Bold,
@@ -77,7 +71,6 @@ fun Rea(navController: NavHostController) {
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            // Imagen REA
             if (reaImageUrl.isNotEmpty()) {
                 Image(
                     painter = rememberAsyncImagePainter(reaImageUrl),
@@ -90,7 +83,6 @@ fun Rea(navController: NavHostController) {
                 )
             }
 
-            // Texto descriptivo
             Text(
                 text = "El paciente será trasladado a la REA o zona de despertar para seguimiento y estabilización antes de remitirlo a la planta de destino, o bien se le dé el alta (pacientes ambulatorios).",
                 fontSize = 14.sp,
