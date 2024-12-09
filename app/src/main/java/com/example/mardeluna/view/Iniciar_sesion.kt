@@ -46,7 +46,6 @@ fun IniciarSesion(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
     var loadError by remember { mutableStateOf(false) }
 
-    // Cargar imagen de fondo
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
         val backgroundRef = storage.reference.child("fondo_de_pantalla.jpg")
@@ -55,7 +54,6 @@ fun IniciarSesion(navController: NavHostController) {
             .addOnFailureListener { loadError = true }
     }
 
-    // Función para iniciar sesión
     fun loginUser() {
         if (email.isNotEmpty() && password.isNotEmpty()) {
             auth.signInWithEmailAndPassword(email, password)
@@ -86,7 +84,6 @@ fun IniciarSesion(navController: NavHostController) {
         }
     }
 
-    // Función para autocompletar campos
     fun autofillFields(selectedEmail: String) {
         email = selectedEmail
         val selectedIndex = savedEmails.value.indexOf(selectedEmail)
@@ -95,7 +92,6 @@ fun IniciarSesion(navController: NavHostController) {
         }
     }
 
-    // Función para eliminar una cuenta guardada
     fun removeEmail(emailToRemove: String) {
         savedEmails.value.remove(emailToRemove)
         val indexToRemove = savedEmails.value.indexOf(emailToRemove)
@@ -106,7 +102,6 @@ fun IniciarSesion(navController: NavHostController) {
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Fondo de pantalla
         if (backgroundUrl.isNotEmpty() && !loadError) {
             Image(
                 painter = rememberAsyncImagePainter(backgroundUrl),
@@ -138,16 +133,14 @@ fun IniciarSesion(navController: NavHostController) {
                 color = Color.Black
             )
 
-            // Logo de la app
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo",
                 modifier = Modifier
-                    .size(150.dp)
+                    .size(300.dp)
                     .padding(bottom = 16.dp)
             )
 
-            // Botón de la historia del hospital
             Button(
                 onClick = { navController.navigate("historia") },
                 modifier = Modifier.wrapContentSize()
@@ -185,7 +178,6 @@ fun IniciarSesion(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botón de inicio de sesión
             Button(
                 onClick = { loginUser() },
                 modifier = Modifier.wrapContentSize()
