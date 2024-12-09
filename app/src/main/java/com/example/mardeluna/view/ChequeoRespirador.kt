@@ -22,11 +22,9 @@ fun ChequeoRespirador(navController: NavHostController) {
     var videoUrl by remember { mutableStateOf<String?>(null) }
     var loadError by remember { mutableStateOf(false) }
 
-    // Descargar la URL de la imagen de fondo y video
     LaunchedEffect(Unit) {
         val storage = FirebaseStorage.getInstance()
 
-        // Cargar fondo
         val fondoRef = storage.reference.child("fondo_de_pantalla.jpg")
         fondoRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -38,7 +36,6 @@ fun ChequeoRespirador(navController: NavHostController) {
                 Log.e("Firebase", "Error al obtener URL del fondo: ${exception.message}")
             }
 
-        // Cargar video
         val videoRef = storage.reference.child("chequeo_respirador.mp4")
         videoRef.downloadUrl
             .addOnSuccessListener { uri ->
@@ -52,7 +49,6 @@ fun ChequeoRespirador(navController: NavHostController) {
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Fondo de pantalla
         if (backgroundUrl != null) {
             Image(
                 painter = rememberAsyncImagePainter(model = backgroundUrl),
@@ -74,7 +70,6 @@ fun ChequeoRespirador(navController: NavHostController) {
             )
         }
 
-        // Contenido principal
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -82,7 +77,6 @@ fun ChequeoRespirador(navController: NavHostController) {
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Título
             Text(
                 text = "Chequeo respirador",
                 style = MaterialTheme.typography.headlineMedium,
@@ -90,7 +84,6 @@ fun ChequeoRespirador(navController: NavHostController) {
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            // Video de Firebase (solo si la URL está disponible)
             videoUrl?.let {
                 AndroidView(
                     factory = { context ->
