@@ -20,11 +20,9 @@ fun SalaQuirofano(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
     var salaQuirofanoImageUrl by remember { mutableStateOf("") }
 
-    // Cargar imágenes desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = Firebase.storage
 
-        // Cargar fondo
         val backgroundRef =
             storage.getReferenceFromUrl("gs://mar-de-luna-ada79.firebasestorage.app/fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
@@ -33,7 +31,6 @@ fun SalaQuirofano(navController: NavHostController) {
                 Log.e("Firebase", "Error al cargar fondo: ${exception.message}")
             }
 
-        // Cargar imagen de sala quirófano
         val salaQuirofanoRef =
             storage.getReferenceFromUrl("gs://mar-de-luna-ada79.firebasestorage.app/sala_quirofano.jpg")
         salaQuirofanoRef.downloadUrl
@@ -61,7 +58,6 @@ fun SalaQuirofano(navController: NavHostController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            // Título
             Text(
                 text = "Sala quirófano",
                 fontWeight = FontWeight.Bold,
@@ -70,7 +66,6 @@ fun SalaQuirofano(navController: NavHostController) {
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            // Imagen de sala quirófano
             if (salaQuirofanoImageUrl.isNotEmpty()) {
                 Image(
                     painter = rememberAsyncImagePainter(salaQuirofanoImageUrl),
@@ -83,15 +78,14 @@ fun SalaQuirofano(navController: NavHostController) {
                 )
             }
 
-            // Descripción
             Text(
-                text = "Es el lugar donde se realizan las intervenciones quirúrgicas. Deberá proporcionar un ambiente seguro, eficiente y aséptico para la realización de procedimientos quirúrgicos.",
+                text = "Es el lugar donde se realizan las intervenciones quirúrgicas. " +
+                        "Deberá proporcionar un ambiente seguro, eficiente y aséptico para la realización de procedimientos quirúrgicos.",
                 fontSize = 16.sp,
                 color = Color.DarkGray,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            // Botones
             Button(
                 onClick = { navController.navigate("equipo_quirofano") },
                 modifier = Modifier.fillMaxWidth()
