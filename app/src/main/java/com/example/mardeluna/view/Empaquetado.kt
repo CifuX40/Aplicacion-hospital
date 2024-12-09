@@ -20,7 +20,6 @@ import androidx.compose.ui.text.*
 fun Empaquetado(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
 
-    // Cargar fondo desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = Firebase.storage
         val backgroundRef =
@@ -36,7 +35,6 @@ fun Empaquetado(navController: NavHostController) {
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Fondo de pantalla
         if (backgroundUrl.isNotEmpty()) {
             Image(
                 painter = rememberAsyncImagePainter(backgroundUrl),
@@ -46,7 +44,6 @@ fun Empaquetado(navController: NavHostController) {
             )
         }
 
-        // Contenido principal con desplazamiento
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -54,7 +51,6 @@ fun Empaquetado(navController: NavHostController) {
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Título
             Text(
                 text = "Empaquetado",
                 fontWeight = FontWeight.Bold,
@@ -63,7 +59,6 @@ fun Empaquetado(navController: NavHostController) {
                 modifier = Modifier.padding(top = 16.dp)
             )
 
-            // Texto con palabras en negrita
             Text(
                 text = buildAnnotatedString {
                     append("En función del tipo de instrumental a esterilizar, la forma de envasado será la siguiente: Envasado de instrumental:\n")

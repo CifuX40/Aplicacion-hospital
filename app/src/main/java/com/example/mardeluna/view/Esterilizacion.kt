@@ -20,25 +20,32 @@ fun Esterilizacion(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
     var sterilizationImageUrl by remember { mutableStateOf("") }
 
-    // Cargar imágenes desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = Firebase.storage
-
-        // Fondo
-        val backgroundRef = storage.getReferenceFromUrl("gs://mar-de-luna-ada79.firebasestorage.app/fondo_de_pantalla.jpg")
+        val backgroundRef =
+            storage.getReferenceFromUrl("gs://mar-de-luna-ada79.firebasestorage.app/fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
-            .addOnFailureListener { exception -> Log.e("Firebase", "Error al cargar fondo: ${exception.message}") }
+            .addOnFailureListener { exception ->
+                Log.e(
+                    "Firebase",
+                    "Error al cargar fondo: ${exception.message}"
+                )
+            }
 
-        // Imagen de esterilización
-        val sterilizationRef = storage.getReferenceFromUrl("gs://mar-de-luna-ada79.firebasestorage.app/esterilizacion.jpg")
+        val sterilizationRef =
+            storage.getReferenceFromUrl("gs://mar-de-luna-ada79.firebasestorage.app/esterilizacion.jpg")
         sterilizationRef.downloadUrl
             .addOnSuccessListener { uri -> sterilizationImageUrl = uri.toString() }
-            .addOnFailureListener { exception -> Log.e("Firebase", "Error al cargar imagen esterilización: ${exception.message}") }
+            .addOnFailureListener { exception ->
+                Log.e(
+                    "Firebase",
+                    "Error al cargar imagen esterilización: ${exception.message}"
+                )
+            }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Fondo de pantalla
         if (backgroundUrl.isNotEmpty()) {
             Image(
                 painter = rememberAsyncImagePainter(backgroundUrl),
@@ -55,7 +62,6 @@ fun Esterilizacion(navController: NavHostController) {
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Título
             Text(
                 text = "Esterilización",
                 fontWeight = FontWeight.Bold,
@@ -64,7 +70,6 @@ fun Esterilizacion(navController: NavHostController) {
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            // Imagen de esterilización
             if (sterilizationImageUrl.isNotEmpty()) {
                 Image(
                     painter = rememberAsyncImagePainter(sterilizationImageUrl),
@@ -76,7 +81,6 @@ fun Esterilizacion(navController: NavHostController) {
                 )
             }
 
-            // Texto informativo
             Text(
                 text = "Dependiendo de las características del material y su uso serán necesarias medidas distintas para su tratamiento. " +
                         "El material clínico puede dividirse en tres categorías en función del riesgo que se deriva de su uso: no crítico, semicrítico y, crítico.\n\n" +
@@ -98,7 +102,6 @@ fun Esterilizacion(navController: NavHostController) {
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            // Botones
             Button(
                 onClick = { navController.navigate("empaquetado") },
                 modifier = Modifier

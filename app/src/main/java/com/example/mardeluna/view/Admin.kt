@@ -22,7 +22,6 @@ data class User(val dni: String, val name: String, val lastName: String, val ema
 fun Admin(navController: NavHostController) {
     val firestore = FirebaseFirestore.getInstance()
     val auth = FirebaseAuth.getInstance()
-
     var dni by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var name by remember { mutableStateOf("") }
@@ -101,7 +100,13 @@ fun Admin(navController: NavHostController) {
                     message = "DNI y Email son obligatorios para eliminar."
                 }
             },
-            onLogout = { navController.navigate("iniciar_sesion") { popUpTo("iniciar_sesion") { inclusive = true } } }
+            onLogout = {
+                navController.navigate("iniciar_sesion") {
+                    popUpTo("iniciar_sesion") {
+                        inclusive = true
+                    }
+                }
+            }
         )
     }
 }
@@ -201,7 +206,6 @@ fun AdminContent(
 }
 
 fun validateFields(vararg fields: String): Boolean = fields.all { it.isNotBlank() }
-
 fun loadBackgroundImage(onSuccess: (String) -> Unit) {
     Firebase.storage.getReferenceFromUrl("gs://mar-de-luna-ada79.firebasestorage.app/fondo_de_pantalla.jpg")
         .downloadUrl
