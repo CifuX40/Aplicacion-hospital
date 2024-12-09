@@ -20,26 +20,21 @@ fun Quirofano(navController: NavHostController) {
     var backgroundUrl by remember { mutableStateOf("") }
     var surgeryImageUrl by remember { mutableStateOf("") }
 
-    // Cargar fondo desde Firebase Storage
     LaunchedEffect(Unit) {
         val storage = Firebase.storage
 
-        // Fondo
         val backgroundRef = storage.getReferenceFromUrl("gs://mar-de-luna-ada79.firebasestorage.app/fondo_de_pantalla.jpg")
         backgroundRef.downloadUrl
             .addOnSuccessListener { uri -> backgroundUrl = uri.toString() }
             .addOnFailureListener { exception -> Log.e("Firebase", "Error al cargar fondo: ${exception.message}") }
 
-        // Imagen de quirófano
         val surgeryImageRef = storage.getReferenceFromUrl("gs://mar-de-luna-ada79.firebasestorage.app/quirofano.jpg")
         surgeryImageRef.downloadUrl
             .addOnSuccessListener { uri -> surgeryImageUrl = uri.toString() }
             .addOnFailureListener { exception -> Log.e("Firebase", "Error al cargar imagen quirófano: ${exception.message}") }
     }
 
-    // Contenedor con fondo
     Box(modifier = Modifier.fillMaxSize()) {
-        // Fondo de pantalla
         if (backgroundUrl.isNotEmpty()) {
             Image(
                 painter = rememberAsyncImagePainter(backgroundUrl),
@@ -49,7 +44,6 @@ fun Quirofano(navController: NavHostController) {
             )
         }
 
-        // Contenido principal
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -57,7 +51,6 @@ fun Quirofano(navController: NavHostController) {
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Título
             Text(
                 text = "Quirófano",
                 fontWeight = FontWeight.Bold,
@@ -66,7 +59,6 @@ fun Quirofano(navController: NavHostController) {
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            // Imagen de quirófano
             if (surgeryImageUrl.isNotEmpty()) {
                 Image(
                     painter = rememberAsyncImagePainter(surgeryImageUrl),
