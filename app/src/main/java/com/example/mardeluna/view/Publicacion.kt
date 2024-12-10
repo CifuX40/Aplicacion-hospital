@@ -98,6 +98,21 @@ fun Publicacion(
     val postId = publicacion["id"] as? String ?: ""
     val userId = publicacion["userId"] as? String
     val mensaje = publicacion["mensaje"] as? String ?: "Sin contenido"
+    val userEmail = publicacion["email"] as? String
+    var nombreCompleto by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(userEmail) {
+        userEmail?.let {
+            cargarNombreUsuario(it) { name, lastName ->
+                nombreCompleto = when {
+                    name.isNotBlank() && lastName.isNotBlank() -> "$name $lastName"
+                    name.isNotBlank() -> name
+                    lastName.isNotBlank() -> lastName
+                    else -> null
+                }
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -107,6 +122,14 @@ fun Publicacion(
             .border(1.dp, Color.Gray)
             .padding(8.dp)
     ) {
+        if (!nombreCompleto.isNullOrBlank()) {
+            Text(
+                text = "Publicado por: $nombreCompleto",
+                fontSize = 14.sp,
+                color = Color.Gray
+            )
+        }
+
         Text(
             text = mensaje,
             fontSize = 16.sp,
@@ -255,10 +278,29 @@ private fun publicarPublicacion(
     val publicacion = hashMapOf(
         "mensaje" to mensaje,
         "userId" to currentUser?.uid,
+        "email" to currentUser?.email,
         "timestamp" to FieldValue.serverTimestamp()
     )
 
     db.collection("publicaciones").add(publicacion).addOnSuccessListener {
         onSuccess()
     }
+}
+
+private fun cargarNombreUsuario(
+    email: String,
+    onComplete: (name: String, lastName: String) -> Unit
+) {
+    val db = FirebaseFirestore.getInstance()
+    db.collection("Usuarios").whereEqualTo("email", email).get()
+        .addOnSuccessListener { snapshot ->
+            val usuario = snapshot.documents.firstOrNull()
+            val name = usuario?.getString("name").orEmpty()
+            val lastName = usuario?.getString("lastName").orEmpty()
+            onComplete(name, lastName)
+        }
+        .addOnFailureListener { exception ->
+            Log.e("Firestore", "Error al cargar nombre de usuario: ${exception.message}")
+            onComplete("", "")
+        }
 }
