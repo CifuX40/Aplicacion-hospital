@@ -97,13 +97,22 @@ fun Publicacion(
 ) {
     val postId = publicacion["id"] as? String ?: ""
     val userId = publicacion["userId"] as? String
+    val mensaje = publicacion["mensaje"] as? String ?: "Sin contenido"
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
             .background(Color.White)
+            .border(1.dp, Color.Gray)
+            .padding(8.dp)
     ) {
+        Text(
+            text = mensaje,
+            fontSize = 16.sp,
+            color = Color.Black
+        )
+
         if (currentUserId == userId) {
             Spacer(modifier = Modifier.height(8.dp))
             Button(
@@ -215,11 +224,16 @@ private fun cargarPublicaciones(onSuccess: (List<Map<String, Any>>?) -> Unit) {
         .orderBy("timestamp", Query.Direction.DESCENDING)
         .get()
         .addOnSuccessListener { snapshot ->
-            onSuccess(snapshot.documents.map {
-                it.data?.toMutableMap()?.apply { put("id", it.id) } ?: emptyMap()
-            })
+            val publicaciones = snapshot.documents.mapNotNull { document ->
+                document.data?.toMutableMap()?.apply {
+                    put("id", document.id)
+                }
+            }
+            Log.d("Firestore", "Publicaciones recuperadas: $publicaciones")
+            onSuccess(publicaciones)
         }
         .addOnFailureListener {
+            Log.e("Firestore", "Error al recuperar publicaciones: ${it.message}")
             onSuccess(emptyList())
         }
 }
