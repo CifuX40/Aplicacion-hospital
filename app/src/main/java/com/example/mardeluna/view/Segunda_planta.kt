@@ -1,7 +1,6 @@
 package com.example.mardeluna.view
 
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.*
 import androidx.compose.material.icons.filled.*
@@ -9,7 +8,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.input.pointer.*
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
@@ -21,10 +19,6 @@ import com.google.firebase.storage.ktx.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SegundaPlanta(navController: NavHostController = rememberNavController()) {
-    var scale by remember { mutableFloatStateOf(1f) }
-    var offsetX by remember { mutableFloatStateOf(0f) }
-    var offsetY by remember { mutableFloatStateOf(0f) }
-    var rotationState by remember { mutableFloatStateOf(0f) }
     var imageUrl by remember { mutableStateOf<String?>(null) }
     var backgroundUrl by remember { mutableStateOf<String?>(null) }
     var loadError by remember { mutableStateOf(false) }
@@ -99,26 +93,11 @@ fun SegundaPlanta(navController: NavHostController = rememberNavController()) {
                             contentDescription = "Segunda planta",
                             modifier = Modifier
                                 .size(300.dp)
-                                .graphicsLayer(
-                                    scaleX = scale,
-                                    scaleY = scale,
-                                    translationX = offsetX,
-                                    translationY = offsetY,
-                                    rotationZ = rotationState
-                                )
-                                .pointerInput(Unit) {
-                                    detectTransformGestures { _, pan, zoom, rotation ->
-                                        scale *= zoom
-                                        rotationState += rotation
-                                        offsetX += pan.x
-                                        offsetY += pan.y
-                                    }
-                                }
                         )
                     } else if (loadError) {
                         Text("Error al cargar la imagen. Verifica tu conexión o permisos.")
                     } else {
-                        Text("Cargando imagen...")
+                        Text("Cargando imagen")
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
