@@ -245,44 +245,20 @@ fun createUser(
     lastName: String,
     onResult: (String) -> Unit
 ) {
-    // Verificar si el DNI ya existe en Firestore
-    firestore.collection("Usuarios")
-        .document(dni)
-        .get()
-        .addOnSuccessListener { document ->
-            if (document.exists()) {
-                onResult("Error: El DNI ya existe.")
-            } else {
-                // Crear usuario en Authentication
-                auth.createUserWithEmailAndPassword(email, dni)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            // Guardar información del usuario en Firestore
-                            val user = mapOf(
-                                "dni" to dni,
-                                "name" to name,
-                                "lastName" to lastName,
-                                "email" to email
-                            )
-
-                            firestore.collection("Usuarios")
-                                .document(dni) // Usar el DNI como ID del documento
-                                .set(user)
-                                .addOnSuccessListener {
-                                    onResult("Usuario creado con éxito.")
-                                }
-                                .addOnFailureListener { e ->
-                                    onResult("Error al guardar en Firestore: ${e.message}")
-                                }
-                        } else {
-                            onResult("Error al crear usuario en Authentication: ${task.exception?.message}")
-                        }
-                    }
-            }
+    auth.createUserWithEmailAndPassword(email, dni).addOnCompleteListener { task ->
+        if (task.isSuccessful) {
+            firestore.collection("Usuarios")
+                .add(mapOf("dni" to dni, "name" to name, "lastName" to lastName, "email" to email))
+                .addOnSuccessListener {
+                    onResult("Usuario creado con éxito.")
+                }
+                .addOnFailureListener { e ->
+                    onResult("Error al guardar en Firestore: ${e.message}")
+                }
+        } else {
+            onResult("Error al crear usuario: ${task.exception?.message}")
         }
-        .addOnFailureListener { e ->
-            onResult("Error al verificar el DNI: ${e.message}")
-        }
+    }
 }
 
 fun deleteUser(
@@ -293,33 +269,20 @@ fun deleteUser(
     onResult: (String) -> Unit
 ) {
     firestore.collection("Usuarios")
-        .document(dni)
+        .whereEqualTo("dni", dni)
+        .whereEqualTo("email", email)
         .get()
-        .addOnSuccessListener { document ->
-            if (document.exists()) {
-                val email = document.getString("email") ?: ""
-
-                // Eliminar usuario de Authentication
-                auth.fetchSignInMethodsForEmail(email)
-                    .addOnSuccessListener {
-                        auth.currentUser?.delete()
-                        // Eliminar documento de Firestore
-                        document.reference.delete()
-                            .addOnSuccessListener {
-                                onResult("Usuario eliminado con éxito.")
-                            }
-                            .addOnFailureListener { e ->
-                                onResult("Error al eliminar usuario de Firestore: ${e.message}")
-                            }
-                    }
-                    .addOnFailureListener { e ->
-                        onResult("Error al eliminar usuario de Authentication: ${e.message}")
-                    }
-            } else {
-                onResult("Error: El DNI no existe.")
-            }
+        .addOnSuccessListener { result ->
+            val document = result.documents.firstOrNull()
+            document?.reference?.delete()
+                ?.addOnSuccessListener {
+                    onResult("Usuario eliminado con éxito.")
+                }
+                ?.addOnFailureListener { e ->
+                    onResult("Error al eliminar usuario: ${e.message}")
+                }
         }
         .addOnFailureListener { e ->
-            onResult("Error al buscar el DNI: ${e.message}")
+            onResult("Error al buscar el usuario: ${e.message}")
         }
 }
