@@ -293,28 +293,19 @@ fun deleteUser(
         .document(dni)
         .get()
         .addOnSuccessListener { document ->
-            if (document.exists()) {
-                val email = document.getString("email") ?: ""
-
-                auth.fetchSignInMethodsForEmail(email)
+            if (document.exists() && document.getString("email") == email) {
+                document.reference.delete()
                     .addOnSuccessListener {
-                        auth.currentUser?.delete()
-                        document.reference.delete()
-                            .addOnSuccessListener {
-                                onResult("Usuario eliminado con éxito.")
-                            }
-                            .addOnFailureListener { e ->
-                                onResult("Error al eliminar usuario de Firestore: ${e.message}")
-                            }
+                        onResult("Usuario eliminado con éxito.")
                     }
                     .addOnFailureListener { e ->
-                        onResult("Error al eliminar usuario de Authentication: ${e.message}")
+                        onResult("Error al eliminar usuario de Firestore: ${e.message}")
                     }
             } else {
-                onResult("Error: El DNI no existe.")
+                onResult("Error: El DNI y el correo electrónico no coinciden.")
             }
         }
         .addOnFailureListener { e ->
-            onResult("Error al buscar el DNI: ${e.message}")
+            onResult("Error al buscar el usuario: ${e.message}")
         }
 }

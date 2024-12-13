@@ -60,42 +60,42 @@ android {
 }
 
 dependencies {
-    // Core AndroidX
+    // Bibliotecas principales de AndroidX
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.recyclerview)
 
-    // Compose UI & Material
+    // Bibliotecas de Jetpack Compose
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
-    // Navigation for Compose
+    // Navegación para Compose
     implementation(libs.androidx.navigation.compose)
 
-    // Firebase dependencies
+    // Dependencias de Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.google.firebase.auth.ktx)
     implementation(libs.firebase.storage.ktx)
     implementation(libs.firebase.firestore.ktx)
 
-    // Image loading with Coil
+    // Biblioteca para carga de imágenes (Coil)
     implementation(libs.coil.compose)
 
-    // Media3 for video playback
-    implementation(libs.androidx.media3.ui.v150)
-    implementation(libs.androidx.media3.exoplayer.v150)
+    // Reproducción de medios (Media3)
+    implementation(libs.androidx.media3.ui)
+    implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.storage)
 
-    // Testing dependencies
+    // Bibliotecas de pruebas
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.ui.test.junit4)
 
-    // Debugging tools
+    // Herramientas de depuración
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
 }
