@@ -160,17 +160,18 @@ fun VideoPlayer(videoUrl: String) {
         }
     }
 
+    AndroidView(
+        factory = {
+            PlayerView(context).apply {
+                player = exoPlayer
+            }
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp)
+    )
     DisposableEffect(
-        AndroidView(
-            factory = {
-                PlayerView(context).apply {
-                    player = exoPlayer
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-        )
+        Unit
     ) {
         onDispose {
             exoPlayer.release()
