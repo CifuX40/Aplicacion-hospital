@@ -1,15 +1,16 @@
 {
   "project_info": {
     "project_number": "714512277966",
+    "firebase_url": "https://mar-de-luna-ada79-default-rtdb.firebaseio.com",
     "project_id": "mar-de-luna-ada79",
     "storage_bucket": "mar-de-luna-ada79.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:714512277966:android:3934a6598dd23b467c4b9f",
+        "mobilesdk_app_id": "1:714512277966:android:8ce83b22919034a67c4b9f",
         "android_client_info": {
-          "package_name": "marDeLuna"
+          "package_name": "mar.de.luna"
         }
       },
       "oauth_client": [],
