@@ -1,4 +1,4 @@
-package marDeLuna.view
+package MarDeLuna.view
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*

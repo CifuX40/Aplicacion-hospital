@@ -29,7 +29,7 @@
             android:resource="@color/colorAccent" />
 
         <activity
-            android:name="marDeLuna.view.MainActivity"
+            android:name="MarDeLuna.view.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.MarDeLuna">
             <intent-filter>

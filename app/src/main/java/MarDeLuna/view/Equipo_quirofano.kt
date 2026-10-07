@@ -1,4 +1,4 @@
-package marDeLuna.view
+package MarDeLuna.view
 
 import android.util.*
 import androidx.compose.foundation.*
@@ -14,8 +14,8 @@ import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import coil.compose.*
-import com.google.firebase.ktx.*
-import com.google.firebase.storage.ktx.*
+import com.google.firebase.Firebase
+import com.google.firebase.storage.storage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

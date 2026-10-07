@@ -1,4 +1,4 @@
-package marDeLuna.view
+package MarDeLuna.view
 
 import android.content.*
 import android.net.*

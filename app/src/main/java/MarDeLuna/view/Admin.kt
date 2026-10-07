@@ -1,4 +1,4 @@
-package marDeLuna.view
+package MarDeLuna.view
 
 import android.util.*
 import androidx.compose.foundation.*
@@ -12,9 +12,9 @@ import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import com.google.firebase.auth.*
 import com.google.firebase.firestore.*
-import com.google.firebase.ktx.*
 import coil.compose.*
-import com.google.firebase.storage.ktx.*
+import com.google.firebase.Firebase
+import com.google.firebase.storage.storage
 
 data class User(val dni: String, val name: String, val lastName: String, val email: String)
 

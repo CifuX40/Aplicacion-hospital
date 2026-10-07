@@ -1,12 +1,12 @@
-package marDeLuna.view
+package MarDeLuna.view
 
+import MarDeLuna.model.Navegacion
+import MarDeLuna.theme.MarDeLunaTheme
 import android.os.*
 import androidx.activity.*
 import androidx.activity.compose.*
 import androidx.navigation.compose.*
 import com.google.firebase.*
-import marDeLuna.model.*
-import marDeLuna.theme.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

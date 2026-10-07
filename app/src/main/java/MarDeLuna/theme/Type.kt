@@ -1,4 +1,4 @@
-package marDeLuna.theme
+package MarDeLuna.theme
 
 import androidx.compose.material3.*
 import androidx.compose.ui.text.*

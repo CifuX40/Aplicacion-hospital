@@ -1,4 +1,4 @@
-package marDeLuna.theme
+package MarDeLuna.theme
 
 import android.os.*
 import androidx.compose.foundation.*
