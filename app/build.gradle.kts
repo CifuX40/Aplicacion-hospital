@@ -6,7 +6,11 @@ plugins {
 
 android {
     namespace = "com.example.mardeluna"
-    compileSdk = 37
+    compileSdk {
+        version = release(37) {
+            minorApiLevel = 1
+        }
+    }
 
     defaultConfig {
         applicationId = "mar.de.luna"
