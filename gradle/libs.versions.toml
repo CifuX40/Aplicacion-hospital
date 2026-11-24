@@ -1,8 +1,8 @@
 [versions]
-agp = "9.5.1"
+agp = "9.5.2"
 googleGmsGoogleServices = "4.6.0"
-composeBom = "2026.09.00"
-lifecycle = "2.11.0"
+composeBom = "2026.11.01"
+lifecycle = "2.11.1"
 activityCompose = "1.13.0"
 coreKtx = "1.19.1"
 recyclerview = "1.4.0"
